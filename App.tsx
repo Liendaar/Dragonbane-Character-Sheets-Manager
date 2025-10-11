@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -28,7 +28,7 @@ const Router: React.FC = () => {
   // This new implementation uses conditional rendering to show the correct page
   // based on authentication state, which avoids the programmatic navigation error.
   return (
-    <HashRouter>
+    <BrowserRouter basename="/Dragonbane-Character-Sheets-Manager">
       <Routes>
         <Route path="/login" element={user ? <DashboardPage /> : <LoginPage />} />
         <Route path="/character/:id" element={user ? <CharacterSheetPage /> : <LoginPage />} />
@@ -36,7 +36,7 @@ const Router: React.FC = () => {
         {/* Fallback for any other route */}
         <Route path="*" element={user ? <DashboardPage /> : <LoginPage />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
