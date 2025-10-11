@@ -1,0 +1,5 @@
+{
+  "name": "Dragonbane Character Sheets Manager",
+  "description": "A web application to create, manage, and store character sheets for the Dragonbane tabletop RPG. Features user accounts with Google SSO or email/password, and all data is stored in Firebase.",
+  "requestFramePermissions": []
+}
