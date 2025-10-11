@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Merriweather', serif;
+}
+
+.font-title {
+  font-family: 'Cinzel', serif;
+}

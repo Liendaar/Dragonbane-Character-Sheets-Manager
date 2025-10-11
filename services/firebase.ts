@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBy8_tbrP8N37ki7L7nvb2e5a6E1ixmJA0",
-  authDomain: "dragonbane-character-sheet.firebaseapp.com",
-  projectId: "dragonbane-character-sheet",
-  storageBucket: "dragonbane-character-sheet.appspot.com",
-  messagingSenderId: "495188862487",
-  appId: "1:495188862487:web:c34a4653130fdb35051e52",
-  measurementId: "G-NMQJX3JWZP"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 
