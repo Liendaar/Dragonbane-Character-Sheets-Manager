@@ -48,7 +48,7 @@ const DashboardPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#1a1a1a] p-4 sm:p-6 md:p-8">
+        <div className="min-h-screen p-4 sm:p-6 md:p-8">
             <div className="max-w-4xl mx-auto">
                 <header className="flex justify-between items-center mb-8 pb-4 border-b-2 border-[#4ade80]/30">
                     <div>

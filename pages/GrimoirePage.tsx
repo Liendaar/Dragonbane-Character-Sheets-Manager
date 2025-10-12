@@ -145,7 +145,7 @@ const GrimoirePage: React.FC = () => {
     const isOverLimit = memorizedCount > memorizedLimit;
 
     return (
-        <div className="p-2 md:p-4 bg-[#1a1a1a] min-h-screen">
+        <div className="p-2 md:p-4 min-h-screen">
             <div className="max-w-6xl mx-auto space-y-4">
                 <header className="flex justify-between items-center mb-4">
                     <Link to={`/character/${id}`} className="text-[#4ade80] hover:underline">&larr; Retour à la fiche</Link>

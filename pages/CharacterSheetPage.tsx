@@ -416,7 +416,7 @@ const CharacterSheetPage: React.FC = () => {
     // Utilisation des constantes définies dans types.ts pour garantir un ordre fixe
 
     return (
-      <div className="p-2 md:p-4 bg-[#1a1a1a] min-h-screen">
+      <div className="p-2 md:p-4 min-h-screen">
           <div className="max-w-4xl mx-auto space-y-3">
               <header className="flex justify-between items-center mb-4">
                   <Link to="/" className="text-[#4ade80] hover:underline">&larr; Back to Dashboard</Link>

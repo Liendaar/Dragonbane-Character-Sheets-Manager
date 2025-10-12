@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a] p-4">
+        <div className="min-h-screen flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-[#2a2a2a]/90 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-600">
                 <h1 className="text-4xl font-bold text-center font-title text-[#4ade80] mb-2">Dragonbane</h1>
                 <h2 className="text-xl text-center text-[#e5e5e5] mb-6">Character Manager</h2>
