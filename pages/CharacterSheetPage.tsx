@@ -37,7 +37,7 @@ const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: Re
     <div className="flex flex-col items-center">
         <div className="relative w-16 h-16 border-4 border-[#2D7A73] rounded-full flex items-center justify-center bg-[#1a1a1a] shadow-inner">
             <span className="absolute -top-3 text-xs font-bold font-title text-[#4ade80] bg-[#1a1a1a] px-1">{label}</span>
-            <input type="number" value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-200 bg-transparent focus:outline-none" />
+            <input type="number" value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-200 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
         </div>
         <div onClick={onConditionChange} className={`cursor-pointer text-xs mt-1 px-2 py-0.5 rounded-full border ${condition ? 'bg-red-600 text-white border-red-700' : 'bg-[#2a2a2a] text-gray-400 border-gray-600'}`}>
             {conditionLabel}
