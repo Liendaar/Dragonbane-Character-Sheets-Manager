@@ -356,6 +356,7 @@ const CharacterSheetPage: React.FC = () => {
             secondarySkills: migratedSecondarySkills,
             weaponsShields: charData.weaponsShields || [],
             grimoire: charData.grimoire || [],
+            portrait: charData.portrait || '',
             armor: {
                 ...charData.armor,
                 armorRating: charData.armor.armorRating ?? 0
@@ -445,6 +446,44 @@ const CharacterSheetPage: React.FC = () => {
                        <h1 className="text-5xl font-extrabold text-red-500 text-center font-title">DRAGON BANE</h1>
                        <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 text-center shadow-inner">
                           <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none text-gray-200 placeholder-gray-500" />
+                       </div>
+                       {/* Portrait Upload */}
+                       <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 shadow-inner">
+                           <div className="relative w-full aspect-square max-w-[200px] mx-auto">
+                               {character.portrait ? (
+                                   <div className="relative w-full h-full group">
+                                       <img src={character.portrait} alt="Portrait" className="w-full h-full object-cover rounded border-2 border-[#2D7A73]" />
+                                       <button 
+                                           onClick={() => updateField('portrait', '')}
+                                           className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
+                                       >
+                                           ✕
+                                       </button>
+                                   </div>
+                               ) : (
+                                   <label className="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded cursor-pointer hover:border-[#2D7A73] transition-colors">
+                                       <svg className="w-12 h-12 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                       </svg>
+                                       <span className="text-xs text-gray-400">Ajouter un portrait</span>
+                                       <input 
+                                           type="file" 
+                                           accept="image/*" 
+                                           className="hidden" 
+                                           onChange={(e) => {
+                                               const file = e.target.files?.[0];
+                                               if (file) {
+                                                   const reader = new FileReader();
+                                                   reader.onloadend = () => {
+                                                       updateField('portrait', reader.result as string);
+                                                   };
+                                                   reader.readAsDataURL(file);
+                                               }
+                                           }}
+                                       />
+                                   </label>
+                               )}
+                           </div>
                        </div>
                   </div>
                   <div className="md:col-span-5">

@@ -48,6 +48,7 @@ export interface CharacterSheet {
   profession: string;
   weakness: string;
   appearance: string;
+  portrait?: string;
   attributes: {
     for: number;
     con: number;
@@ -162,6 +163,7 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         profession: '',
         weakness: '',
         appearance: '',
+        portrait: '',
         attributes,
         conditions: { exhausted: false, sick: false, stunned: false, furious: false, scared: false, discouraged: false },
         damageBonus: { for: '', agi: '' },

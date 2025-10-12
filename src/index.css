@@ -11,18 +11,6 @@
   }
 }
 
-@keyframes move-gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 @keyframes float-gentle {
   0%, 100% {
     transform: translate(0, 0);
@@ -36,15 +24,7 @@ body {
   font-family: 'Merriweather', serif;
   position: relative;
   overflow-x: hidden;
-  background: linear-gradient(135deg, 
-    #1a1a1a 0%, 
-    #1a1a1a 45%,
-    rgba(45, 122, 115, 0.03) 50%,
-    #1a1a1a 55%,
-    #1a1a1a 100%
-  );
-  background-size: 400% 400%;
-  animation: move-gradient 25s ease infinite;
+  background: #1a1a1a;
   color: #e5e5e5;
 }
 
