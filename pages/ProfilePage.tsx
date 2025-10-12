@@ -8,7 +8,7 @@ const ProfilePage: React.FC = () => {
     const { user } = useAuth();
     
     // Check if user signed in with Google
-    const isGoogleUser = user?.providerData.some(provider => provider.providerId === 'google.com');
+    const isGoogleUser = user?.providerData?.some(provider => provider.providerId === 'google.com') || false;
     
     // Form states
     const [displayName, setDisplayName] = useState(user?.displayName || '');
