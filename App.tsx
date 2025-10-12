@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import CharacterSheetPage from './pages/CharacterSheetPage';
 import GrimoirePage from './pages/GrimoirePage';
 import AbilitiesPage from './pages/AbilitiesPage';
+import ProfilePage from './pages/ProfilePage';
 
 const App: React.FC = () => {
   return (
@@ -33,6 +34,7 @@ const Router: React.FC = () => {
     <BrowserRouter basename="/Dragonbane-Character-Sheets-Manager">
       <Routes>
         <Route path="/login" element={user ? <DashboardPage /> : <LoginPage />} />
+        <Route path="/profile" element={user ? <ProfilePage /> : <LoginPage />} />
         <Route path="/character/:id" element={user ? <CharacterSheetPage /> : <LoginPage />} />
         <Route path="/grimoire/:id" element={user ? <GrimoirePage /> : <LoginPage />} />
         <Route path="/abilities/:id" element={user ? <AbilitiesPage /> : <LoginPage />} />

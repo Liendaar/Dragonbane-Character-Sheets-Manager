@@ -401,6 +401,47 @@ const CharacterSheetPage: React.FC = () => {
         setCharacter(prev => prev ? { ...prev, [field]: value } : null);
     };
 
+    // Handle money conversion: 1 gold = 10 silver, 1 silver = 10 copper
+    const adjustMoney = (type: 'or' | 'argent' | 'cuivre', change: number) => {
+        if (!character) return;
+
+        let { or, argent, cuivre } = character.money;
+
+        if (type === 'cuivre') {
+            cuivre += change;
+            // If negative, convert from silver
+            while (cuivre < 0 && argent > 0) {
+                argent -= 1;
+                cuivre += 10;
+            }
+            // If still negative and we have gold, convert from gold
+            while (cuivre < 0 && or > 0) {
+                or -= 1;
+                argent += 10;
+                // Try again to convert silver to copper
+                while (cuivre < 0 && argent > 0) {
+                    argent -= 1;
+                    cuivre += 10;
+                }
+            }
+            cuivre = Math.max(0, cuivre);
+        } else if (type === 'argent') {
+            argent += change;
+            // If negative, convert from gold
+            while (argent < 0 && or > 0) {
+                or -= 1;
+                argent += 10;
+            }
+            argent = Math.max(0, argent);
+        } else if (type === 'or') {
+            or = Math.max(0, or + change);
+        }
+
+        updateNestedField('money', 'or', or);
+        updateNestedField('money', 'argent', argent);
+        updateNestedField('money', 'cuivre', cuivre);
+    };
+
     const updateNestedField = <K1 extends keyof CharacterSheet, K2 extends keyof CharacterSheet[K1]>(key1: K1, key2: K2, value: CharacterSheet[K1][K2]) => {
       // FIX: Cast `prev[key1]` to object to resolve "Spread types may only be created from object types."
       // The generic type for `prev[key1]` could be a primitive, which cannot be spread.
@@ -1002,7 +1043,7 @@ const CharacterSheetPage: React.FC = () => {
                                 <label className="text-xs font-bold text-yellow-400 mb-1">OR</label>
                                 <div className="flex items-center gap-1 w-full">
                                     <button
-                                        onClick={() => updateNestedField('money', 'or', Math.max(0, character.money.or - 1))}
+                                        onClick={() => adjustMoney('or', -1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Diminuer"
                                     >
@@ -1015,7 +1056,7 @@ const CharacterSheetPage: React.FC = () => {
                                         className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                     />
                                     <button
-                                        onClick={() => updateNestedField('money', 'or', character.money.or + 1)}
+                                        onClick={() => adjustMoney('or', 1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Augmenter"
                                     >
@@ -1027,7 +1068,7 @@ const CharacterSheetPage: React.FC = () => {
                                 <label className="text-xs font-bold text-gray-300 mb-1">ARGENT</label>
                                 <div className="flex items-center gap-1 w-full">
                                     <button
-                                        onClick={() => updateNestedField('money', 'argent', Math.max(0, character.money.argent - 1))}
+                                        onClick={() => adjustMoney('argent', -1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Diminuer"
                                     >
@@ -1040,7 +1081,7 @@ const CharacterSheetPage: React.FC = () => {
                                         className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                     />
                                     <button
-                                        onClick={() => updateNestedField('money', 'argent', character.money.argent + 1)}
+                                        onClick={() => adjustMoney('argent', 1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Augmenter"
                                     >
@@ -1052,7 +1093,7 @@ const CharacterSheetPage: React.FC = () => {
                                 <label className="text-xs font-bold text-orange-400 mb-1">CUIVRE</label>
                                 <div className="flex items-center gap-1 w-full">
                                     <button
-                                        onClick={() => updateNestedField('money', 'cuivre', Math.max(0, character.money.cuivre - 1))}
+                                        onClick={() => adjustMoney('cuivre', -1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Diminuer"
                                     >
@@ -1065,7 +1106,7 @@ const CharacterSheetPage: React.FC = () => {
                                         className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                     />
                                     <button
-                                        onClick={() => updateNestedField('money', 'cuivre', character.money.cuivre + 1)}
+                                        onClick={() => adjustMoney('cuivre', 1)}
                                         className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
                                         title="Augmenter"
                                     >

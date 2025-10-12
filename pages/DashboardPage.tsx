@@ -57,12 +57,20 @@ const DashboardPage: React.FC = () => {
                             <p className="text-[#d1d5db]">Welcome, {user?.displayName || user?.email}</p>
                         </div>
                     </div>
-                    <button
-                        onClick={handleSignOut}
-                        className="bg-transparent hover:bg-[#2D7A73]/30 text-[#4ade80] font-semibold py-2 px-4 border border-[#2D7A73] rounded shadow transition-colors duration-200"
-                    >
-                        Sign Out
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => navigate('/profile')}
+                            className="bg-transparent hover:bg-[#2D7A73]/30 text-[#4ade80] font-semibold py-2 px-4 border border-[#2D7A73] rounded shadow transition-colors duration-200"
+                        >
+                            Mon Profil
+                        </button>
+                        <button
+                            onClick={handleSignOut}
+                            className="bg-transparent hover:bg-[#2D7A73]/30 text-[#4ade80] font-semibold py-2 px-4 border border-[#2D7A73] rounded shadow transition-colors duration-200"
+                        >
+                            Sign Out
+                        </button>
+                    </div>
                 </header>
 
                 <main>
