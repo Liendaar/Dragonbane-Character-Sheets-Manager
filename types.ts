@@ -11,6 +11,11 @@ export interface Skill {
   attribute: string;
 }
 
+export interface SkillData {
+  checked: boolean;
+  value: number;
+}
+
 export interface CharacterSheet {
   id: string;
   userId: string;
@@ -44,8 +49,8 @@ export interface CharacterSheet {
   movement: string;
   encumbranceLimit: string;
   abilities: string[];
-  skills: Record<string, number>;
-  weaponSkills: Record<string, number>;
+  skills: Record<string, SkillData>;
+  weaponSkills: Record<string, SkillData>;
   secondarySkills: Skill[];
   inventory: string[];
   souvenir: string;
@@ -130,8 +135,8 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         movement: '',
         encumbranceLimit: '',
         abilities: ['', '', '', '', ''],
-        skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: 0 }), {}),
-        weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: 0 }), {}),
+        skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
+        weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         secondarySkills: [],
         inventory: Array(10).fill(''),
         souvenir: '',
