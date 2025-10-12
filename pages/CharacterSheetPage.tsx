@@ -28,8 +28,8 @@ const Section: React.FC<{ title: string; children: React.ReactNode; className?: 
 
 const LabeledInput: React.FC<{ label: string; value: string | number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; className?: string }> = ({ label, value, onChange, className }) => (
     <div className={`flex items-center ${className}`}>
-        <label className="text-xs font-bold text-gray-400 mr-2 w-1/3">{label}</label>
-        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-600 w-2/3 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+        <label className="text-xs font-bold text-gray-400 mr-2 w-28 flex-shrink-0">{label}</label>
+        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-600 flex-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
     </div>
 );
 
