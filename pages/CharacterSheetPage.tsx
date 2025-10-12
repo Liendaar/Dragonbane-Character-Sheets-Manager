@@ -660,14 +660,21 @@ const CharacterSheetPage: React.FC = () => {
                                 {character.grimoire.length === 0 ? (
                                     <p className="text-xs text-gray-500 italic">Aucun sort</p>
                                 ) : (
-                                    character.grimoire.slice(0, 10).map((spell, i) => (
-                                        <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
-                                            <span className="text-gray-300">{spell.nom}</span>
-                                            <span className="text-[#2D7A73] font-bold">
-                                                {spell.rang === 0 || spell.rang === '0' ? 'Tour' : `Rang ${spell.rang}`}
-                                            </span>
-                                        </div>
-                                    ))
+                                    [...character.grimoire]
+                                        .sort((a, b) => {
+                                            const rankA = typeof a.rang === 'string' ? parseInt(a.rang) : a.rang;
+                                            const rankB = typeof b.rang === 'string' ? parseInt(b.rang) : b.rang;
+                                            return rankA - rankB;
+                                        })
+                                        .slice(0, 10)
+                                        .map((spell, i) => (
+                                            <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
+                                                <span className="text-gray-300">{spell.nom}</span>
+                                                <span className="text-[#2D7A73] font-bold">
+                                                    {spell.rang === 0 || spell.rang === '0' ? 'Tour' : `Rang ${spell.rang}`}
+                                                </span>
+                                            </div>
+                                        ))
                                 )}
                                 {character.grimoire.length > 10 && (
                                     <p className="text-xs text-gray-500 italic text-center pt-1">
