@@ -182,6 +182,54 @@ const WeaponShieldRow: React.FC<{
     );
 };
 
+const ArmorSection: React.FC<{
+    title: string;
+    name: string;
+    armorRating: number;
+    baneOptions: string[];
+    defaultBanes: string[];
+    onNameChange: (value: string) => void;
+    onRatingChange: (value: number) => void;
+    onBaneToggle: (bane: string) => void;
+}> = ({ title, name, armorRating, baneOptions, defaultBanes, onNameChange, onRatingChange, onBaneToggle }) => (
+    <div className="bg-[#fdfbf5] border-2 border-[#d3c9b8] rounded-lg p-4 shadow-md">
+        <h3 className="font-title text-center text-lg font-bold text-[#2D7A73] mb-3">{title}</h3>
+        <input 
+            type="text" 
+            value={name} 
+            onChange={e => onNameChange(e.target.value)}
+            placeholder={`Nom du ${title.toLowerCase()}`}
+            className="w-full bg-transparent border-b-2 border-gray-400 focus:outline-none focus:border-[#2D7A73] text-center font-bold mb-3"
+        />
+        <div className="mb-3">
+            <label className="block text-xs font-bold text-gray-600 mb-1">INDICE D'ARMURE</label>
+            <input 
+                type="number" 
+                value={armorRating} 
+                onChange={e => onRatingChange(parseInt(e.target.value) || 0)}
+                className="w-full text-center text-xl font-bold border-2 border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+                min="0"
+            />
+        </div>
+        <div>
+            <div className="text-xs font-bold text-gray-600 mb-2">FLÉAU SUR :</div>
+            <div className="space-y-1">
+                {baneOptions.map(bane => (
+                    <div key={bane} className="flex items-center space-x-2">
+                        <div 
+                            onClick={() => onBaneToggle(bane)}
+                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
+                        >
+                            <div className="w-2 h-2"></div>
+                        </div>
+                        <span className="text-xs">{bane}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+);
+
 const PointTracker: React.FC<{ label: string; current: number; max: number; onCurrentChange: (val: number) => void; onMaxChange: (val: number) => void; color: string; }> = ({ label, current, max, onCurrentChange, onMaxChange, color }) => (
     <div className={`p-2 border-4 rounded-md shadow-inner bg-white/30`} style={{ borderColor: color }}>
         <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
@@ -300,6 +348,14 @@ const CharacterSheetPage: React.FC = () => {
             secondarySkills: migratedSecondarySkills,
             weaponsShields: charData.weaponsShields || [],
             grimoire: charData.grimoire || [],
+            armor: {
+                ...charData.armor,
+                armorRating: charData.armor.armorRating ?? 0
+            },
+            helmet: {
+                ...charData.helmet,
+                armorRating: charData.helmet.armorRating ?? 0
+            },
             vitals: {
                 willpower: { 
                     current: charData.vitals.willpower.current, 
@@ -530,6 +586,44 @@ const CharacterSheetPage: React.FC = () => {
                   >
                       + Ajouter une arme/bouclier
                   </button>
+                </div>
+              </Section>
+
+              {/* Protection Equipment Section */}
+              <Section title="ÉQUIPEMENT DE PROTECTION">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Armor */}
+                    <ArmorSection 
+                        title="ARMURE"
+                        name={character.armor.name}
+                        armorRating={character.armor.armorRating}
+                        baneOptions={['ACROBATIE', 'DISCRÉTION', 'ESQUIVE']}
+                        defaultBanes={character.armor.bane}
+                        onNameChange={(value) => updateNestedField('armor', 'name', value)}
+                        onRatingChange={(value) => updateNestedField('armor', 'armorRating', value)}
+                        onBaneToggle={(bane) => {
+                            const newBanes = character.armor.bane.includes(bane)
+                                ? character.armor.bane.filter(b => b !== bane)
+                                : [...character.armor.bane, bane];
+                            updateNestedField('armor', 'bane', newBanes);
+                        }}
+                    />
+                    {/* Helmet */}
+                    <ArmorSection 
+                        title="HEAUME"
+                        name={character.helmet.name}
+                        armorRating={character.helmet.armorRating}
+                        baneOptions={['ATTAQUES À DISTANCE', 'INTUITION']}
+                        defaultBanes={character.helmet.bane}
+                        onNameChange={(value) => updateNestedField('helmet', 'name', value)}
+                        onRatingChange={(value) => updateNestedField('helmet', 'armorRating', value)}
+                        onBaneToggle={(bane) => {
+                            const newBanes = character.helmet.bane.includes(bane)
+                                ? character.helmet.bane.filter(b => b !== bane)
+                                : [...character.helmet.bane, bane];
+                            updateNestedField('helmet', 'bane', newBanes);
+                        }}
+                    />
                 </div>
               </Section>
 
