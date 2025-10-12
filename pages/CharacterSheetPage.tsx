@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
-import type { CharacterSheet, Weapon, Skill } from '../types';
+import type { CharacterSheet, Weapon, WeaponShield, Skill } from '../types';
 import { SKILLS_LIST, WEAPON_SKILLS_LIST } from '../types';
 
 // Debounce hook
@@ -102,6 +102,68 @@ const SecondarySkillRow: React.FC<{
     );
 };
 
+const WeaponShieldRow: React.FC<{ 
+    weapon: WeaponShield; 
+    index: number; 
+    onUpdate: (index: number, weapon: WeaponShield) => void; 
+    onRemove: (index: number) => void; 
+}> = ({ weapon, index, onUpdate, onRemove }) => {
+    return (
+        <div className="grid grid-cols-6 gap-2 text-sm mb-2 items-center">
+            <input 
+                type="text" 
+                value={weapon.name} 
+                onChange={e => onUpdate(index, { ...weapon, name: e.target.value })}
+                placeholder="Arme/Bouclier"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <input 
+                type="text" 
+                value={weapon.grip} 
+                onChange={e => onUpdate(index, { ...weapon, grip: e.target.value })}
+                placeholder="Prise"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <input 
+                type="text" 
+                value={weapon.range} 
+                onChange={e => onUpdate(index, { ...weapon, range: e.target.value })}
+                placeholder="Portée"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <input 
+                type="text" 
+                value={weapon.damage} 
+                onChange={e => onUpdate(index, { ...weapon, damage: e.target.value })}
+                placeholder="Dégâts"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <input 
+                type="text" 
+                value={weapon.durability} 
+                onChange={e => onUpdate(index, { ...weapon, durability: e.target.value })}
+                placeholder="Solidité"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <div className="flex items-center space-x-1">
+                <input 
+                    type="text" 
+                    value={weapon.traits} 
+                    onChange={e => onUpdate(index, { ...weapon, traits: e.target.value })}
+                    placeholder="Traits"
+                    className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                />
+                <button 
+                    onClick={() => onRemove(index)}
+                    className="text-red-600 hover:text-red-800 text-sm font-bold ml-1"
+                >
+                    ×
+                </button>
+            </div>
+        </div>
+    );
+};
+
 const PointTracker: React.FC<{ label: string; current: number; max: number; onCurrentChange: (val: number) => void; onMaxChange: (val: number) => void; color: string; }> = ({ label, current, max, onCurrentChange, onMaxChange, color }) => (
     <div className={`p-2 border-4 rounded-md shadow-inner bg-white/30`} style={{ borderColor: color }}>
         <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
@@ -136,7 +198,37 @@ const CharacterSheetPage: React.FC = () => {
       // FIX: Cast `prev[key1]` to object to resolve "Spread types may only be created from object types."
       // The generic type for `prev[key1]` could be a primitive, which cannot be spread.
       // This is safe because this function is only ever called with keys for object properties.
-      setCharacter(prev => prev ? { ...prev, [key1]: { ...(prev[key1] as object), [key2]: value } } : null)
+      setCharacter(prev => {
+        if (!prev) return null;
+        
+        const updated = { ...prev, [key1]: { ...(prev[key1] as object), [key2]: value } };
+        
+        // Auto-adjust vitals max when attributes change
+        if (key1 === 'attributes') {
+          const attrName = key2 as keyof typeof prev.attributes;
+          if (attrName === 'con') {
+            // Update health max when CON changes
+            updated.vitals = {
+              ...updated.vitals,
+              health: {
+                ...updated.vitals.health,
+                max: value as number
+              }
+            };
+          } else if (attrName === 'vol') {
+            // Update willpower max when VOL changes
+            updated.vitals = {
+              ...updated.vitals,
+              willpower: {
+                ...updated.vitals.willpower,
+                max: value as number
+              }
+            };
+          }
+        }
+        
+        return updated;
+      });
     }
 
     // Migration function for existing characters
@@ -176,7 +268,18 @@ const CharacterSheetPage: React.FC = () => {
             ...charData,
             skills: migratedSkills,
             weaponSkills: migratedWeaponSkills,
-            secondarySkills: migratedSecondarySkills
+            secondarySkills: migratedSecondarySkills,
+            weaponsShields: charData.weaponsShields || [],
+            vitals: {
+                willpower: { 
+                    current: charData.vitals.willpower.current, 
+                    max: charData.attributes.vol 
+                },
+                health: { 
+                    current: charData.vitals.health.current, 
+                    max: charData.attributes.con 
+                }
+            }
         };
     };
 
@@ -331,6 +434,45 @@ const CharacterSheetPage: React.FC = () => {
                     </div>
                 </Section>
               </div>
+
+              {/* Weapons & Shields Section */}
+              <Section title="ARMES & BOUCLIERS">
+                <div className="space-y-2">
+                  <div className="grid grid-cols-6 gap-2 text-xs font-bold text-gray-600 mb-2">
+                    <div>ARME/BOUCLIER</div>
+                    <div>PRISE</div>
+                    <div>PORTÉE</div>
+                    <div>DÉGÂTS</div>
+                    <div>SOLIDITÉ</div>
+                    <div>TRAITS</div>
+                  </div>
+                  {character.weaponsShields.map((weapon, i) => (
+                      <WeaponShieldRow 
+                          key={i}
+                          weapon={weapon} 
+                          index={i} 
+                          onUpdate={(index, updatedWeapon) => {
+                              const newWeapons = [...character.weaponsShields];
+                              newWeapons[index] = updatedWeapon;
+                              updateField('weaponsShields', newWeapons);
+                          }}
+                          onRemove={(index) => {
+                              const newWeapons = character.weaponsShields.filter((_, i) => i !== index);
+                              updateField('weaponsShields', newWeapons);
+                          }}
+                      />
+                  ))}
+                  <button 
+                      onClick={() => {
+                          const newWeapons = [...character.weaponsShields, { name: '', grip: '', range: '', damage: '', durability: '', traits: '' }];
+                          updateField('weaponsShields', newWeapons);
+                      }}
+                      className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                  >
+                      + Ajouter une arme/bouclier
+                  </button>
+                </div>
+              </Section>
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Inventory */}
