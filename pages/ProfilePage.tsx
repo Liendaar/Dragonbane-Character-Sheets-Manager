@@ -30,14 +30,15 @@ const ProfilePage: React.FC = () => {
     };
 
     const handleUpdateDisplayName = async () => {
-        if (!user || !displayName.trim()) {
+        const currentUser = auth.currentUser;
+        if (!currentUser || !displayName.trim()) {
             showMessage('error', 'Le nom d\'affichage ne peut pas être vide.');
             return;
         }
 
         setLoading(true);
         try {
-            await updateProfile(user, { displayName: displayName.trim() });
+            await updateProfile(currentUser, { displayName: displayName.trim() });
             showMessage('success', 'Nom d\'affichage mis à jour avec succès !');
             setIsEditingName(false);
         } catch (error: any) {
@@ -48,7 +49,8 @@ const ProfilePage: React.FC = () => {
     };
 
     const handleUpdateEmail = async () => {
-        if (!user || !email.trim()) {
+        const currentUser = auth.currentUser;
+        if (!currentUser || !email.trim()) {
             showMessage('error', 'L\'adresse email ne peut pas être vide.');
             return;
         }
@@ -61,12 +63,12 @@ const ProfilePage: React.FC = () => {
         setLoading(true);
         try {
             // Reauthenticate before changing email (required by Firebase)
-            if (!isGoogleUser && user.email) {
-                const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                await reauthenticateWithCredential(user, credential);
+            if (!isGoogleUser && currentUser.email) {
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+                await reauthenticateWithCredential(currentUser, credential);
             }
 
-            await updateEmail(user, email.trim());
+            await updateEmail(currentUser, email.trim());
             showMessage('success', 'Adresse email mise à jour avec succès !');
             setIsEditingEmail(false);
             setCurrentPassword('');
@@ -86,7 +88,8 @@ const ProfilePage: React.FC = () => {
     };
 
     const handleUpdatePassword = async () => {
-        if (!user) return;
+        const currentUser = auth.currentUser;
+        if (!currentUser) return;
 
         if (!currentPassword || !newPassword || !confirmPassword) {
             showMessage('error', 'Veuillez remplir tous les champs.');
@@ -106,12 +109,12 @@ const ProfilePage: React.FC = () => {
         setLoading(true);
         try {
             // Reauthenticate before changing password (required by Firebase)
-            if (user.email) {
-                const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                await reauthenticateWithCredential(user, credential);
+            if (currentUser.email) {
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+                await reauthenticateWithCredential(currentUser, credential);
             }
 
-            await updatePassword(user, newPassword);
+            await updatePassword(currentUser, newPassword);
             showMessage('success', 'Mot de passe mis à jour avec succès !');
             setIsEditingPassword(false);
             setCurrentPassword('');
@@ -215,7 +218,17 @@ const ProfilePage: React.FC = () => {
                         {/* Email Section */}
                         <div className="border-b border-gray-700 pb-6">
                             <h2 className="text-xl font-bold text-gray-200 mb-4">Adresse email</h2>
-                            {!isEditingEmail ? (
+                            {isGoogleUser ? (
+                                <div className="bg-blue-900/20 border border-blue-700 rounded p-4">
+                                    <p className="text-gray-300 mb-2">{user.email || 'Non disponible'}</p>
+                                    <p className="text-blue-300 text-sm flex items-center gap-2">
+                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>L'email des comptes Google ne peut pas être modifié ici - gérez-le depuis votre compte Google</span>
+                                    </p>
+                                </div>
+                            ) : !isEditingEmail ? (
                                 <div className="flex items-center justify-between">
                                     <p className="text-gray-300">{user.email || 'Non disponible'}</p>
                                     <button
