@@ -27,9 +27,9 @@ const Section: React.FC<{ title: string; children: React.ReactNode; className?: 
 );
 
 const LabeledInput: React.FC<{ label: string; value: string | number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; className?: string }> = ({ label, value, onChange, className }) => (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center min-w-0 ${className}`}>
         <label className="text-xs font-bold text-gray-400 mr-2 w-28 flex-shrink-0">{label}</label>
-        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-600 flex-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
     </div>
 );
 
@@ -342,6 +342,12 @@ const CharacterSheetPage: React.FC = () => {
                 max: value as number
               }
             };
+          } else if (attrName === 'for') {
+            // Update encumbrance max when FOR changes (half of FOR, rounded up)
+            updated.encumbrance = {
+              ...updated.encumbrance,
+              max: Math.ceil((value as number) / 2)
+            };
           }
         }
         
@@ -405,6 +411,14 @@ const CharacterSheetPage: React.FC = () => {
               })
             : [];
 
+        // Migrate encumbranceLimit to encumbrance object
+        const migratedEncumbrance = (charData as any).encumbranceLimit !== undefined
+            ? {
+                current: parseInt((charData as any).encumbranceLimit) || 0,
+                max: Math.ceil(charData.attributes.for / 2)
+              }
+            : charData.encumbrance || { current: 0, max: Math.ceil(charData.attributes.for / 2) };
+
         return {
             ...charData,
             skills: migratedSkills,
@@ -414,6 +428,7 @@ const CharacterSheetPage: React.FC = () => {
             weaponsShields: charData.weaponsShields || [],
             grimoire: charData.grimoire || [],
             portrait: charData.portrait || '',
+            encumbrance: migratedEncumbrance,
             armor: {
                 ...charData.armor,
                 armorRating: charData.armor.armorRating ?? 0
@@ -525,7 +540,7 @@ const CharacterSheetPage: React.FC = () => {
                   
                   {/* Logo - Center */}
                   <div className="flex items-center justify-center px-4">
-                      <img src="/logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
+                      <img src="./logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
                   </div>
                   
                   {/* Character Info - Right */}
@@ -534,9 +549,15 @@ const CharacterSheetPage: React.FC = () => {
                           <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none text-gray-200 placeholder-gray-500" />
                       </div>
                       <LabeledInput label="JOUEUR" value={character.player} onChange={e => updateField('player', e.target.value)} />
-                      <div className="flex space-x-4">
-                          <LabeledInput label="FAMILLE" value={character.family} onChange={e => updateField('family', e.target.value)} className="w-2/3"/>
-                          <LabeledInput label="ÂGE" value={character.age} onChange={e => updateField('age', e.target.value)} className="w-1/3"/>
+                      <div className="flex space-x-2 min-w-0">
+                          <div className="flex items-center flex-1 min-w-0">
+                              <label className="text-xs font-bold text-gray-400 mr-2 w-28 flex-shrink-0">FAMILLE</label>
+                              <input type="text" value={character.family} onChange={e => updateField('family', e.target.value)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                          </div>
+                          <div className="flex items-center w-24 min-w-0">
+                              <label className="text-xs font-bold text-gray-400 mr-1 flex-shrink-0">ÂGE</label>
+                              <input type="text" value={character.age} onChange={e => updateField('age', e.target.value)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                          </div>
                       </div>
                       <LabeledInput label="PROFESSION" value={character.profession} onChange={e => updateField('profession', e.target.value)} />
                       <LabeledInput label="FAIBLESSE" value={character.weakness} onChange={e => updateField('weakness', e.target.value)} />
@@ -775,7 +796,24 @@ const CharacterSheetPage: React.FC = () => {
              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Inventory */}
                 <Section title="INVENTAIRE" className="md:col-span-2">
-                    <LabeledInput label="LIMITE D'ENCOMBREMENT" value={character.encumbranceLimit} onChange={e => updateField('encumbranceLimit', e.target.value)} />
+                    <div className="flex items-center justify-between mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
+                        <span className="text-sm font-bold text-gray-300">ENCOMBREMENT</span>
+                        <div className="flex items-center space-x-2">
+                            <input 
+                                type="number" 
+                                value={character.encumbrance.current} 
+                                onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
+                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-gray-400 font-bold">/</span>
+                            <input 
+                                type="number" 
+                                value={character.encumbrance.max} 
+                                onChange={e => updateNestedField('encumbrance', 'max', parseInt(e.target.value) || 0)}
+                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                        </div>
+                    </div>
                     <div className="mt-4 space-y-1">
                         {character.inventory.map((item, i) => (
                              <div key={i} className="flex items-center">

@@ -70,7 +70,10 @@ export interface CharacterSheet {
     agi: string;
   };
   movement: string;
-  encumbranceLimit: string;
+  encumbrance: {
+    current: number;
+    max: number;
+  };
   abilities: Ability[];
   skills: Record<string, SkillData>;
   weaponSkills: Record<string, SkillData>;
@@ -174,7 +177,7 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         conditions: { exhausted: false, sick: false, stunned: false, furious: false, scared: false, discouraged: false },
         damageBonus: { for: '', agi: '' },
         movement: '',
-        encumbranceLimit: '',
+        encumbrance: { current: 0, max: Math.ceil(attributes.for / 2) },
         abilities: [],
         skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
