@@ -370,6 +370,19 @@ const CharacterSheetPage: React.FC = () => {
     
     const debouncedCharacter = useDebounce(character, 1000);
 
+    // Calculate damage bonus based on attribute value
+    const calculateDamageBonus = (attributeValue: number, attributeType: 'for' | 'agi'): string => {
+        if (attributeType === 'for') {
+            if (attributeValue >= 13 && attributeValue <= 16) return '+1D4';
+            if (attributeValue >= 17) return '+1D6';
+            return '';
+        } else { // agi
+            if (attributeValue >= 13 && attributeValue <= 16) return '+1D4';
+            if (attributeValue >= 17) return '+1D6';
+            return '';
+        }
+    };
+
     const updateField = <K extends keyof CharacterSheet, V extends CharacterSheet[K]>(field: K, value: V) => {
         setCharacter(prev => prev ? { ...prev, [field]: value } : null);
     };
@@ -409,6 +422,17 @@ const CharacterSheetPage: React.FC = () => {
             updated.encumbrance = {
               ...updated.encumbrance,
               max: Math.ceil((value as number) / 2)
+            };
+            // Update damage bonus for FOR
+            updated.damageBonus = {
+              ...updated.damageBonus,
+              for: calculateDamageBonus(value as number, 'for')
+            };
+          } else if (attrName === 'agi') {
+            // Update damage bonus for AGI
+            updated.damageBonus = {
+              ...updated.damageBonus,
+              agi: calculateDamageBonus(value as number, 'agi')
             };
           }
         }
@@ -512,6 +536,12 @@ const CharacterSheetPage: React.FC = () => {
             ? migratedInventoryItems 
             : (charData as any).inventoryItems || [];
 
+        // Calculate damage bonuses based on current attributes
+        const calculatedDamageBonus = {
+            for: calculateDamageBonus(charData.attributes.for, 'for'),
+            agi: calculateDamageBonus(charData.attributes.agi, 'agi')
+        };
+
         return {
             ...charData,
             skills: migratedSkills,
@@ -523,6 +553,7 @@ const CharacterSheetPage: React.FC = () => {
             portrait: charData.portrait || '',
             encumbrance: migratedEncumbrance,
             inventoryItems: finalInventoryItems,
+            damageBonus: calculatedDamageBonus,
             armor: {
                 ...charData.armor,
                 armorRating: charData.armor.armorRating ?? 0
@@ -537,7 +568,7 @@ const CharacterSheetPage: React.FC = () => {
                     max: charData.attributes.vol 
                 },
                 health: { 
-                    current: charData.vitals.health.current, 
+                    current: charData.vitals.health.current,
                     max: charData.attributes.con 
                 }
             }
@@ -684,8 +715,26 @@ const CharacterSheetPage: React.FC = () => {
               </div>
               
               <div className="grid grid-cols-3 gap-3">
-                  <BoxedInput label="BON. DÉGÂTS FOR" value={character.damageBonus.for} onChange={e => updateNestedField('damageBonus', 'for', e.target.value)} />
-                  <BoxedInput label="BON. DÉGÂTS AGI" value={character.damageBonus.agi} onChange={e => updateNestedField('damageBonus', 'agi', e.target.value)} />
+                  <div className="flex flex-col items-center">
+                      <label className="text-xs font-bold text-gray-400 mb-1">BON. DÉGÂTS FOR</label>
+                      <input 
+                          type="text" 
+                          value={character.damageBonus.for} 
+                          readOnly 
+                          className="bg-[#1a1a1a] border-2 border-[#404040] rounded px-3 py-2 w-full text-center focus:outline-none text-sm font-bold text-[#4ade80] cursor-not-allowed opacity-75" 
+                          title="Calculé automatiquement selon FOR"
+                      />
+                  </div>
+                  <div className="flex flex-col items-center">
+                      <label className="text-xs font-bold text-gray-400 mb-1">BON. DÉGÂTS AGI</label>
+                      <input 
+                          type="text" 
+                          value={character.damageBonus.agi} 
+                          readOnly 
+                          className="bg-[#1a1a1a] border-2 border-[#404040] rounded px-3 py-2 w-full text-center focus:outline-none text-sm font-bold text-[#4ade80] cursor-not-allowed opacity-75" 
+                          title="Calculé automatiquement selon AGI"
+                      />
+                  </div>
                   <BoxedInput label="DÉPLACEMENT" value={character.movement} onChange={e => updateField('movement', e.target.value)} />
               </div>
               
@@ -838,7 +887,7 @@ const CharacterSheetPage: React.FC = () => {
                     <div>SOLIDITÉ</div>
                     <div>TRAITS</div>
                     <div></div>
-                  </div>
+                             </div>
                   {character.weaponsShields.map((weapon, i) => (
                       <WeaponShieldRow 
                           key={i}
@@ -902,8 +951,8 @@ const CharacterSheetPage: React.FC = () => {
                             updateNestedField('helmet', 'bane', newBanes);
                         }}
                     />
-                </div>
-              </Section>
+                    </div>
+                </Section>
 
                 {/* Inventory */}
                 <Section title="INVENTAIRE">
@@ -957,26 +1006,35 @@ const CharacterSheetPage: React.FC = () => {
                                     className="w-full text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                 />
                             </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
 
                     <div className="mt-4 space-y-1">
-                        {character.inventoryItems.map((item, i) => (
-                            <InventoryItemRow
-                                key={i}
-                                item={item}
-                                index={i}
-                                onUpdate={(index, updatedItem) => {
-                                    const newItems = [...character.inventoryItems];
-                                    newItems[index] = updatedItem;
-                                    updateField('inventoryItems', newItems);
-                                }}
-                                onRemove={(index) => {
-                                    const newItems = character.inventoryItems.filter((_, i) => i !== index);
-                                    updateField('inventoryItems', newItems);
-                                }}
-                            />
-                        ))}
+                        {[...character.inventoryItems]
+                            .sort((a, b) => {
+                                const typeOrder = { normal: 0, tiny: 1, memento: 2 };
+                                return typeOrder[a.type] - typeOrder[b.type];
+                            })
+                            .map((item, displayIndex) => {
+                                // Find the original index of this item
+                                const originalIndex = character.inventoryItems.indexOf(item);
+                                return (
+                                    <InventoryItemRow
+                                        key={originalIndex}
+                                        item={item}
+                                        index={originalIndex}
+                                        onUpdate={(index, updatedItem) => {
+                                            const newItems = [...character.inventoryItems];
+                                            newItems[index] = updatedItem;
+                                            updateField('inventoryItems', newItems);
+                                        }}
+                                        onRemove={(index) => {
+                                            const newItems = character.inventoryItems.filter((_, i) => i !== index);
+                                            updateField('inventoryItems', newItems);
+                                        }}
+                                    />
+                                );
+                            })}
                         <button
                             onClick={() => {
                                 const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
