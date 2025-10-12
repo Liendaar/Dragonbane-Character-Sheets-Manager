@@ -651,22 +651,6 @@ const CharacterSheetPage: React.FC = () => {
                             📖 Grimoire
                         </Link>
                     </Section>
-                    <Section title="TRÉSOR">
-                        <div className="space-y-1">
-                            <div className="flex items-center">
-                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">OR</label>
-                                <input type="number" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                            </div>
-                            <div className="flex items-center">
-                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">ARGENT</label>
-                                <input type="number" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                            </div>
-                            <div className="flex items-center">
-                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">CUIVRE</label>
-                                <input type="number" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                            </div>
-                        </div>
-                    </Section>
                 </div>
 
                 {/* Skills */}
@@ -845,6 +829,24 @@ const CharacterSheetPage: React.FC = () => {
                         ))}
                         <input type="text" value={character.souvenir} onChange={e => updateField('souvenir', e.target.value)} placeholder="SOUVENIR" className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 text-gray-200 placeholder-gray-500"/>
                         <textarea value={character.tinyItems} onChange={e => updateField('tinyItems', e.target.value)} placeholder="OBJETS MINUSCULES" rows={3} className="bg-transparent border border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 p-1 rounded-sm text-gray-200 placeholder-gray-500"></textarea>
+                    </div>
+                </Section>
+                
+                {/* Trésor */}
+                <Section title="TRÉSOR">
+                    <div className="space-y-1">
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">OR</label>
+                            <input type="number" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                        </div>
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">ARGENT</label>
+                            <input type="number" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                        </div>
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">CUIVRE</label>
+                            <input type="number" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                </div>
                     </div>
                 </Section>
             </div>
