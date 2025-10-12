@@ -33,6 +33,13 @@ const LabeledInput: React.FC<{ label: string; value: string | number; onChange: 
     </div>
 );
 
+const BoxedInput: React.FC<{ label: string; value: string | number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; className?: string }> = ({ label, value, onChange, className }) => (
+    <div className={`flex flex-col items-center ${className}`}>
+        <label className="text-xs font-bold text-gray-400 mb-1">{label}</label>
+        <input type="text" value={value} onChange={onChange} className="bg-[#2a2a2a] border-2 border-[#404040] rounded px-3 py-2 w-full text-center focus:outline-none focus:border-[#2D7A73] text-sm font-bold text-gray-200" />
+    </div>
+);
+
 const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; condition: boolean; onConditionChange: () => void; conditionLabel: string }> = ({ label, value, onChange, condition, onConditionChange, conditionLabel }) => (
     <div className="flex flex-col items-center">
         <div className="relative w-16 h-16 border-4 border-[#2D7A73] rounded-full flex items-center justify-center bg-[#1a1a1a] shadow-inner">
@@ -432,8 +439,58 @@ const CharacterSheetPage: React.FC = () => {
                   </div>
               </header>
               {/* Top Section */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                  <div className="md:col-span-3 space-y-1">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-3">
+                  {/* Portrait Upload - Left */}
+                  <div className="flex items-start justify-center md:justify-start">
+                      <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 shadow-inner">
+                          <div className="relative w-full aspect-[2/3] max-w-[160px]">
+                              {character.portrait ? (
+                                  <div className="relative w-full h-full group">
+                                      <img src={character.portrait} alt="Portrait" className="w-full h-full object-cover rounded border-2 border-[#2D7A73]" />
+                                      <button 
+                                          onClick={() => updateField('portrait', '')}
+                                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
+                                      >
+                                          ✕
+                                      </button>
+                                  </div>
+                              ) : (
+                                  <label className="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded cursor-pointer hover:border-[#2D7A73] transition-colors">
+                                      <svg className="w-10 h-10 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                      </svg>
+                                      <span className="text-xs text-gray-400 text-center px-2">Ajouter portrait</span>
+                                      <input 
+                                          type="file" 
+                                          accept="image/*" 
+                                          className="hidden" 
+                                          onChange={(e) => {
+                                              const file = e.target.files?.[0];
+                                              if (file) {
+                                                  const reader = new FileReader();
+                                                  reader.onloadend = () => {
+                                                      updateField('portrait', reader.result as string);
+                                                  };
+                                                  reader.readAsDataURL(file);
+                                              }
+                                          }}
+                                      />
+                                  </label>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+                  
+                  {/* Logo - Center */}
+                  <div className="flex items-center justify-center px-4">
+                      <img src="/logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
+                  </div>
+                  
+                  {/* Character Info - Right */}
+                  <div className="space-y-1">
+                      <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 text-center shadow-inner">
+                          <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none text-gray-200 placeholder-gray-500" />
+                      </div>
                       <LabeledInput label="JOUEUR" value={character.player} onChange={e => updateField('player', e.target.value)} />
                       <div className="flex space-x-4">
                           <LabeledInput label="FAMILLE" value={character.family} onChange={e => updateField('family', e.target.value)} className="w-2/3"/>
@@ -441,53 +498,7 @@ const CharacterSheetPage: React.FC = () => {
                       </div>
                       <LabeledInput label="PROFESSION" value={character.profession} onChange={e => updateField('profession', e.target.value)} />
                       <LabeledInput label="FAIBLESSE" value={character.weakness} onChange={e => updateField('weakness', e.target.value)} />
-                  </div>
-                  <div className="md:col-span-2 space-y-1">
-                       <h1 className="text-5xl font-extrabold text-red-500 text-center font-title">DRAGON BANE</h1>
-                       <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 text-center shadow-inner">
-                          <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none text-gray-200 placeholder-gray-500" />
-                       </div>
-                       {/* Portrait Upload */}
-                       <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 shadow-inner">
-                           <div className="relative w-full aspect-square max-w-[200px] mx-auto">
-                               {character.portrait ? (
-                                   <div className="relative w-full h-full group">
-                                       <img src={character.portrait} alt="Portrait" className="w-full h-full object-cover rounded border-2 border-[#2D7A73]" />
-                                       <button 
-                                           onClick={() => updateField('portrait', '')}
-                                           className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
-                                       >
-                                           ✕
-                                       </button>
-                                   </div>
-                               ) : (
-                                   <label className="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded cursor-pointer hover:border-[#2D7A73] transition-colors">
-                                       <svg className="w-12 h-12 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                       </svg>
-                                       <span className="text-xs text-gray-400">Ajouter un portrait</span>
-                                       <input 
-                                           type="file" 
-                                           accept="image/*" 
-                                           className="hidden" 
-                                           onChange={(e) => {
-                                               const file = e.target.files?.[0];
-                                               if (file) {
-                                                   const reader = new FileReader();
-                                                   reader.onloadend = () => {
-                                                       updateField('portrait', reader.result as string);
-                                                   };
-                                                   reader.readAsDataURL(file);
-                                               }
-                                           }}
-                                       />
-                                   </label>
-                               )}
-                           </div>
-                       </div>
-                  </div>
-                  <div className="md:col-span-5">
-                      <textarea value={character.appearance} onChange={e => updateField('appearance', e.target.value)} placeholder="APPARENCE" rows={3} className="bg-transparent border-t border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm p-1 text-gray-200 placeholder-gray-500"></textarea>
+                      <textarea value={character.appearance} onChange={e => updateField('appearance', e.target.value)} placeholder="APPARENCE" rows={2} className="bg-transparent border-t border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm p-1 text-gray-200 placeholder-gray-500"></textarea>
                   </div>
               </div>
 
@@ -514,10 +525,10 @@ const CharacterSheetPage: React.FC = () => {
                   </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <LabeledInput label="BON. DÉGÂTS FOR" value={character.damageBonus.for} onChange={e => updateNestedField('damageBonus', 'for', e.target.value)} />
-                  <LabeledInput label="BON. DÉGÂTS AGI" value={character.damageBonus.agi} onChange={e => updateNestedField('damageBonus', 'agi', e.target.value)} />
-                  <LabeledInput label="DÉPLACEMENT" value={character.movement} onChange={e => updateField('movement', e.target.value)} />
+              <div className="grid grid-cols-3 gap-3">
+                  <BoxedInput label="BON. DÉGÂTS FOR" value={character.damageBonus.for} onChange={e => updateNestedField('damageBonus', 'for', e.target.value)} />
+                  <BoxedInput label="BON. DÉGÂTS AGI" value={character.damageBonus.agi} onChange={e => updateNestedField('damageBonus', 'agi', e.target.value)} />
+                  <BoxedInput label="DÉPLACEMENT" value={character.movement} onChange={e => updateField('movement', e.target.value)} />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -528,10 +539,21 @@ const CharacterSheetPage: React.FC = () => {
                             {character.abilities.map((ability, i) => <input key={i} type="text" value={ability} onChange={e => {const newAbilities = [...character.abilities]; newAbilities[i] = e.target.value; updateField('abilities', newAbilities); }} className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 placeholder-gray-500"/>)}
                         </div>
                     </Section>
-                    <Section title="MONEY">
-                        <LabeledInput label="OR" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} />
-                        <LabeledInput label="ARGENT" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} />
-                        <LabeledInput label="CUIVRE" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} />
+                    <Section title="TRÉSOR">
+                        <div className="space-y-1">
+                            <div className="flex items-center">
+                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">OR</label>
+                                <input type="number" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                            </div>
+                            <div className="flex items-center">
+                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">ARGENT</label>
+                                <input type="number" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                            </div>
+                            <div className="flex items-center">
+                                <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">CUIVRE</label>
+                                <input type="number" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                            </div>
+                        </div>
                     </Section>
                 </div>
 
