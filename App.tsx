@@ -19,8 +19,8 @@ const Router: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FBF3E5]">
-        <div className="text-2xl font-title text-[#2D3748]">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-[#1a1a1a]">
+        <div className="text-2xl font-title text-[#e5e5e5]">Loading...</div>
       </div>
     );
   }

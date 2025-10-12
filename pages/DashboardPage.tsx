@@ -48,16 +48,18 @@ const DashboardPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#FBF3E5] p-4 sm:p-6 md:p-8">
+        <div className="min-h-screen p-4 sm:p-6 md:p-8">
             <div className="max-w-4xl mx-auto">
-                <header className="flex justify-between items-center mb-8 pb-4 border-b-2 border-[#8B4513]/30">
-                    <div>
-                        <h1 className="text-4xl font-title text-[#8B4513]">Dragonbane</h1>
-                        <p className="text-[#4A5568]">Welcome, {user?.displayName || user?.email}</p>
+                <header className="flex justify-between items-center mb-8 pb-4 border-b-2 border-[#4ade80]/30">
+                    <div className="flex items-center space-x-4">
+                        <img src="/Dragonbane-Character-Sheets-Manager/logo.png" alt="Dragonbane" className="h-16 w-auto object-contain" />
+                        <div>
+                            <p className="text-[#d1d5db]">Welcome, {user?.displayName || user?.email}</p>
+                        </div>
                     </div>
                     <button
                         onClick={handleSignOut}
-                        className="bg-transparent hover:bg-[#2D7A73]/20 text-[#2D7A73] font-semibold py-2 px-4 border border-[#2D7A73] rounded shadow transition-colors duration-200"
+                        className="bg-transparent hover:bg-[#2D7A73]/30 text-[#4ade80] font-semibold py-2 px-4 border border-[#2D7A73] rounded shadow transition-colors duration-200"
                     >
                         Sign Out
                     </button>
@@ -65,30 +67,30 @@ const DashboardPage: React.FC = () => {
 
                 <main>
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-title text-[#2D3748]">Your Characters</h2>
+                        <h2 className="text-2xl font-title text-[#e5e5e5]">Your Characters</h2>
                         <button
                             onClick={handleCreateCharacter}
-                            className="bg-[#2D7A73] hover:bg-[#2C5282] text-white font-bold py-2 px-6 rounded shadow-lg transform hover:scale-105 transition-all duration-200"
+                            className="bg-[#2D7A73] hover:bg-[#3d9a8a] text-white font-bold py-2 px-6 rounded shadow-lg transform hover:scale-105 transition-all duration-200"
                         >
                             + Create New
                         </button>
                     </div>
 
                     {loading ? (
-                        <p className="text-center text-gray-500">Loading characters...</p>
+                        <p className="text-center text-gray-400">Loading characters...</p>
                     ) : characters.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {characters.map((char) => (
-                                <div key={char.id} className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-md border border-gray-300 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200">
+                                <div key={char.id} className="bg-[#2a2a2a]/80 backdrop-blur-sm p-6 rounded-lg shadow-md border border-gray-700 flex flex-col justify-between hover:shadow-xl hover:border-[#2D7A73] transition-all duration-200">
                                     <div>
-                                        <h3 className="text-xl font-bold font-title text-[#2D3748]">{char.name || 'Unnamed Character'}</h3>
-                                        <p className="text-gray-600 mb-4">{char.profession || 'No profession'}</p>
+                                        <h3 className="text-xl font-bold font-title text-[#e5e5e5]">{char.name || 'Unnamed Character'}</h3>
+                                        <p className="text-gray-400 mb-4">{char.profession || 'No profession'}</p>
                                     </div>
                                     <div className="flex items-center justify-between mt-2">
-                                        <button onClick={() => navigate(`/character/${char.id}`)} className="text-sm bg-[#2D7A73] text-white py-1 px-3 rounded hover:bg-[#2C5282] transition-colors">
+                                        <button onClick={() => navigate(`/character/${char.id}`)} className="text-sm bg-[#2D7A73] text-white py-1 px-3 rounded hover:bg-[#3d9a8a] transition-colors">
                                             Open
                                         </button>
-                                         <button onClick={() => handleDeleteCharacter(char.id)} className="text-sm bg-red-600 text-white py-1 px-3 rounded hover:bg-red-800 transition-colors">
+                                         <button onClick={() => handleDeleteCharacter(char.id)} className="text-sm bg-red-700 text-white py-1 px-3 rounded hover:bg-red-800 transition-colors">
                                             Delete
                                         </button>
                                     </div>
@@ -96,9 +98,9 @@ const DashboardPage: React.FC = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-10 px-6 bg-white/50 rounded-lg border-2 border-dashed border-gray-300">
-                            <p className="text-gray-500">You haven't created any characters yet.</p>
-                            <p className="text-gray-500 mt-2">Click "Create New" to get started!</p>
+                        <div className="text-center py-10 px-6 bg-[#2a2a2a]/50 rounded-lg border-2 border-dashed border-gray-700">
+                            <p className="text-gray-400">You haven't created any characters yet.</p>
+                            <p className="text-gray-400 mt-2">Click "Create New" to get started!</p>
                         </div>
                     )}
                 </main>

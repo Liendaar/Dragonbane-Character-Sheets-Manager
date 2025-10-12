@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
-import type { CharacterSheet, Weapon, WeaponShield, Skill } from '../types';
+import type { CharacterSheet, Weapon, WeaponShield, Skill, Ability } from '../types';
 import { SKILLS_LIST, WEAPON_SKILLS_LIST, ATTRIBUTES_ORDER, CONDITIONS_ORDER, CONDITION_LABELS } from '../types';
 
 // Debounce hook
@@ -20,26 +20,33 @@ const useDebounce = <T,>(value: T, delay: number): T => {
 };
 
 const Section: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className = '' }) => (
-    <div className={`bg-[#fdfbf5]/50 border border-[#d3c9b8] rounded-md shadow-sm p-3 ${className}`}>
+    <div className={`bg-[#2a2a2a]/70 border border-[#404040] rounded-md shadow-sm p-3 ${className}`}>
         <h2 className="font-title text-center text-sm font-bold bg-[#2D7A73] text-white py-1 rounded-sm -mt-6 mx-auto w-4/5 shadow-md">{title}</h2>
         <div className="mt-4">{children}</div>
     </div>
 );
 
 const LabeledInput: React.FC<{ label: string; value: string | number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; className?: string }> = ({ label, value, onChange, className }) => (
-    <div className={`flex items-center ${className}`}>
-        <label className="text-xs font-bold text-gray-600 mr-2 w-1/3">{label}</label>
-        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-400 w-2/3 focus:outline-none focus:border-[#2D7A73] text-sm" />
+    <div className={`flex items-center min-w-0 ${className}`}>
+        <label className="text-xs font-bold text-gray-400 mr-2 w-28 flex-shrink-0">{label}</label>
+        <input type="text" value={value} onChange={onChange} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+    </div>
+);
+
+const BoxedInput: React.FC<{ label: string; value: string | number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; className?: string }> = ({ label, value, onChange, className }) => (
+    <div className={`flex flex-col items-center ${className}`}>
+        <label className="text-xs font-bold text-gray-400 mb-1">{label}</label>
+        <input type="text" value={value} onChange={onChange} className="bg-[#2a2a2a] border-2 border-[#404040] rounded px-3 py-2 w-full text-center focus:outline-none focus:border-[#2D7A73] text-sm font-bold text-gray-200" />
     </div>
 );
 
 const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; condition: boolean; onConditionChange: () => void; conditionLabel: string }> = ({ label, value, onChange, condition, onConditionChange, conditionLabel }) => (
     <div className="flex flex-col items-center">
-        <div className="relative w-16 h-16 border-4 border-[#2D7A73] rounded-full flex items-center justify-center bg-white shadow-inner">
-            <span className="absolute -top-3 text-xs font-bold font-title text-[#2D7A73] bg-[#FBF3E5] px-1">{label}</span>
-            <input type="number" value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-800 bg-transparent focus:outline-none" />
+        <div className="relative w-16 h-16 border-4 border-[#2D7A73] rounded-full flex items-center justify-center bg-[#1a1a1a] shadow-inner">
+            <span className="absolute -top-3 text-xs font-bold font-title text-[#4ade80] bg-[#1a1a1a] px-1">{label}</span>
+            <input type="number" value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-200 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
         </div>
-        <div onClick={onConditionChange} className={`cursor-pointer text-xs mt-1 px-2 py-0.5 rounded-full border ${condition ? 'bg-red-600 text-white border-red-700' : 'bg-gray-200 text-gray-600 border-gray-300'}`}>
+        <div onClick={onConditionChange} className={`cursor-pointer text-xs mt-1 px-2 py-0.5 rounded-full border ${condition ? 'bg-red-600 text-white border-red-700' : 'bg-[#2a2a2a] text-gray-400 border-gray-600'}`}>
             {conditionLabel}
         </div>
     </div>
@@ -56,21 +63,79 @@ const SkillInput: React.FC<{
     <div className="flex items-center space-x-2 text-sm">
         <div 
             onClick={() => onCheckChange(!checked)} 
-            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${checked ? 'bg-gray-700' : 'bg-transparent'}`}
+            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${checked ? 'bg-[#2D7A73]' : 'bg-transparent'}`}
         >
             <div className="w-2 h-2"></div>
         </div>
-        <span className="flex-grow">{label}</span>
+        <span className="flex-grow text-gray-300">{label}</span>
         <span className="text-xs text-gray-500">({stat.toUpperCase()})</span>
         <input 
             type="number" 
             value={value} 
             onChange={e => onValueChange(parseInt(e.target.value) || 0)} 
-            className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+            className="w-12 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
             min="0"
         />
     </div>
 );
+
+const AbilityRow: React.FC<{
+    ability: Ability;
+    index: number;
+    onUpdate: (index: number, ability: Ability) => void;
+    onRemove: (index: number) => void;
+}> = ({ ability, index, onUpdate, onRemove }) => {
+    const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+    React.useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 96) + 'px';
+        }
+    }, [ability.description]);
+
+    return (
+        <div className="grid grid-cols-[2fr_3fr_1fr_auto] gap-2 items-start">
+            <input
+                type="text"
+                value={ability.name}
+                onChange={e => onUpdate(index, { ...ability, name: e.target.value })}
+                placeholder="Capacité"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0 mt-1"
+            />
+            <textarea
+                ref={textareaRef}
+                value={ability.description}
+                onChange={e => onUpdate(index, { ...ability, description: e.target.value })}
+                placeholder="Description"
+                rows={1}
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0 resize-none overflow-hidden"
+                style={{ 
+                    minHeight: '1.5rem',
+                    maxHeight: '6rem'
+                }}
+                onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 96) + 'px';
+                }}
+            />
+            <input
+                type="text"
+                value={ability.pv}
+                onChange={e => onUpdate(index, { ...ability, pv: e.target.value })}
+                placeholder="PV"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 text-center min-w-0 mt-1"
+            />
+            <button
+                onClick={() => onRemove(index)}
+                className="text-red-500 hover:text-red-700 font-bold text-sm flex-shrink-0 mt-1"
+            >
+                ✕
+            </button>
+        </div>
+    );
+};
 
 const SecondarySkillRow: React.FC<{ 
     skill: Skill; 
@@ -83,21 +148,21 @@ const SecondarySkillRow: React.FC<{
         <div className="flex items-center space-x-2 text-sm mb-2">
             <div 
                 onClick={() => onUpdate(index, { ...skill, checked: !skill.checked })} 
-                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
+                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center flex-shrink-0 ${skill.checked ? 'bg-[#2D7A73]' : 'bg-transparent'}`}
             >
-                {skill.checked && <span className="text-white text-xs">✓</span>}
+                <div className="w-2 h-2"></div>
             </div>
             <input 
                 type="text" 
                 value={skill.name} 
                 onChange={e => onUpdate(index, { ...skill, name: e.target.value })}
                 placeholder="Nom de la compétence"
-                className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="flex-1 min-w-0 bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 placeholder-gray-500"
             />
             <select 
                 value={skill.attribute} 
                 onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
-                className="bg-transparent border border-gray-400 rounded text-sm focus:outline-none focus:border-[#2D7A73]"
+                className="w-16 flex-shrink-0 bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
             >
                 {ATTRIBUTES_ORDER.map(attr => (
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
@@ -107,12 +172,12 @@ const SecondarySkillRow: React.FC<{
                 type="number" 
                 value={skill.value} 
                 onChange={e => onUpdate(index, { ...skill, value: parseInt(e.target.value) || 0 })}
-                className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+                className="w-12 flex-shrink-0 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
                 min="0"
             />
             <button 
                 onClick={() => onRemove(index)}
-                className="text-red-600 hover:text-red-800 text-sm font-bold"
+                className="text-red-500 hover:text-red-400 text-lg font-bold flex-shrink-0 w-6"
             >
                 ×
             </button>
@@ -127,57 +192,55 @@ const WeaponShieldRow: React.FC<{
     onRemove: (index: number) => void; 
 }> = ({ weapon, index, onUpdate, onRemove }) => {
     return (
-        <div className="grid grid-cols-6 gap-2 text-sm mb-2 items-center">
+        <div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr_auto] gap-2 text-sm mb-2 items-center">
             <input 
                 type="text" 
                 value={weapon.name} 
                 onChange={e => onUpdate(index, { ...weapon, name: e.target.value })}
                 placeholder="Arme/Bouclier"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
             />
             <input 
                 type="text" 
                 value={weapon.grip} 
                 onChange={e => onUpdate(index, { ...weapon, grip: e.target.value })}
                 placeholder="Prise"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
             />
             <input 
                 type="text" 
                 value={weapon.range} 
                 onChange={e => onUpdate(index, { ...weapon, range: e.target.value })}
                 placeholder="Portée"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
             />
             <input 
                 type="text" 
                 value={weapon.damage} 
                 onChange={e => onUpdate(index, { ...weapon, damage: e.target.value })}
                 placeholder="Dégâts"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
             />
             <input 
                 type="text" 
                 value={weapon.durability} 
                 onChange={e => onUpdate(index, { ...weapon, durability: e.target.value })}
                 placeholder="Solidité"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
             />
-            <div className="flex items-center space-x-1">
-                <input 
-                    type="text" 
-                    value={weapon.traits} 
-                    onChange={e => onUpdate(index, { ...weapon, traits: e.target.value })}
-                    placeholder="Traits"
-                    className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
-                />
-                <button 
-                    onClick={() => onRemove(index)}
-                    className="text-red-600 hover:text-red-800 text-sm font-bold ml-1"
-                >
-                    ×
-                </button>
-            </div>
+            <input 
+                type="text" 
+                value={weapon.traits} 
+                onChange={e => onUpdate(index, { ...weapon, traits: e.target.value })}
+                placeholder="Traits"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0 text-gray-200 placeholder-gray-500"
+            />
+            <button 
+                onClick={() => onRemove(index)}
+                className="text-red-500 hover:text-red-400 text-lg font-bold flex-shrink-0"
+            >
+                ×
+            </button>
         </div>
     );
 };
@@ -192,37 +255,37 @@ const ArmorSection: React.FC<{
     onRatingChange: (value: number) => void;
     onBaneToggle: (bane: string) => void;
 }> = ({ title, name, armorRating, baneOptions, defaultBanes, onNameChange, onRatingChange, onBaneToggle }) => (
-    <div className="bg-[#fdfbf5] border-2 border-[#d3c9b8] rounded-lg p-4 shadow-md">
-        <h3 className="font-title text-center text-lg font-bold text-[#2D7A73] mb-3">{title}</h3>
+    <div className="bg-[#2a2a2a]/70 border-2 border-[#404040] rounded-lg p-4 shadow-md">
+        <h3 className="font-title text-center text-lg font-bold text-[#4ade80] mb-3">{title}</h3>
         <input 
             type="text" 
             value={name} 
             onChange={e => onNameChange(e.target.value)}
             placeholder={`Nom du ${title.toLowerCase()}`}
-            className="w-full bg-transparent border-b-2 border-gray-400 focus:outline-none focus:border-[#2D7A73] text-center font-bold mb-3"
+            className="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-[#2D7A73] text-center font-bold mb-3 text-gray-200 placeholder-gray-500"
         />
         <div className="mb-3">
-            <label className="block text-xs font-bold text-gray-600 mb-1">INDICE D'ARMURE</label>
+            <label className="block text-xs font-bold text-gray-400 mb-1">INDICE D'ARMURE</label>
             <input 
                 type="number" 
                 value={armorRating} 
                 onChange={e => onRatingChange(parseInt(e.target.value) || 0)}
-                className="w-full text-center text-xl font-bold border-2 border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+                className="w-full text-center text-xl font-bold border-2 border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] bg-[#1a1a1a] text-gray-200"
                 min="0"
             />
         </div>
         <div>
-            <div className="text-xs font-bold text-gray-600 mb-2">FLÉAU SUR :</div>
+            <div className="text-xs font-bold text-gray-400 mb-2">FLÉAU SUR :</div>
             <div className="space-y-1">
                 {baneOptions.map(bane => (
                     <div key={bane} className="flex items-center space-x-2">
                         <div 
                             onClick={() => onBaneToggle(bane)}
-                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
+                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center flex-shrink-0 ${defaultBanes.includes(bane) ? 'bg-[#2D7A73]' : 'bg-transparent'}`}
                         >
-                            {defaultBanes.includes(bane) && <span className="text-white text-xs">✓</span>}
+                            <div className="w-2 h-2"></div>
                         </div>
-                        <span className="text-xs">{bane}</span>
+                        <span className="text-xs text-gray-300">{bane}</span>
                     </div>
                 ))}
             </div>
@@ -231,17 +294,27 @@ const ArmorSection: React.FC<{
 );
 
 const PointTracker: React.FC<{ label: string; current: number; max: number; onCurrentChange: (val: number) => void; onMaxChange: (val: number) => void; color: string; }> = ({ label, current, max, onCurrentChange, onMaxChange, color }) => (
-    <div className={`p-2 border-4 rounded-md shadow-inner bg-white/30`} style={{ borderColor: color }}>
+    <div className={`p-2 border-4 rounded-md shadow-inner bg-[#2a2a2a]/50`} style={{ borderColor: color }}>
         <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
         <div className="flex items-center justify-center my-2">
-            <input type="number" value={current} onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} className="w-10 h-10 text-xl text-center font-bold border-2 rounded bg-white" />
-            <span className="mx-2 text-xl">/</span>
-            <input type="number" value={max} onChange={e => onMaxChange(parseInt(e.target.value) || 0)} className="w-10 h-10 text-xl text-center font-bold border-2 rounded bg-white" />
+            <input 
+                type="number" 
+                value={current} 
+                onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} 
+                className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+            />
+            <span className="mx-2 text-xl text-gray-300">/</span>
+            <input 
+                type="number" 
+                value={max} 
+                onChange={e => onMaxChange(parseInt(e.target.value) || 0)} 
+                className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+            />
         </div>
         <div className="grid grid-cols-10 gap-1 mt-2">
             {/* FIX: Using `[...new Array(max)]` can cause a "Spread types may only be created from object types" error. `Array.from()` is a safer way to create an array to iterate over and guards against negative lengths. */}
             {Array.from({ length: Math.max(0, max) }).map((_, i) => (
-                <div key={i} onClick={() => onCurrentChange(i + 1)} className={`w-3 h-3 rounded-full border border-gray-400 cursor-pointer ${i < current ? 'bg-current' : 'bg-white'}`} style={{ color }}></div>
+                <div key={i} onClick={() => onCurrentChange(i + 1)} className={`w-3 h-3 rounded-full border border-gray-600 cursor-pointer ${i < current ? 'bg-current' : 'bg-[#1a1a1a]'}`} style={{ color }}></div>
             ))}
         </div>
     </div>
@@ -289,6 +362,12 @@ const CharacterSheetPage: React.FC = () => {
                 ...updated.vitals.willpower,
                 max: value as number
               }
+            };
+          } else if (attrName === 'for') {
+            // Update encumbrance max when FOR changes (half of FOR, rounded up)
+            updated.encumbrance = {
+              ...updated.encumbrance,
+              max: Math.ceil((value as number) / 2)
             };
           }
         }
@@ -341,13 +420,36 @@ const CharacterSheetPage: React.FC = () => {
               })
             : [];
 
+        // Migrate abilities from string array to Ability array
+        const migratedAbilities = Array.isArray(charData.abilities)
+            ? charData.abilities.map(ability => {
+                if (typeof ability === 'string') {
+                    return { name: ability, description: '', pv: '' };
+                } else if (ability && typeof ability === 'object' && 'name' in ability) {
+                    return ability as Ability;
+                }
+                return { name: '', description: '', pv: '' };
+              })
+            : [];
+
+        // Migrate encumbranceLimit to encumbrance object
+        const migratedEncumbrance = (charData as any).encumbranceLimit !== undefined
+            ? {
+                current: parseInt((charData as any).encumbranceLimit) || 0,
+                max: Math.ceil(charData.attributes.for / 2)
+              }
+            : charData.encumbrance || { current: 0, max: Math.ceil(charData.attributes.for / 2) };
+
         return {
             ...charData,
             skills: migratedSkills,
             weaponSkills: migratedWeaponSkills,
             secondarySkills: migratedSecondarySkills,
+            abilities: migratedAbilities,
             weaponsShields: charData.weaponsShields || [],
             grimoire: charData.grimoire || [],
+            portrait: charData.portrait || '',
+            encumbrance: migratedEncumbrance,
             armor: {
                 ...charData.armor,
                 armorRating: charData.armor.armorRating ?? 0
@@ -408,77 +510,146 @@ const CharacterSheetPage: React.FC = () => {
     // Utilisation des constantes définies dans types.ts pour garantir un ordre fixe
 
     return (
-      <div className="p-2 md:p-4 bg-[#FBF3E5] min-h-screen">
+      <div className="p-2 md:p-4 min-h-screen">
           <div className="max-w-4xl mx-auto space-y-3">
               <header className="flex justify-between items-center mb-4">
-                  <Link to="/" className="text-[#2D7A73] hover:underline">&larr; Back to Dashboard</Link>
-                  <div className="flex items-center space-x-4">
-                      <Link 
-                          to={`/grimoire/${id}`} 
-                          className="bg-[#2D7A73] hover:bg-[#25635d] text-white px-4 py-2 rounded font-bold transition-colors"
-                      >
-                          📖 Grimoire
-                      </Link>
-                      <div className="text-sm text-gray-500">{saving ? 'Saving...' : 'Saved'}</div>
-                  </div>
+                  <Link to="/" className="text-[#4ade80] hover:underline">&larr; Back to Dashboard</Link>
+                  <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
               </header>
               {/* Top Section */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                  <div className="md:col-span-3 space-y-1">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-3">
+                  {/* Portrait Upload - Left */}
+                  <div className="flex items-start justify-center md:justify-start">
+                      <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 shadow-inner">
+                          <div className="relative w-full aspect-[2/3] max-w-[160px]">
+                              {character.portrait ? (
+                                  <div className="relative w-full h-full group">
+                                      <img src={character.portrait} alt="Portrait" className="w-full h-full object-cover rounded border-2 border-[#2D7A73]" />
+                                      <button 
+                                          onClick={() => updateField('portrait', '')}
+                                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
+                                      >
+                                          ✕
+                                      </button>
+                                  </div>
+                              ) : (
+                                  <label className="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded cursor-pointer hover:border-[#2D7A73] transition-colors">
+                                      <svg className="w-10 h-10 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                      </svg>
+                                      <span className="text-xs text-gray-400 text-center px-2">Ajouter portrait</span>
+                                      <input 
+                                          type="file" 
+                                          accept="image/*" 
+                                          className="hidden" 
+                                          onChange={(e) => {
+                                              const file = e.target.files?.[0];
+                                              if (file) {
+                                                  const reader = new FileReader();
+                                                  reader.onloadend = () => {
+                                                      updateField('portrait', reader.result as string);
+                                                  };
+                                                  reader.readAsDataURL(file);
+                                              }
+                                          }}
+                                      />
+                                  </label>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+                  
+                  {/* Vitals - Center */}
+                  <div className="flex flex-col justify-center space-y-3 px-4">
+                      <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
+                      <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
+                  </div>
+                  
+                  {/* Character Info - Right */}
+                  <div className="space-y-1">
+                      <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 text-center shadow-inner">
+                          <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none text-gray-200 placeholder-gray-500" />
+                      </div>
                       <LabeledInput label="JOUEUR" value={character.player} onChange={e => updateField('player', e.target.value)} />
-                      <div className="flex space-x-4">
-                          <LabeledInput label="FAMILLE" value={character.family} onChange={e => updateField('family', e.target.value)} className="w-2/3"/>
-                          <LabeledInput label="ÂGE" value={character.age} onChange={e => updateField('age', e.target.value)} className="w-1/3"/>
+                      <div className="flex space-x-2 min-w-0">
+                          <div className="flex items-center flex-1 min-w-0">
+                              <label className="text-xs font-bold text-gray-400 mr-2 w-28 flex-shrink-0">FAMILLE</label>
+                              <input type="text" value={character.family} onChange={e => updateField('family', e.target.value)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                          </div>
+                          <div className="flex items-center w-24 min-w-0">
+                              <label className="text-xs font-bold text-gray-400 mr-1 flex-shrink-0">ÂGE</label>
+                              <input type="text" value={character.age} onChange={e => updateField('age', e.target.value)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                          </div>
                       </div>
                       <LabeledInput label="PROFESSION" value={character.profession} onChange={e => updateField('profession', e.target.value)} />
                       <LabeledInput label="FAIBLESSE" value={character.weakness} onChange={e => updateField('weakness', e.target.value)} />
-                  </div>
-                  <div className="md:col-span-2 space-y-1">
-                       <h1 className="text-5xl font-extrabold text-red-700 text-center font-title">DRAGON BANE</h1>
-                       <div className="bg-[#e4d9c6] border border-[#c3b6a2] rounded p-2 text-center shadow-inner">
-                          <input type="text" value={character.name} onChange={e => updateField('name', e.target.value)} placeholder="NOM" className="font-title text-xl font-bold bg-transparent text-center w-full focus:outline-none" />
-                       </div>
-                  </div>
-                  <div className="md:col-span-5">
-                      <textarea value={character.appearance} onChange={e => updateField('appearance', e.target.value)} placeholder="APPARENCE" rows={3} className="bg-transparent border-t border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm p-1"></textarea>
+                      <textarea value={character.appearance} onChange={e => updateField('appearance', e.target.value)} placeholder="APPARENCE" rows={2} className="bg-transparent border-t border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm p-1 text-gray-200 placeholder-gray-500"></textarea>
                   </div>
               </div>
 
               {/* Attributes Section */}
               <div className="p-4 bg-gradient-to-b from-[#2D7A73] to-[#25635d] rounded-lg shadow-lg">
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                      {ATTRIBUTES_ORDER.map((attr, index) => (
+                      {ATTRIBUTES_ORDER.map((attr, index) => {
+                          const attrKey = attr as keyof typeof character.attributes;
+                          const condKey = CONDITIONS_ORDER[index] as keyof typeof character.conditions;
+                          return (
                           <AttributeCircle 
                               key={attr} 
                               label={attr.toUpperCase()}
-                              value={character.attributes[attr as keyof typeof character.attributes]}
-                              onChange={e => updateNestedField('attributes', attr as keyof typeof character.attributes, parseInt(e.target.value) || 0)}
-                              condition={character.conditions[CONDITIONS_ORDER[index] as keyof typeof character.conditions]}
-                              onConditionChange={() => updateNestedField('conditions', CONDITIONS_ORDER[index] as keyof typeof character.conditions, !character.conditions[CONDITIONS_ORDER[index] as keyof typeof character.conditions])}
-                              conditionLabel={CONDITION_LABELS[index]}
-                          />
-                      ))}
+                                  value={character.attributes[attrKey]}
+                                  // @ts-ignore - Type assertion is safe due to ATTRIBUTES_ORDER constant
+                                  onChange={e => updateNestedField('attributes', attrKey, parseInt(e.target.value) || 0)}
+                                  condition={character.conditions[condKey]}
+                                  // @ts-ignore - Type assertion is safe due to CONDITIONS_ORDER constant
+                                  onConditionChange={() => updateNestedField('conditions', condKey, !character.conditions[condKey])}
+                                  conditionLabel={CONDITION_LABELS[index]}
+                              />
+                          );
+                      })}
                   </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <LabeledInput label="BON. DÉGÂTS FOR" value={character.damageBonus.for} onChange={e => updateNestedField('damageBonus', 'for', e.target.value)} />
-                  <LabeledInput label="BON. DÉGÂTS AGI" value={character.damageBonus.agi} onChange={e => updateNestedField('damageBonus', 'agi', e.target.value)} />
-                  <LabeledInput label="DÉPLACEMENT" value={character.movement} onChange={e => updateField('movement', e.target.value)} />
+              <div className="grid grid-cols-3 gap-3">
+                  <BoxedInput label="BON. DÉGÂTS FOR" value={character.damageBonus.for} onChange={e => updateNestedField('damageBonus', 'for', e.target.value)} />
+                  <BoxedInput label="BON. DÉGÂTS AGI" value={character.damageBonus.agi} onChange={e => updateNestedField('damageBonus', 'agi', e.target.value)} />
+                  <BoxedInput label="DÉPLACEMENT" value={character.movement} onChange={e => updateField('movement', e.target.value)} />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Abilities & Money */}
                 <div className="space-y-3">
                     <Section title="CAPACITÉS">
-                        <div className="space-y-1">
-                            {character.abilities.map((ability, i) => <input key={i} type="text" value={ability} onChange={e => {const newAbilities = [...character.abilities]; newAbilities[i] = e.target.value; updateField('abilities', newAbilities); }} className="bg-transparent border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm"/>)}
+                        <div className="space-y-2">
+                            {character.abilities.map((ability, i) => (
+                                <AbilityRow
+                                    key={i}
+                                    ability={ability}
+                                    index={i}
+                                    onUpdate={(index, updatedAbility) => {
+                                        const newAbilities = [...character.abilities];
+                                        newAbilities[index] = updatedAbility;
+                                        updateField('abilities', newAbilities);
+                                    }}
+                                    onRemove={(index) => {
+                                        const newAbilities = character.abilities.filter((_, i) => i !== index);
+                                        updateField('abilities', newAbilities);
+                                    }}
+                                />
+                            ))}
+                            <button 
+                                onClick={() => updateField('abilities', [...character.abilities, { name: '', description: '', pv: '' }])}
+                                className="text-[#4ade80] hover:text-[#3d9a8a] text-sm font-bold w-full text-left"
+                            >
+                                + Ajouter une capacité
+                            </button>
                         </div>
-                    </Section>
-                    <Section title="MONEY">
-                        <LabeledInput label="OR" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} />
-                        <LabeledInput label="ARGENT" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} />
-                        <LabeledInput label="CUIVRE" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} />
+                        <Link 
+                            to={`/grimoire/${id}`} 
+                            className="block mt-4 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-4 py-2 rounded font-bold transition-colors text-center"
+                        >
+                            📖 Grimoire
+                        </Link>
                     </Section>
                 </div>
 
@@ -502,7 +673,7 @@ const CharacterSheetPage: React.FC = () => {
                           })}
                         </div>
                         <div>
-                          <h3 className="font-bold text-sm mb-1">COMPÉTENCES D'ARME</h3>
+                          <h3 className="font-bold text-sm mb-1 text-gray-300">COMPÉTENCES D'ARME</h3>
                           {Object.entries(WEAPON_SKILLS_LIST).map(([skill, stat]) => {
                               const skillData = character.weaponSkills[skill] || { checked: false, value: 0 };
                               return (
@@ -540,7 +711,7 @@ const CharacterSheetPage: React.FC = () => {
                                     const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi', checked: false }];
                                     updateField('secondarySkills', newSkills);
                                 }}
-                                className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                                className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                             >
                                 + Ajouter une compétence
                             </button>
@@ -553,13 +724,14 @@ const CharacterSheetPage: React.FC = () => {
               {/* Weapons & Shields Section */}
               <Section title="ARMES & BOUCLIERS">
                 <div className="space-y-2">
-                  <div className="grid grid-cols-6 gap-2 text-xs font-bold text-gray-600 mb-2">
+                  <div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr_auto] gap-2 text-xs font-bold text-gray-600 mb-2">
                     <div>ARME/BOUCLIER</div>
                     <div>PRISE</div>
                     <div>PORTÉE</div>
                     <div>DÉGÂTS</div>
                     <div>SOLIDITÉ</div>
                     <div>TRAITS</div>
+                    <div></div>
                   </div>
                   {character.weaponsShields.map((weapon, i) => (
                       <WeaponShieldRow 
@@ -630,23 +802,53 @@ const CharacterSheetPage: React.FC = () => {
              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Inventory */}
                 <Section title="INVENTAIRE" className="md:col-span-2">
-                    <LabeledInput label="LIMITE D'ENCOMBREMENT" value={character.encumbranceLimit} onChange={e => updateField('encumbranceLimit', e.target.value)} />
+                    <div className="flex items-center justify-between mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
+                        <span className="text-sm font-bold text-gray-300">ENCOMBREMENT</span>
+                        <div className="flex items-center space-x-2">
+                            <input 
+                                type="number" 
+                                value={character.encumbrance.current} 
+                                onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
+                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-gray-400 font-bold">/</span>
+                            <input 
+                                type="number" 
+                                value={character.encumbrance.max} 
+                                onChange={e => updateNestedField('encumbrance', 'max', parseInt(e.target.value) || 0)}
+                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                        </div>
+                    </div>
                     <div className="mt-4 space-y-1">
                         {character.inventory.map((item, i) => (
                              <div key={i} className="flex items-center">
-                                <span className="text-sm font-bold mr-2">{i+1}.</span>
-                                <input type="text" value={item} onChange={e => {const newInv = [...character.inventory]; newInv[i] = e.target.value; updateField('inventory', newInv); }} className="bg-transparent border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm"/>
+                                <span className="text-sm font-bold mr-2 text-gray-400">{i+1}.</span>
+                                <input type="text" value={item} onChange={e => {const newInv = [...character.inventory]; newInv[i] = e.target.value; updateField('inventory', newInv); }} className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 placeholder-gray-500"/>
                              </div>
                         ))}
-                        <input type="text" value={character.souvenir} onChange={e => updateField('souvenir', e.target.value)} placeholder="SOUVENIR" className="bg-transparent border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2"/>
-                        <textarea value={character.tinyItems} onChange={e => updateField('tinyItems', e.target.value)} placeholder="OBJETS MINUSCULES" rows={3} className="bg-transparent border border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 p-1 rounded-sm"></textarea>
+                        <input type="text" value={character.souvenir} onChange={e => updateField('souvenir', e.target.value)} placeholder="SOUVENIR" className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 text-gray-200 placeholder-gray-500"/>
+                        <textarea value={character.tinyItems} onChange={e => updateField('tinyItems', e.target.value)} placeholder="OBJETS MINUSCULES" rows={3} className="bg-transparent border border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 p-1 rounded-sm text-gray-200 placeholder-gray-500"></textarea>
                     </div>
                 </Section>
-                 {/* Vitals */}
-                <div className="space-y-3">
-                    <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
-                    <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
+                
+                {/* Trésor */}
+                <Section title="TRÉSOR">
+                    <div className="space-y-1">
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">OR</label>
+                            <input type="number" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                        </div>
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">ARGENT</label>
+                            <input type="number" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
+                        </div>
+                        <div className="flex items-center">
+                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">CUIVRE</label>
+                            <input type="number" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
                 </div>
+                    </div>
+                </Section>
             </div>
 
           </div>

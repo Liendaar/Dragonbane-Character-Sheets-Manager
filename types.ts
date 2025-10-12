@@ -48,6 +48,7 @@ export interface CharacterSheet {
   profession: string;
   weakness: string;
   appearance: string;
+  portrait?: string;
   attributes: {
     for: number;
     con: number;
@@ -69,8 +70,11 @@ export interface CharacterSheet {
     agi: string;
   };
   movement: string;
-  encumbranceLimit: string;
-  abilities: string[];
+  encumbrance: {
+    current: number;
+    max: number;
+  };
+  abilities: Ability[];
   skills: Record<string, SkillData>;
   weaponSkills: Record<string, SkillData>;
   secondarySkills: Skill[];
@@ -127,6 +131,12 @@ export interface WeaponShield {
   traits: string;
 }
 
+export interface Ability {
+  name: string;
+  description: string;
+  pv: string;
+}
+
 export const SKILLS_LIST = {
     'Acrobatie': 'agi', 'Artisanat': 'for', 'Bluff': 'cha', 'Chasse et pêche': 'agi', 'Con. des bêtes': 'int',
     'Dextérité': 'agi', 'Discrétion': 'agi', 'Équitation': 'agi', 'Esquive': 'agi', 'Intuition': 'int',
@@ -162,12 +172,13 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         profession: '',
         weakness: '',
         appearance: '',
+        portrait: '',
         attributes,
         conditions: { exhausted: false, sick: false, stunned: false, furious: false, scared: false, discouraged: false },
         damageBonus: { for: '', agi: '' },
         movement: '',
-        encumbranceLimit: '',
-        abilities: ['', '', '', '', ''],
+        encumbrance: { current: 0, max: Math.ceil(attributes.for / 2) },
+        abilities: [],
         skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         secondarySkills: [],
