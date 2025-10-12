@@ -290,6 +290,7 @@ const CharacterSheetPage: React.FC = () => {
             weaponSkills: migratedWeaponSkills,
             secondarySkills: migratedSecondarySkills,
             weaponsShields: charData.weaponsShields || [],
+            grimoire: charData.grimoire || [],
             vitals: {
                 willpower: { 
                     current: charData.vitals.willpower.current, 
@@ -346,7 +347,15 @@ const CharacterSheetPage: React.FC = () => {
           <div className="max-w-4xl mx-auto space-y-3">
               <header className="flex justify-between items-center mb-4">
                   <Link to="/" className="text-[#2D7A73] hover:underline">&larr; Back to Dashboard</Link>
-                  <div className="text-sm text-gray-500">{saving ? 'Saving...' : 'Saved'}</div>
+                  <div className="flex items-center space-x-4">
+                      <Link 
+                          to={`/grimoire/${id}`} 
+                          className="bg-[#2D7A73] hover:bg-[#25635d] text-white px-4 py-2 rounded font-bold transition-colors"
+                      >
+                          📖 Grimoire
+                      </Link>
+                      <div className="text-sm text-gray-500">{saving ? 'Saving...' : 'Saved'}</div>
+                  </div>
               </header>
               {/* Top Section */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -396,7 +405,7 @@ const CharacterSheetPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Abilities & Money */}
                 <div className="space-y-3">
-                    <Section title="CAPACITÉS ET SORTS">
+                    <Section title="CAPACITÉS">
                         <div className="space-y-1">
                             {character.abilities.map((ability, i) => <input key={i} type="text" value={ability} onChange={e => {const newAbilities = [...character.abilities]; newAbilities[i] = e.target.value; updateField('abilities', newAbilities); }} className="bg-transparent border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm"/>)}
                         </div>

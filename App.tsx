@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CharacterSheetPage from './pages/CharacterSheetPage';
+import GrimoirePage from './pages/GrimoirePage';
 
 const App: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const Router: React.FC = () => {
       <Routes>
         <Route path="/login" element={user ? <DashboardPage /> : <LoginPage />} />
         <Route path="/character/:id" element={user ? <CharacterSheetPage /> : <LoginPage />} />
+        <Route path="/grimoire/:id" element={user ? <GrimoirePage /> : <LoginPage />} />
         <Route path="/" element={user ? <DashboardPage /> : <LoginPage />} />
         {/* Fallback for any other route */}
         <Route path="*" element={user ? <DashboardPage /> : <LoginPage />} />

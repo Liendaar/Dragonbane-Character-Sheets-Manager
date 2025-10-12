@@ -16,6 +16,27 @@ export interface SkillData {
   value: number;
 }
 
+export interface Spell {
+  nom: string;
+  rang: string | number;
+  ecole: string;
+  condition_prealable: string | null;
+  prerequis: string | null;
+  temps_incantation: string | null;
+  portee: string | null;
+  duree: string | null;
+  description: string;
+}
+
+export interface KnownSpell extends Spell {
+  memorized: boolean;
+}
+
+export interface SpellSchool {
+  nom: string;
+  sorts: Spell[];
+}
+
 export interface CharacterSheet {
   id: string;
   userId: string;
@@ -70,6 +91,7 @@ export interface CharacterSheet {
   };
   weapons: Weapon[];
   weaponsShields: WeaponShield[];
+  grimoire: KnownSpell[];
   vitals: {
     willpower: { current: number; max: number; };
     health: { current: number; max: number; };
@@ -118,6 +140,14 @@ export const ATTRIBUTES_ORDER = ['for', 'con', 'agi', 'int', 'vol', 'cha'] as co
 export const CONDITIONS_ORDER = ['exhausted', 'sick', 'stunned', 'furious', 'scared', 'discouraged'] as const;
 export const CONDITION_LABELS = ['Épuisé', 'Malade', 'Étourdi', 'Furieux', 'Effrayé', 'Découragé'] as const;
 
+export const getMemorizedSpellLimit = (intelligence: number): number => {
+    if (intelligence <= 5) return 3;
+    if (intelligence <= 8) return 4;
+    if (intelligence <= 12) return 5;
+    if (intelligence <= 15) return 6;
+    return 7;
+};
+
 export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> => {
     const attributes = { for: 10, con: 10, agi: 10, int: 10, vol: 10, cha: 10 };
     return {
@@ -149,6 +179,7 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
           { name: '', grip: '', range: '', damage: '', durability: '', traits: '' },
         ],
         weaponsShields: [],
+        grimoire: [],
         vitals: { 
             willpower: { current: attributes.vol, max: attributes.vol }, 
             health: { current: attributes.con, max: attributes.con } 
