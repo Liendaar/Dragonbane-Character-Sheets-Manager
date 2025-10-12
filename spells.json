@@ -1,0 +1,750 @@
+{
+  "ecoles": [
+    {
+      "nom": "Magie Universelle",
+      "sorts": [
+        {
+          "nom": "Détection de la magie",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous pouvez sentir si la magie affecte l'endroit où vous vous trouvez ou l'objet que vous tenez, et si tel est le cas, identifier son type."
+        },
+        {
+          "nom": "Lumière",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous créez une vive lumière émise par un focus de votre choix. Vous pouvez ainsi éclairer pendant un intervalle une zone de dix mètres de rayon autour de cet objet. La lumière s'éteint si vous tombez à zéro PS."
+        },
+        {
+          "nom": "Ouverture/Fermeture",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous ouvrez ou fermez une porte située dans votre champ de vision et dans un rayon de dix mètres autour de vous, et qui n'est pas verrouillée."
+        },
+        {
+          "nom": "Pichenette",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous donnez une pichenette magique à un objet ou une créature situés dans un rayon de dix mètres. Cette « attaque » inflige 1 point de dégâts et peut, par exemple, briser du verre."
+        },
+        {
+          "nom": "Rapporter",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous faites flotter jusqu'à vous un objet non fixé à une surface (et dont le poids ne dépasse pas 1) et situé dans un rayon de dix mètres autour de vous."
+        },
+        {
+          "nom": "Ravaudage",
+          "rang": "Tour de magie",
+          "ecole": "Magie Universelle",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vos vêtements ou ceux d'une personne située dans un rayon de dix mètres autour de vous se trouvent instantanément réparés et nettoyés."
+        },
+        {
+          "nom": "DISSIPATION",
+          "rang": 1,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "n'importe quelle école de magie",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Vous annulez un sort en cours d'exécution et d'un niveau de puissance inférieur ou égal au vôtre. DISSIPATION peut également mettre un terme à d'autres effets magiques, si l'aventure ou le MJ le permet."
+        },
+        {
+          "nom": "PROTECTION",
+          "rang": 1,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "n'importe quelle école de magie",
+          "prerequis": "geste, ingrédient (quelque chose pour dessiner)",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "intervalle",
+          "description": "Vous protégez une personne ou un lieu (pas plus grand qu'un humain) des influences magiques. Le niveau de puissance de tous les sorts lancés sur votre cible subit un malus égal au niveau de puissance de la PROTECTION. Vous pouvez aussi utiliser ce sort pour vous protéger des attaques magiques portées par des monstres. Dans ce cas, chaque niveau de puissance diminue de 1 le nombre de dés de dégâts."
+        },
+        {
+          "nom": "BOUCLIER MAGIQUE",
+          "rang": 2,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "PROTECTION ou DISSIPATION",
+          "prerequis": "geste",
+          "temps_incantation": "réaction",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Vous interférez avec un sort lancé par un autre mage. Ce sort constitue une réaction et rompt l'ordre d'initiative du combat, mais il ne remplace pas votre action dans le round. Vous le lancez après le jet de toucher de votre adversaire, mais avant de déterminer les dégâts ou un autre effet. En cas de succès, le niveau de puissance du sort lancé par votre adversaire diminue du niveau de puissance de votre BOUCLIER MAGIQUE. Si le résultat est inférieur ou égal à zéro, il ne produit aucun effet. Vous pouvez également utiliser ce sort pour arrêter les attaques magiques des monstres. Dans ce cas, chaque niveau de puissance diminue de 1 le nombre de dés lancés pour les dégâts."
+        },
+        {
+          "nom": "TRANSFERT",
+          "rang": 3,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "BOUCLIER MAGIQUE",
+          "prerequis": "geste",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Vous pouvez voler des PV à des créatures humanoïdes ou transférer les vôtres à quelqu'un. Leur nombre sera au maximum égal à deux fois le coût de lancement du sort, c'est-à-dire 4 PV au niveau 1, 8 au niveau 2, et 12 au niveau 3. Les PV dépensés pour lancer le sort se perdent lors du transfert. Vous ne pouvez jamais dépasser le nombre maximum de vos PV ni descendre au-dessous de zéro, et il en va de même pour votre cible. Si celle-ci refuse le transfert, vous subissez un fléau sur votre jet."
+        },
+        {
+          "nom": "CHARGE",
+          "rang": 4,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "TRANSFERT",
+          "prerequis": "parole, geste",
+          "temps_incantation": "période",
+          "portee": "toucher",
+          "duree": "intervalle",
+          "description": "Vous transférez vos PV à un objet inanimé de votre choix qui fait alors office de batterie. Chaque niveau de puissance permet de transférer jusqu'à 10 PV. Une personne en contact avec l'objet peut alors utiliser les PV conservés à l'intérieur. Au bout d'un certain temps, les PV chargés se dissipent, à moins que le mage ait associé la CHARGE avec une PERMANENCE. Ce sort peut également se combiner à un SCEAU MAGIQUE."
+        },
+        {
+          "nom": "SCEAU MAGIQUE",
+          "rang": 4,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "TRANSFERT",
+          "prerequis": "parole, geste",
+          "temps_incantation": "intervalle",
+          "portee": "toucher",
+          "duree": "permanente",
+          "description": "Vous attachez un sort à l'objet inanimé de votre choix. Le niveau de puissance du SCEAU MAGIQUE détermine celui du sortilège auquel il se trouve lié. Un tour de magie requiert le niveau 1. Lorsque vous lancez ce sort, vous décidez également de la manière dont le sort lié s'active. Lorsque cela se produit, il utilise les PV de la personne qui l'active. Si cette dernière ne peut pas ou ne veut pas dépenser ses PV, le sort ne s'active pas. Le SCEAU MAGIQUE peut se combiner à une CHARGE afin de conférer à l'objet ses propres PV. Les deux rituels doivent alors être exécutés consécutivement. Activer un sort lié met un terme au SCEAU MAGIQUE, à moins que le mage ne l'ait associé à une PERMANENCE."
+        },
+        {
+          "nom": "PERMANENCE",
+          "rang": 5,
+          "ecole": "Magie Universelle",
+          "condition_prealable": "SCEAU MAGIQUE",
+          "prerequis": "parole, geste",
+          "temps_incantation": "intervalle",
+          "portee": "toucher",
+          "duree": "permanente",
+          "description": "Associé à un autre sortilège, ce rituel doit posséder le même niveau de puissance que ce dernier et le rend permanent. Cependant, il ne peut pas se combiner à un sort d'une durée instantanée. Le mage devra dépenser 1 point de VOL permanent (et réduire d'autant son nombre maximum de PV). Si ce sort s'applique à un SCEAU MAGIQUE, celui-ci devient permanent et il peut être activé de manière illimitée."
+        }
+      ]
+    },
+    {
+      "nom": "Animisme",
+      "sorts": [
+        {
+          "nom": "Chant d'oiseau",
+          "rang": "Tour de magie",
+          "ecole": "Animisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Pendant une période, vous êtes entouré de jolis chants d'oiseaux. Les oiseaux vous donnent un avantage sur vos jet d'INTUITION. Ce tour ne fonctionne qu'en extérieur."
+        },
+        {
+          "nom": "Coiffure",
+          "rang": "Tour de magie",
+          "ecole": "Animisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous changez comme bon vous semble de couleur, de longueur et de coupe de cheveux. Dans certaines situations, cela peut vous conférer un avantage sur vos jets de BLUFF et de PERSUASION."
+        },
+        {
+          "nom": "Cuisiner",
+          "rang": "Tour de magie",
+          "ecole": "Animisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous réussissez automatiquement à cuisiner la nourriture sans avoir à faire un jet de SURVIE, et cela se produit de manière instantanée (une action)."
+        },
+        {
+          "nom": "Propreté",
+          "rang": "Tour de magie",
+          "ecole": "Animisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Ce tour nettoie la pièce dans laquelle vous vous trouvez. Toute la poussière et la saleté disparaissent et la pièce est remise en ordre."
+        },
+        {
+          "nom": "Sentier fleuri",
+          "rang": "Tour de magie",
+          "ecole": "Animisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "De belles fleurs poussent là où vous marchez. Elles se fanent au bout d'un intervalle."
+        },
+        {
+          "nom": "BANNISSEMENT",
+          "rang": 1,
+          "ecole": "Animisme",
+          "condition_prealable": "animisme",
+          "prerequis": "parole, geste, focus (symbole sacré)",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Les démons et les morts-vivants sortis de leurs tombes violent l'ordre naturel des choses et il faut les arrêter. Ce sort inflige 2D8 points de dégâts à ce genre de créature, plus 1D8 points de dégâts par niveau de puissance supplémentaire. Les armures et l'armure naturelle ne sont d'aucune utilité, et la cible ne peut ni esquiver ni parer le sort."
+        },
+        {
+          "nom": "MURMUREUR",
+          "rang": 1,
+          "ecole": "Animisme",
+          "condition_prealable": "animisme",
+          "prerequis": "parole",
+          "temps_incantation": "période",
+          "portee": "2m",
+          "duree": "instantanée",
+          "description": "Ce sort vous permet de parler à un oiseau ou à un mammifère. Vous pouvez lui poser un nombre de questions égal au niveau de puissance. Les animaux peuvent vous dire ce qu'ils ont vu, entendu ou senti, mais ils ne perçoivent pas le monde comme les humanoïdes et leurs réponses se révèlent difficiles à interpréter. Ils ne mentent jamais, ce qui constitue leur principal avantage."
+        },
+        {
+          "nom": "ÉCLAIR",
+          "rang": 1,
+          "ecole": "Animisme",
+          "condition_prealable": "animisme",
+          "prerequis": "geste",
+          "temps_incantation": "action",
+          "portee": "30 m",
+          "duree": "instantanée",
+          "description": "Vous invoquez un éclair depuis le ciel. Si vous parvenez à lancer le sort, la cible subit 2D6 points de dégâts. Ensuite, l'éclair va frapper une autre cible déterminée de manière aléatoire et située à moins de deux mètres de la précédente victime, et lui inflige 2D4 points de dégâts. Chaque niveau de puissance au-delà du premier augmente d'un dé le nombre de dégâts infligés (par exemple, 3D6 et 3D4 respectivement au niveau 2). Une armure métallique n'est d'aucune utilité, mais il est possible d'esquiver ou de parer le sort comme une attaque à distance. En cas de succès, le sort ne touche plus aucune cible. En intérieur, son coût en PV pour le lancer double."
+        },
+        {
+          "nom": "PIÈGE DE RACINES",
+          "rang": 1,
+          "ecole": "Animisme",
+          "condition_prealable": "animisme",
+          "prerequis": "geste, ingrédient (branches ou racines à proximité)",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "intervalle",
+          "description": "La victime se retrouve piégée par des racines et des branches. Elle ne peut pas se déplacer et doit réussir un jet d'ESQUIVE pour se libérer. Au niveau 1, elle bénéficie d'une faveur, au niveau 2, elle fait un jet normal et elle subit un fléau au niveau 3. Elle ne peut effectuer qu'une seule tentative par round, qui compte comme une action en combat. D'autres personnes peuvent lui venir en aide. Le sort ne fonctionne pas sur les monstres."
+        },
+        {
+          "nom": "SOIN DES BLESSURES",
+          "rang": 1,
+          "ecole": "Animisme",
+          "condition_prealable": "animisme",
+          "prerequis": "parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Vous soignez une créature vivante et lui rendez 2D6 PS. Chaque niveau de puissance au-delà du premier lui fait regagner ID6 PS supplémentaires."
+        },
+        {
+          "nom": "ENGLOUTISSEMENT VÉGÉTAL",
+          "rang": 2,
+          "ecole": "Animisme",
+          "condition_prealable": "PIÈGE DE RACINES",
+          "prerequis": "geste, ingrédient (branches ou racines à proximité)",
+          "temps_incantation": "action",
+          "portee": "10 m (sphère)",
+          "duree": "intervalle",
+          "description": "Vous invoquez les esprits de la forêt qui font rapidement surgir du sol des fourrés d'épines et des racines dans la zone d'effet. On considère alors la zone d'effet comme un terrain difficile. Toutes les personnes présentes à l'intérieur au moment où vous lancez le sort (à l'exception de vous-même, mais pas les monstres), se retrouvent prises au piège parmi les racines et les branches, et incapables de bouger. Elles doivent réussir un jet d'ESQUIVE pour se libérer pour lequel elles bénéficient d'une faveur au niveau 1, font leur jet normalement au niveau 2, et subissent un fléau au niveau 3. Elles ne peuvent effectuer qu'une seule tentative par round, qui compte comme une action en combat. D'autres personnes qui ne sont pas prises au piège peuvent leur venir en aide. Le sort ne fonctionne pas sur les monstres."
+        },
+        {
+          "nom": "FOUDRE",
+          "rang": 2,
+          "ecole": "Animisme",
+          "condition_prealable": "ÉCLAIR",
+          "prerequis": "geste",
+          "temps_incantation": "action",
+          "portee": "40 m",
+          "duree": "instantanée",
+          "description": "Vous invoquez un énorme éclair sur une cible, qui subit 2D8 points de dégâts. Ensuite, la foudre va frapper une deuxième cible déterminée de manière aléatoire et située à moins de deux mètres de la précédente victime, et lui inflige 2D6 points de dégâts. Elle continue vers une troisième cible elle aussi à moins de deux mètres de la précédente et lui inflige 2D4 points de dégâts. Chaque niveau de puissance au-delà du premier augmente d'un dé le nombre de dégâts infligés. Une armure métallique n'est d'aucune utilité, mais il est possible d'esquiver ou de parer le sort comme une attaque à distance. En cas de succès, le sort ne touche plus aucune cible. En intérieur, son coût en PV pour le lancer est doublé."
+        },
+        {
+          "nom": "GUÉRIR UNE BLESSURE",
+          "rang": 2,
+          "ecole": "Animisme",
+          "condition_prealable": "SOIN DES BLESSURES",
+          "prerequis": "parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Vous soignez une créature vivante et lui rendez 2D8 PS. De plus, vous guérissez une blessure grave non permanente. Chaque niveau de puissance au-delà du premier lui fait regagner ID8 PS supplémentaires."
+        },
+        {
+          "nom": "PURIFICATION",
+          "rang": 2,
+          "ecole": "Animisme",
+          "condition_prealable": "BANNISSEMENT",
+          "prerequis": "parole, geste, concentration (symbole sacré)",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Vous exorcisez un démon ou un mort-vivant, et lui infligez 2D10 points de dégâts. Chaque niveau de puissance augmente les dégâts de 1D10. Les armures et l'armure naturelle ne sont d'aucune utilité, et la cible ne peut ni esquiver ni parer le sort."
+        },
+        {
+          "nom": "SOMMEIL",
+          "rang": 2,
+          "ecole": "Animisme",
+          "condition_prealable": "SOIN DES BLESSURES",
+          "prerequis": "parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "La cible du sort doit réussir un jet de VOL ou tomber dans un profond sommeil pendant une période. Les PNJ effectuent un jet contre une valeur égale au nombre maximum de leurs PV, moins 2 pour chaque niveau dans la capacité héroïque Concentration. Si ce nombre ne figure pas dans leur description, le jet se fait contre une valeur par défaut de 10. En cas de succès, la victime reste quand même Étourdie. Elle bénéficie d'une faveur au niveau 1, fait son jet normalement au niveau 2, et subit un fléau au niveau 3. Un individu endormi reste très difficile à réveiller, mais il sortira de sa torpeur s'il subit des dégâts. Ce sort ne fonctionne que sur les êtres vivants et il ne produit aucun effet sur les monstres."
+        },
+        {
+          "nom": "COUP DE TONNERRE",
+          "rang": 3,
+          "ecole": "Animisme",
+          "condition_prealable": "FOUDRE",
+          "prerequis": "geste",
+          "temps_incantation": "action",
+          "portee": "50 m",
+          "duree": "instantanée",
+          "description": "Vous invoquez un puissant coup de tonnerre sur une cible, qui subit 2D10 points de dégâts. Ensuite, celui-ci va frapper trois autres cibles déterminées de manière aléatoire et situées à moins de deux mètres les unes des autres, et leur inflige respectivement 2D8, 2D6 et 2D4 points de dégâts. Chaque niveau de puissance au-delà du premier augmente d'un dé le nombre de dégâts infligés. Une armure métallique n'est d'aucune utilité, mais il est possible d'esquiver ou de parer le sort comme une attaque à distance. En cas de succès, le sort ne touche plus aucune cible. En intérieur, son coût en PV pour le lancer est doublé."
+        },
+        {
+          "nom": "RÉGÉNÉRATION",
+          "rang": 3,
+          "ecole": "Animisme",
+          "condition_prealable": "GUÉRIR UNE BLESSURE",
+          "prerequis": "parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Vous soignez une créature vivante et lui rendez 2D10 PS. De plus, vous guérissez n'importe quelle blessure grave. Chaque niveau de puissance au-delà du premier lui fait regagner ID10 PS supplémentaires."
+        },
+        {
+          "nom": "RÉSURRECTION",
+          "rang": 3,
+          "ecole": "Animisme",
+          "condition_prealable": "GUÉRIR UNE BLESSURE",
+          "prerequis": "parole, geste, ingrédient (cadavre)",
+          "temps_incantation": "intervalle",
+          "portee": "toucher",
+          "duree": "permanente",
+          "description": "Vous pouvez canaliser les forces de la nature pour ressusciter une personne décédée, mais pas un mort-vivant. Il vous en coûtera 1 point de VOL permanent (et réduira d'autant votre maximum de PV). Plus il s'est passé de temps depuis la mort de la cible, plus le sort s'avère difficile à lancer. Son niveau de puissance devra être égal à 1 si le décès s'est produit au cours du même intervalle, à 2 s'il est survenu dans la journée, et à 3 dans la semaine. Au-delà, la décomposition se révèle trop avancée pour permettre une RÉSURRECTION. Vous ne pouvez effectuer qu'une seule tentative et si vous échouez, la victime est définitivement morte. Une personne ramenée à la vie perd 1D3 niveaux dans toutes les compétences basées sur le CHA (minimum 3)."
+        }
+      ]
+    },
+    {
+      "nom": "Élémentalisme",
+      "sorts": [
+        {
+          "nom": "Chaleur/Fraîcheur",
+          "rang": "Tour de magie",
+          "ecole": "Élémentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "La température dans une zone de dix mètres autour de vous devient agréablement chaude ou fraîche. L'effet protège contre le froid pendant un intervalle."
+        },
+        {
+          "nom": "Enflammer",
+          "rang": "Tour de magie",
+          "ecole": "Élémentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous allumez ou éteignez une bougie, une torche ou une lanterne dans un rayon de dix mètres."
+        },
+        {
+          "nom": "Nuage de fumée",
+          "rang": "Tour de magie",
+          "ecole": "Élémentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Un impressionnant nuage de fumée jaillit devant vous. Très populaire pour les entrées théâtrales, il peut, dans certaines situations déterminées par le MJ, vous accorder une faveur sur vos jets de DISCRÉTION."
+        },
+        {
+          "nom": "BOULE DE FEU",
+          "rang": 1,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "élémentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "20 m",
+          "duree": "instantanée",
+          "description": "Vous projetez une boule de feu depuis votre main ou votre focus. Si vous touchez votre cible, vous lui infligez 2D6 points de dégâts et vous mettez le feu aux objets inflammables. Il est possible d'esquiver ou de parer le sort comme une attaque à distance. Chaque niveau de puissance au-delà du premier augmente les dégâts de 1D6, ou bien crée une autre boule de feu qui touche une cible différente située à portée."
+        },
+        {
+          "nom": "FRACASSEMENT",
+          "rang": 1,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "élémentalisme",
+          "prerequis": "parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Vous rompez le lien invisible qui unifie la matière physique et vous pouvez ainsi briser des objets. Vous infligez 2D10 points de dégâts à un objet inanimé et non magique. L'indice d'armure ne compte pas. Chaque niveau de puissance au-delà du premier augmente les dégâts de ID10."
+        },
+        {
+          "nom": "GEL",
+          "rang": 1,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "élémentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "4 m (sphère)",
+          "duree": "période",
+          "description": "Vous abaissez considérablement la température autour de vous. Tous les feux naturels situés dans la zone d'effet s'éteignent, et toutes les créatures vivantes perdent ID6 PS et 1D6 PV au moment où le sort est lancé. Elles ont froid et ne peuvent pas récupérer leurs PS ou leurs PV tant qu'elles ne se seront pas réchauffées. De plus, les humanoïdes (et non les monstres) qui se trouvent dans la zone d'effet lorsque le sort est lancé gèlent sur place. Ils ne peuvent ni se déplacer ni effectuer d'actions (pas même des réactions). À chaque tour, une victime gelée peut faire un jet de FOR (qui ne compte pas comme une action) pour se libérer. Chaque niveau de puissance supplémentaire augmente la portée du sort de quatre mètres. L'eau dans la zone d'effet gèle immédiatement. Dans une rivière, cela crée une banquise sur laquelle vous pouvez marcher ou que vous pouvez utiliser comme radeau."
+        },
+        {
+          "nom": "PILIER",
+          "rang": 1,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "élémentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "intervalle",
+          "description": "Le sort fait sortir de terre ou d'un sol en pierre un pilier de trois mètres de hauteur et d'un mètre de largeur. Si quelqu'un se tient à cet endroit, il doit faire un jet d'ACROBATIE (qui ne compte pas comme une action) pour éviter de tomber du pilier. Si celui-ci apparaît sous un plafond bas et que la victime rate son jet, elle subit à la place 2D6 points de dégâts contondants. Chaque niveau de puissance supplémentaire augmente la hauteur du pilier de trois mètres, ce qui peut provoquer des dégâts de chute."
+        },
+        {
+          "nom": "RAFALE DE VENT",
+          "rang": 1,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "élémentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m (cône)",
+          "duree": "instantanée",
+          "description": "Le sort invoque une puissante rafale de vent. Tous les objets, ainsi que les créatures de taille humaine et inférieure situés dans la zone d'effet et qui ne sont pas attachés, sont repoussés à 2D4 mètres de vous et subissent le même nombre de dégâts contondants. Le sort inflige 2D6 points de dégâts à un essaim. Chaque niveau de puissance supplémentaire augmente d'un dé le nombre de dés de dégâts. Le sort ne produit aucun effet sur les monstres de taille Grande ou Énorme."
+        },
+        {
+          "nom": "BOUCLIER DE PIERRE",
+          "rang": 2,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "PILIER",
+          "prerequis": "geste, ingrédient (cailloux)",
+          "temps_incantation": "réaction",
+          "portee": "personnelle",
+          "duree": "instantanée",
+          "description": "Vous invoquez sur-le-champ un bouclier de pierre qui réduit de 2D6 les dégâts d'une attaque dont vous êtes la cible. Chaque niveau de puissance au-delà du premier diminue les dégâts de 1D6 supplémentaire. Vous pouvez lancer le sort après le jet d'attaque, mais avant le jet de dégâts. Ce sort peut se combiner avec une armure."
+        },
+        {
+          "nom": "MUR DE PIERRE",
+          "rang": 2,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "PILIER",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "intervalle",
+          "description": "Le sort fait surgir de terre ou d'un sol en pierre un mur d'un mètre d'épaisseur, de deux mètres de hauteur et de trois mètres de large. Chaque niveau de puissance supplémentaire crée une nouvelle section de mur de même taille. Si quelqu'un se trouve au même endroit, il doit faire un jet d'ACROBATIE (qui ne compte pas comme une action) pour éviter de tomber. Si le mur apparaît sous un plafond bas et que la victime rate son jet, elle subit à la place 2D6 points de dégâts contondants."
+        },
+        {
+          "nom": "RAFALE DE FEU",
+          "rang": 2,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "BOULE DE FEU",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "30 m",
+          "duree": "instantanée",
+          "description": "Une grande langue de feu jaillit de votre main ou de votre focus et s'en va frapper une cible. Si vous la touchez, vous lui infligez 2D8 points de dégâts et vous mettez le feu aux objets inflammables. Il est possible d'esquiver ou de parer le sort comme une attaque à distance. Chaque niveau de puissance au-delà du premier augmente les dégâts de 1D8, ou bien crée une autre rafale de feu qui touche une cible différente à portée."
+        },
+        {
+          "nom": "RAZ-DE-MARÉE",
+          "rang": 2,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "GEL",
+          "prerequis": "parole, geste, ingrédient (source d'eau)",
+          "temps_incantation": "action",
+          "portee": "20 m (cône)",
+          "duree": "instantanée",
+          "description": "Vous invoquez une grande vague à partir d'une source d'eau à portée du sort ; la zone d'effet s'étend depuis celle-ci, et non depuis vous-même. Tous les objets et les créatures situés dans la zone d'effet et qui ne sont pas attachés sont repoussés à 2D6 mètres de la source d'eau et subissent le même nombre de dégâts contondants. Le sort inflige 2D6 points de dégâts à un essaim. Chaque niveau de puissance supplémentaire augmente d'un dé le nombre de dés de dégâts."
+        },
+        {
+          "nom": "TOURBILLON",
+          "rang": 2,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "RAFALE DE VENT",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "4 m (sphère)",
+          "duree": "instantanée",
+          "description": "Le sort crée un puissant tourbillon autour du mage. Tous les objets, ainsi que les créatures de taille humaine et inférieure situés dans la zone d'effet et qui ne sont pas attachés, sont repoussés à 2D4 mètres et subissent le même nombre de dégâts contondants. De plus, ils se retrouvent à terre. Chaque niveau de puissance au-delà du premier augmente de quatre mètres la portée du sort et inflige ID4 points de dégâts supplémentaires. Si vous subissez un fléau sur le jet, vous pouvez projeter un individu à portée jusqu'à un endroit de votre choix et situé dans la portée du sort. Vous décidez s'il subit des dégâts et s'il se retrouve à terre."
+        },
+        {
+          "nom": "GNOME",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "MUR DE PIERRE",
+          "prerequis": "parole, geste, ingrédient (pierre ou terre)",
+          "temps_incantation": "période",
+          "portee": "4m",
+          "duree": "période",
+          "description": "Le sort invoque un élémentaire de terre qui prend la forme d'un humanoïde fait de sable ou d'argile gris-brun, et compte comme un monstre en combat. Il suit les ordres de son créateur (action gratuite) et agit de manière indépendante à sa propre initiative, mais il doit rester dans le champ de vision du mage."
+        },
+        {
+          "nom": "ONDINE",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "RAZ-DE-MARÉE",
+          "prerequis": "parole, geste, ingrédient (eau)",
+          "temps_incantation": "période",
+          "portee": "4 m",
+          "duree": "période",
+          "description": "Le sort convoque un élémentaire d'eau qui prend la forme d'un raz-de-marée, et dont la crête ressemble à une femme entièrement composée d'eau. Elle compte comme un monstre en combat. Elle suit les ordres de son créateur (action gratuite) et agit de manière indépendante à sa propre initiative, mais elle doit rester dans le champ de vision du mage."
+        },
+        {
+          "nom": "PHÉNIX",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "RAFALE DE FEU",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "40 m",
+          "duree": "instantanée",
+          "description": "Le sort projette sur la cible un terrifiant oiseau de feu depuis votre main ou votre focus. Si vous touchez votre cible, vous lui infligez 2D10 points de dégâts et vous mettez le feu aux objets inflammables. Il est possible d'esquiver ou de parer le sort comme une attaque à distance. Chaque niveau de puissance au-delà du premier inflige 1D10 points de dégâts supplémentaires, ou bien crée un autre phénix qui touche une cible différente à portée."
+        },
+        {
+          "nom": "SALAMANDRE",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "RAFALE DE FEU",
+          "prerequis": "parole, geste, ingrédient (feu ouvert)",
+          "temps_incantation": "période",
+          "portee": "4m",
+          "duree": "période",
+          "description": "Le sort invoque un élémentaire de feu qui prend la forme d'un lézard enflammé, et compte comme un monstre en combat. Il suit les ordres de son créateur (action gratuite) et agit de manière indépendante à sa propre initiative, mais il doit rester dans le champ de vision du mage."
+        },
+        {
+          "nom": "SYLPHE",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "TOURBILLON",
+          "prerequis": "parole, geste",
+          "temps_incantation": "période",
+          "portee": "4 m",
+          "duree": "période",
+          "description": "Le sort invoque un élémentaire du vent qui prend la forme d'un oiseau en nuage d'orage, et compte comme un monstre en combat. Il suit les ordres de son créateur (action gratuite) et agit de manière indépendante à sa propre initiative, mais il doit rester dans le champ de vision du mage."
+        },
+        {
+          "nom": "TEMPÊTE DE FEU",
+          "rang": 3,
+          "ecole": "Élémentalisme",
+          "condition_prealable": "RAFALE DE FEU, TOURBILLON",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "4 m (sphère)",
+          "duree": "instantanée",
+          "description": "Ce sort crée une tempête de feu tourbillonnante autour de vous. Toutes les cibles à portée subissent 2D6 points de dégâts. Chaque niveau de puissance au-delà du premier augmente la portée de quatre mètres et inflige 1D6 points de dégâts supplémentaires."
+        }
+      ]
+    },
+    {
+      "nom": "Mentalisme",
+      "sorts": [
+        {
+          "nom": "Ralentissement de chute",
+          "rang": "Tour de magie",
+          "ecole": "Mentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous ralentissez votre chute et atterrissez avec légèreté, quelle que soit la hauteur."
+        },
+        {
+          "nom": "Tabouret magique",
+          "rang": "Tour de magie",
+          "ecole": "Mentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous créez une surface ronde d'environ 50 cm de diamètre et de haut, sur laquelle vous pouvez vous asseoir ou poser des objets. L'effet dure jusqu'à ce que vous partiez."
+        },
+        {
+          "nom": "Verrouillage/Déverrouillage",
+          "rang": "Tour de magie",
+          "ecole": "Mentalisme",
+          "condition_prealable": null,
+          "prerequis": null,
+          "temps_incantation": null,
+          "portee": null,
+          "duree": null,
+          "description": "Vous touchez une serrure non magique et pouvez la verrouiller et la déverrouiller."
+        },
+        {
+          "nom": "CLAIRVOYANCE",
+          "rang": 1,
+          "ecole": "Mentalisme",
+          "condition_prealable": "mentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "1 km",
+          "duree": "concentration",
+          "description": "Le sort vous permet de voir et d'entendre ce qui se passe dans un lieu précis situé à une distance maximale d'un kilomètre, comme si vous y étiez en personne. Vous devez voir l'endroit ou l'avoir déjà visité. Chaque niveau de puissance supplémentaire décuple la portée (10 km au niveau 2 et 100 km au niveau 3). Ce sort ne peut pas servir pour regarder dans d'autres dimensions."
+        },
+        {
+          "nom": "COUP PUISSANT",
+          "rang": 1,
+          "ecole": "Mentalisme",
+          "condition_prealable": "mentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "personnelle",
+          "duree": "période",
+          "description": "Les dégâts de vos attaques à mains nues augmentent d'un D6 par niveau de puissance."
+        },
+        {
+          "nom": "LÉVITATION",
+          "rang": 1,
+          "ecole": "Mentalisme",
+          "condition_prealable": "mentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "6m",
+          "duree": "instantanée",
+          "description": "Vous faites léviter votre corps, une autre personne ou un objet d'une taille humaine ou inférieure, et laissez flotter votre cible jusqu'à six mètres de distance dans n'importe quelle direction. Après quoi, elle atterrit doucement ou tombe au sol (selon ce que vous décidez). Chaque niveau de pouvoir au-delà du premier vous permet de faire LÉVITER votre cible sur deux mètres de plus, ou bien déplacez une personne ou un objet supplémentaire. Si vous tentez de faire léviter une créature qui ne le veut pas, vous subissez un fléau sur votre jet."
+        },
+        {
+          "nom": "PAS DE GÉANT",
+          "rang": 1,
+          "ecole": "Mentalisme",
+          "condition_prealable": "mentalisme",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "période",
+          "description": "La capacité de déplacement de la cible double pendant toute la durée de l'effet. Vous pouvez lancer le sort sur vous-même. Chaque niveau de pouvoir au-delà du premier vous permet de lancer le sort sur une autre personne."
+        },
+        {
+          "nom": "PEAU DE PIERRE",
+          "rang": 1,
+          "ecole": "Mentalisme",
+          "condition_prealable": "mentalisme",
+          "prerequis": "parole, geste, ingrédient (pierre)",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "période",
+          "description": "La peau de la cible devient dure et grise et bénéficie alors d'un indice d'armure égal à 4. Chaque niveau de puissance au-delà du premier augmente l'indice d'armure de 2 points supplémentaires. Si la cible porte une armure, seule l'indice d'armure le plus élevé compte."
+        },
+        {
+          "nom": "ARME ENCHANTÉE",
+          "rang": 2,
+          "ecole": "Mentalisme",
+          "condition_prealable": "COUP PUISSANT",
+          "prerequis": "geste, parole",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "période",
+          "description": "Le sort enchante une arme de sorte qu'un résultat de 1-2 compte comme un dragon lorsqu'on attaque et qu'on pare avec elle. De plus, on considère aussi qu'elle est devenue magique. Chaque niveau de puissance augmente de 1 les chances d'obtenir un dragon. En d'autres termes, cette probabilité passe de 1 à 3 au niveau 2, et de 1 à 4 au niveau 3."
+        },
+        {
+          "nom": "DIVINATION",
+          "rang": 2,
+          "ecole": "Mentalisme",
+          "condition_prealable": "CLAIRVOYANCE",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "100 m",
+          "duree": "instantanée",
+          "description": "Désignez un objet (« arme », « épée »), une substance (« or », « air », « eau »), une créature ou un type de créature (« Zot le mage », « mort-vivant », « orc »), ou encore un phénomène (« magie »). Le sort vous indique la direction à suivre pour atteindre la cible la plus proche du type que vous avez spécifié, dans le rayon d'action du sort. Chaque niveau de puissance au-delà du premier double sa portée (jusqu'à 200 mètres et 400 mètres, respectivement)."
+        },
+        {
+          "nom": "FRAPPE MENTALE",
+          "rang": 2,
+          "ecole": "Mentalisme",
+          "condition_prealable": "COUP PUISSANT",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Vous pouvez concentrer votre pouvoir mental et le projeter en un coup physique puissant. L'attaque repousse la victime à 2D6 mètres de vous et lui inflige le même nombre de points de dégâts. Chaque niveau de puissance au-delà du premier ajoute 1D6 points de dégâts. Il est possible d'esquiver ou de parer le sort comme une attaque à distance."
+        },
+        {
+          "nom": "TÉLÉPATHIE",
+          "rang": 2,
+          "ecole": "Mentalisme",
+          "condition_prealable": "CLAIRVOYANCE",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "concentration",
+          "description": "Vous pouvez lire les pensées superficielles d'une autre personne. Atteindre des souvenirs plus profonds nécessite d'utiliser le niveau 2, voire plus, en fonction de leur fraîcheur, et le MJ a le dernier mot en la matière. Vous pouvez également utiliser ce sort pour envoyer vos propres pensées à quelqu'un."
+        },
+        {
+          "nom": "VISION DU PASSÉ",
+          "rang": 2,
+          "ecole": "Mentalisme",
+          "condition_prealable": "CLAIRVOYANCE",
+          "prerequis": "geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "concentration",
+          "description": "Vous acquérez des connaissances sur les événements passés qui se sont produits à l'endroit où vous vous trouvez, même si aucun vivant ne se souvient de ce qui s'y est passé. Vous pouvez observer jusqu'à un jour dans le passé au niveau 1, un an au niveau 2, et plusieurs siècles au niveau 3. Vos visions se révèlent souvent énigmatiques et morcelées, et il revient au MJ de décider ce que vous voyez exactement."
+        },
+        {
+          "nom": "DOMINATION",
+          "rang": 3,
+          "ecole": "Mentalisme",
+          "condition_prealable": "TÉLÉPATHIE",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "10 m",
+          "duree": "instantanée",
+          "description": "Vous pouvez prendre le contrôle total des actions d'un autre individu. Pour lancer le sort, faites un jet en opposition contre la VOL de votre cible. Les PNJ effectuent un jet contre leur valeur maximale de PV si elle est indiquée, moins 2 pour chaque niveau dans la capacité héroïque Concentration. Si ce nombre ne figure pas dans la description, ils font un jet contre 10. Vous subissez un fléau au niveau 1, vous faites un jet normal au niveau 2 et vous bénéficiez d'une faveur au niveau 3. En cas de réussite, la victime doit immédiatement se déplacer et effectuer une action de votre choix, à l'exception de toutes celles qui nécessitent la dépense de PV. La victime perd également son prochain tour. Ce sort ne produit aucun effet sur les monstres."
+        },
+        {
+          "nom": "TÉLÉPORTATION",
+          "rang": 3,
+          "ecole": "Mentalisme",
+          "condition_prealable": "CLAIRVOYANCE",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "instantanée",
+          "description": "Ce sort vous permet de vous téléporter jusqu'à 100 mètres de distance. Vous devez être en mesure de voir votre destination, ou bien l'avoir visitée auparavant. Chaque niveau de puissance au-delà du premier vous permet de vous faire accompagner d'une autre créature de taille humaine que vous touchez, ou de doubler la portée. Ce sort ne peut pas servir à voyager entre les dimensions."
+        },
+        {
+          "nom": "VOL",
+          "rang": 3,
+          "ecole": "Mentalisme",
+          "condition_prealable": "LÉVITATION",
+          "prerequis": "parole, geste",
+          "temps_incantation": "action",
+          "portee": "toucher",
+          "duree": "période",
+          "description": "Vous vous donnez ou conférez à une autre créature de taille humaine ou inférieure la capacité de voler librement (vitesse de déplacement 6). Au niveau 2, cette valeur double et passe à 12. Au niveau 3, elle double encore et passe à 24. L'individu en vol peut ignorer tous les obstacles et les conditions du terrain ne l'affectent pas."
+        }
+      ]
+    }
+  ]
+}

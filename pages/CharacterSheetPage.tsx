@@ -321,6 +321,7 @@ const CharacterSheetPage: React.FC = () => {
     
     const conditions = ['exhausted', 'sick', 'stunned', 'furious', 'scared', 'discouraged'];
     const conditionLabels = ['Épuisé', 'Malade', 'Étourdi', 'Furieux', 'Effrayé', 'Découragé'];
+    const attributes = ['for', 'con', 'agi', 'int', 'vol', 'cha'];
 
     return (
       <div className="p-2 md:p-4 bg-[#FBF3E5] min-h-screen">
@@ -354,7 +355,7 @@ const CharacterSheetPage: React.FC = () => {
               {/* Attributes Section */}
               <div className="p-4 bg-gradient-to-b from-[#2D7A73] to-[#25635d] rounded-lg shadow-lg">
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                      {Object.keys(character.attributes).map((attr, index) => (
+                      {attributes.map((attr, index) => (
                           <AttributeCircle 
                               key={attr} 
                               label={attr.toUpperCase()}
