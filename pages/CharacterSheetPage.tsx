@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
-import type { CharacterSheet, Weapon, WeaponShield, Skill, Ability } from '../types';
+import type { CharacterSheet, Weapon, WeaponShield, Skill, Ability, InventoryItem } from '../types';
 import { SKILLS_LIST, WEAPON_SKILLS_LIST, ATTRIBUTES_ORDER, CONDITIONS_ORDER, CONDITION_LABELS } from '../types';
 
 // Debounce hook
@@ -245,6 +245,47 @@ const WeaponShieldRow: React.FC<{
     );
 };
 
+const InventoryItemRow: React.FC<{
+    item: InventoryItem;
+    index: number;
+    onUpdate: (index: number, item: InventoryItem) => void;
+    onRemove: (index: number) => void;
+}> = ({ item, index, onUpdate, onRemove }) => {
+    const typeLabels = { normal: '📦', tiny: '🔹', memento: '💎' };
+    const typeColors = { 
+        normal: 'text-gray-400', 
+        tiny: 'text-blue-400', 
+        memento: 'text-yellow-400' 
+    };
+    
+    return (
+        <div className="flex items-center gap-2 mb-2">
+            <select
+                value={item.type}
+                onChange={e => onUpdate(index, { ...item, type: e.target.value as 'normal' | 'tiny' | 'memento' })}
+                className={`bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#2D7A73] flex-shrink-0 ${typeColors[item.type]}`}
+            >
+                <option value="normal">{typeLabels.normal} Normal</option>
+                <option value="tiny">{typeLabels.tiny} Minuscule</option>
+                <option value="memento">{typeLabels.memento} Souvenir</option>
+            </select>
+            <input
+                type="text"
+                value={item.name}
+                onChange={e => onUpdate(index, { ...item, name: e.target.value })}
+                placeholder="Nom de l'objet"
+                className="flex-1 bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-sm min-w-0 text-gray-200 placeholder-gray-500"
+            />
+            <button
+                onClick={() => onRemove(index)}
+                className="text-red-500 hover:text-red-400 text-lg font-bold flex-shrink-0"
+            >
+                ×
+            </button>
+        </div>
+    );
+};
+
 const ArmorSection: React.FC<{
     title: string;
     name: string;
@@ -440,6 +481,37 @@ const CharacterSheetPage: React.FC = () => {
               }
             : charData.encumbrance || { current: 0, max: Math.ceil(charData.attributes.for / 2) };
 
+        // Migrate old inventory format to new inventoryItems format
+        const migratedInventoryItems: InventoryItem[] = [];
+        
+        // Check if old format exists
+        if ((charData as any).inventory && Array.isArray((charData as any).inventory)) {
+            // Add regular inventory items
+            (charData as any).inventory.forEach((item: string) => {
+                if (item && item.trim() !== '') {
+                    migratedInventoryItems.push({ name: item, type: 'normal' });
+                }
+            });
+        }
+        
+        // Add souvenir if it exists
+        if ((charData as any).souvenir && (charData as any).souvenir.trim() !== '') {
+            migratedInventoryItems.push({ name: (charData as any).souvenir, type: 'memento' });
+        }
+        
+        // Add tiny items if they exist (split by newlines or commas)
+        if ((charData as any).tinyItems && (charData as any).tinyItems.trim() !== '') {
+            const tinyItemsList = (charData as any).tinyItems.split(/[\n,]+/).map((item: string) => item.trim()).filter((item: string) => item !== '');
+            tinyItemsList.forEach((item: string) => {
+                migratedInventoryItems.push({ name: item, type: 'tiny' });
+            });
+        }
+        
+        // Use migrated items if old format was found, otherwise use existing inventoryItems
+        const finalInventoryItems = (charData as any).inventory !== undefined 
+            ? migratedInventoryItems 
+            : (charData as any).inventoryItems || [];
+
         return {
             ...charData,
             skills: migratedSkills,
@@ -450,6 +522,7 @@ const CharacterSheetPage: React.FC = () => {
             grimoire: charData.grimoire || [],
             portrait: charData.portrait || '',
             encumbrance: migratedEncumbrance,
+            inventoryItems: finalInventoryItems,
             armor: {
                 ...charData.armor,
                 armorRating: charData.armor.armorRating ?? 0
@@ -832,9 +905,8 @@ const CharacterSheetPage: React.FC = () => {
                 </div>
               </Section>
 
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Inventory */}
-                <Section title="INVENTAIRE" className="md:col-span-2">
+                <Section title="INVENTAIRE">
                     <div className="flex items-center justify-between mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
                         <span className="text-sm font-bold text-gray-300">ENCOMBREMENT</span>
                         <div className="flex items-center space-x-2">
@@ -853,36 +925,69 @@ const CharacterSheetPage: React.FC = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Money Section */}
+                    <div className="mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
+                        <h3 className="text-sm font-bold text-gray-300 mb-2">TRÉSOR</h3>
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="flex flex-col items-center">
+                                <label className="text-xs font-bold text-yellow-400 mb-1">OR</label>
+                                <input 
+                                    type="number" 
+                                    value={character.money.or} 
+                                    onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} 
+                                    className="w-full text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                />
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <label className="text-xs font-bold text-gray-300 mb-1">ARGENT</label>
+                                <input 
+                                    type="number" 
+                                    value={character.money.argent} 
+                                    onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} 
+                                    className="w-full text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                />
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <label className="text-xs font-bold text-orange-400 mb-1">CUIVRE</label>
+                                <input 
+                                    type="number" 
+                                    value={character.money.cuivre} 
+                                    onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} 
+                                    className="w-full text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="mt-4 space-y-1">
-                        {character.inventory.map((item, i) => (
-                             <div key={i} className="flex items-center">
-                                <span className="text-sm font-bold mr-2 text-gray-400">{i+1}.</span>
-                                <input type="text" value={item} onChange={e => {const newInv = [...character.inventory]; newInv[i] = e.target.value; updateField('inventory', newInv); }} className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 placeholder-gray-500"/>
-                             </div>
+                        {character.inventoryItems.map((item, i) => (
+                            <InventoryItemRow
+                                key={i}
+                                item={item}
+                                index={i}
+                                onUpdate={(index, updatedItem) => {
+                                    const newItems = [...character.inventoryItems];
+                                    newItems[index] = updatedItem;
+                                    updateField('inventoryItems', newItems);
+                                }}
+                                onRemove={(index) => {
+                                    const newItems = character.inventoryItems.filter((_, i) => i !== index);
+                                    updateField('inventoryItems', newItems);
+                                }}
+                            />
                         ))}
-                        <input type="text" value={character.souvenir} onChange={e => updateField('souvenir', e.target.value)} placeholder="SOUVENIR" className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 text-gray-200 placeholder-gray-500"/>
-                        <textarea value={character.tinyItems} onChange={e => updateField('tinyItems', e.target.value)} placeholder="OBJETS MINUSCULES" rows={3} className="bg-transparent border border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 p-1 rounded-sm text-gray-200 placeholder-gray-500"></textarea>
+                        <button
+                            onClick={() => {
+                                const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
+                                updateField('inventoryItems', newItems);
+                            }}
+                            className="w-full mt-2 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white text-xs px-3 py-2 rounded font-bold transition-colors"
+                        >
+                            + Ajouter un objet
+                        </button>
                     </div>
                 </Section>
-                
-                {/* Trésor */}
-                <Section title="TRÉSOR">
-                    <div className="space-y-1">
-                        <div className="flex items-center">
-                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">OR</label>
-                            <input type="number" value={character.money.or} onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                        </div>
-                        <div className="flex items-center">
-                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">ARGENT</label>
-                            <input type="number" value={character.money.argent} onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                        </div>
-                        <div className="flex items-center">
-                            <label className="text-xs font-bold text-gray-400 mr-2 w-20 flex-shrink-0">CUIVRE</label>
-                            <input type="number" value={character.money.cuivre} onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} className="bg-transparent border-b border-gray-600 flex-1 min-w-0 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200" />
-                </div>
-                    </div>
-                </Section>
-            </div>
 
           </div>
       </div>
