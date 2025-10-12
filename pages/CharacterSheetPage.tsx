@@ -506,35 +506,40 @@ const CharacterSheetPage: React.FC = () => {
             : charData.encumbrance || { current: 0, max: Math.ceil(charData.attributes.for / 2) };
 
         // Migrate old inventory format to new inventoryItems format
-        const migratedInventoryItems: InventoryItem[] = [];
+        let finalInventoryItems: InventoryItem[] = [];
         
-        // Check if old format exists
-        if ((charData as any).inventory && Array.isArray((charData as any).inventory)) {
-            // Add regular inventory items
-            (charData as any).inventory.forEach((item: string) => {
-                if (item && item.trim() !== '') {
-                    migratedInventoryItems.push({ name: item, type: 'normal' });
-                }
-            });
+        // Check if new format already exists - if so, use it directly
+        if ((charData as any).inventoryItems && Array.isArray((charData as any).inventoryItems)) {
+            finalInventoryItems = (charData as any).inventoryItems;
+        } else {
+            // Otherwise, migrate from old format
+            const migratedInventoryItems: InventoryItem[] = [];
+            
+            // Check if old format exists
+            if ((charData as any).inventory && Array.isArray((charData as any).inventory)) {
+                // Add regular inventory items
+                (charData as any).inventory.forEach((item: string) => {
+                    if (item && item.trim() !== '') {
+                        migratedInventoryItems.push({ name: item, type: 'normal' });
+                    }
+                });
+            }
+            
+            // Add souvenir if it exists
+            if ((charData as any).souvenir && (charData as any).souvenir.trim() !== '') {
+                migratedInventoryItems.push({ name: (charData as any).souvenir, type: 'memento' });
+            }
+            
+            // Add tiny items if they exist (split by newlines or commas)
+            if ((charData as any).tinyItems && (charData as any).tinyItems.trim() !== '') {
+                const tinyItemsList = (charData as any).tinyItems.split(/[\n,]+/).map((item: string) => item.trim()).filter((item: string) => item !== '');
+                tinyItemsList.forEach((item: string) => {
+                    migratedInventoryItems.push({ name: item, type: 'tiny' });
+                });
+            }
+            
+            finalInventoryItems = migratedInventoryItems;
         }
-        
-        // Add souvenir if it exists
-        if ((charData as any).souvenir && (charData as any).souvenir.trim() !== '') {
-            migratedInventoryItems.push({ name: (charData as any).souvenir, type: 'memento' });
-        }
-        
-        // Add tiny items if they exist (split by newlines or commas)
-        if ((charData as any).tinyItems && (charData as any).tinyItems.trim() !== '') {
-            const tinyItemsList = (charData as any).tinyItems.split(/[\n,]+/).map((item: string) => item.trim()).filter((item: string) => item !== '');
-            tinyItemsList.forEach((item: string) => {
-                migratedInventoryItems.push({ name: item, type: 'tiny' });
-            });
-        }
-        
-        // Use migrated items if old format was found, otherwise use existing inventoryItems
-        const finalInventoryItems = (charData as any).inventory !== undefined 
-            ? migratedInventoryItems 
-            : (charData as any).inventoryItems || [];
 
         // Calculate damage bonuses based on current attributes
         const calculatedDamageBonus = {
@@ -793,7 +798,7 @@ const CharacterSheetPage: React.FC = () => {
                                             <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
                                                 <span className="text-gray-300">{spell.nom}</span>
                                                 <span className="text-[#2D7A73] font-bold">
-                                                    {spell.rang === 0 || spell.rang === '0' ? 'Tour' : `Rang ${spell.rang}`}
+                                                    {spell.rang === 0 || spell.rang === '0' || spell.rang === 'Tour de magie' ? 'Tour de magie' : `Rang ${spell.rang}`}
                                                 </span>
                                             </div>
                                         ))
@@ -1010,31 +1015,28 @@ const CharacterSheetPage: React.FC = () => {
             </div>
 
                     <div className="mt-4 space-y-1">
-                        {[...character.inventoryItems]
+                        {character.inventoryItems
+                            .map((item, originalIndex) => ({ item, originalIndex }))
                             .sort((a, b) => {
                                 const typeOrder = { normal: 0, tiny: 1, memento: 2 };
-                                return typeOrder[a.type] - typeOrder[b.type];
+                                return typeOrder[a.item.type] - typeOrder[b.item.type];
                             })
-                            .map((item, displayIndex) => {
-                                // Find the original index of this item
-                                const originalIndex = character.inventoryItems.indexOf(item);
-                                return (
-                                    <InventoryItemRow
-                                        key={originalIndex}
-                                        item={item}
-                                        index={originalIndex}
-                                        onUpdate={(index, updatedItem) => {
-                                            const newItems = [...character.inventoryItems];
-                                            newItems[index] = updatedItem;
-                                            updateField('inventoryItems', newItems);
-                                        }}
-                                        onRemove={(index) => {
-                                            const newItems = character.inventoryItems.filter((_, i) => i !== index);
-                                            updateField('inventoryItems', newItems);
-                                        }}
-                                    />
-                                );
-                            })}
+                            .map(({ item, originalIndex }) => (
+                                <InventoryItemRow
+                                    key={originalIndex}
+                                    item={item}
+                                    index={originalIndex}
+                                    onUpdate={(index, updatedItem) => {
+                                        const newItems = [...character.inventoryItems];
+                                        newItems[index] = updatedItem;
+                                        updateField('inventoryItems', newItems);
+                                    }}
+                                    onRemove={(index) => {
+                                        const newItems = character.inventoryItems.filter((_, i) => i !== index);
+                                        updateField('inventoryItems', newItems);
+                                    }}
+                                />
+                            ))}
                         <button
                             onClick={() => {
                                 const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
