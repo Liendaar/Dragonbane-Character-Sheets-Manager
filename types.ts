@@ -109,6 +109,10 @@ export const WEAPON_SKILLS_LIST = {
     'Frondes': 'agi', 'Haches': 'for', 'Lances': 'for', 'Marteaux': 'for',
 };
 
+export const ATTRIBUTES_ORDER = ['for', 'con', 'agi', 'int', 'vol', 'cha'] as const;
+export const CONDITIONS_ORDER = ['exhausted', 'sick', 'stunned', 'furious', 'scared', 'discouraged'] as const;
+export const CONDITION_LABELS = ['Épuisé', 'Malade', 'Étourdi', 'Furieux', 'Effrayé', 'Découragé'] as const;
+
 export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> => {
     const attributes = { for: 10, con: 10, agi: 10, int: 10, vol: 10, cha: 10 };
     return {

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
 import type { CharacterSheet, Weapon, WeaponShield, Skill } from '../types';
-import { SKILLS_LIST, WEAPON_SKILLS_LIST } from '../types';
+import { SKILLS_LIST, WEAPON_SKILLS_LIST, ATTRIBUTES_ORDER, CONDITIONS_ORDER, CONDITION_LABELS } from '../types';
 
 // Debounce hook
 const useDebounce = <T,>(value: T, delay: number): T => {
@@ -65,7 +65,6 @@ const SecondarySkillRow: React.FC<{
     onUpdate: (index: number, skill: Skill) => void; 
     onRemove: (index: number) => void; 
 }> = ({ skill, index, onUpdate, onRemove }) => {
-    const attributes = ['for', 'con', 'agi', 'int', 'vol', 'cha'];
     
     return (
         <div className="flex items-center space-x-2 text-sm mb-2">
@@ -81,7 +80,7 @@ const SecondarySkillRow: React.FC<{
                 onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
                 className="bg-transparent border border-gray-400 rounded text-sm focus:outline-none focus:border-[#2D7A73]"
             >
-                {attributes.map(attr => (
+                {ATTRIBUTES_ORDER.map(attr => (
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
                 ))}
             </select>
@@ -319,9 +318,7 @@ const CharacterSheetPage: React.FC = () => {
         return <div className="text-center p-10">Loading Character...</div>;
     }
     
-    const conditions = ['exhausted', 'sick', 'stunned', 'furious', 'scared', 'discouraged'];
-    const conditionLabels = ['Épuisé', 'Malade', 'Étourdi', 'Furieux', 'Effrayé', 'Découragé'];
-    const attributes = ['for', 'con', 'agi', 'int', 'vol', 'cha'];
+    // Utilisation des constantes définies dans types.ts pour garantir un ordre fixe
 
     return (
       <div className="p-2 md:p-4 bg-[#FBF3E5] min-h-screen">
@@ -355,15 +352,15 @@ const CharacterSheetPage: React.FC = () => {
               {/* Attributes Section */}
               <div className="p-4 bg-gradient-to-b from-[#2D7A73] to-[#25635d] rounded-lg shadow-lg">
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                      {attributes.map((attr, index) => (
+                      {ATTRIBUTES_ORDER.map((attr, index) => (
                           <AttributeCircle 
                               key={attr} 
                               label={attr.toUpperCase()}
                               value={character.attributes[attr as keyof typeof character.attributes]}
                               onChange={e => updateNestedField('attributes', attr as keyof typeof character.attributes, parseInt(e.target.value) || 0)}
-                              condition={character.conditions[conditions[index] as keyof typeof character.conditions]}
-                              onConditionChange={() => updateNestedField('conditions', conditions[index] as keyof typeof character.conditions, !character.conditions[conditions[index] as keyof typeof character.conditions])}
-                              conditionLabel={conditionLabels[index]}
+                              condition={character.conditions[CONDITIONS_ORDER[index] as keyof typeof character.conditions]}
+                              onConditionChange={() => updateNestedField('conditions', CONDITIONS_ORDER[index] as keyof typeof character.conditions, !character.conditions[CONDITIONS_ORDER[index] as keyof typeof character.conditions])}
+                              conditionLabel={CONDITION_LABELS[index]}
                           />
                       ))}
                   </div>
