@@ -681,7 +681,7 @@ const CharacterSheetPage: React.FC = () => {
                   <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
               </header>
               {/* Top Section */}
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-4">
                   {/* Portrait Upload - Left */}
                   <div className="flex items-start justify-center md:justify-start">
                       <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2 shadow-inner">
@@ -724,7 +724,7 @@ const CharacterSheetPage: React.FC = () => {
                   </div>
                   
                   {/* Vitals - Center */}
-                  <div className="flex flex-col justify-center space-y-3">
+                  <div className="flex flex-col justify-center space-y-3 px-2">
                       <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
                       <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
                   </div>
@@ -1018,13 +1018,27 @@ const CharacterSheetPage: React.FC = () => {
                 <Section title="INVENTAIRE">
                     <div className="flex items-center justify-between mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
                         <span className="text-sm font-bold text-gray-300">ENCOMBREMENT</span>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => updateNestedField('encumbrance', 'current', Math.max(0, character.encumbrance.current - 1))}
+                                className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
+                                title="Diminuer l'encombrement"
+                            >
+                                −
+                            </button>
                             <input 
                                 type="number" 
                                 value={character.encumbrance.current} 
                                 onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
                                 className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
+                            <button
+                                onClick={() => updateNestedField('encumbrance', 'current', character.encumbrance.current + 1)}
+                                className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
+                                title="Augmenter l'encombrement"
+                            >
+                                +
+                            </button>
                             <span className="text-gray-400 font-bold">/</span>
                             <input 
                                 type="number" 
