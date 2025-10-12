@@ -51,9 +51,11 @@ const DashboardPage: React.FC = () => {
         <div className="min-h-screen p-4 sm:p-6 md:p-8">
             <div className="max-w-4xl mx-auto">
                 <header className="flex justify-between items-center mb-8 pb-4 border-b-2 border-[#4ade80]/30">
-                    <div>
-                        <h1 className="text-4xl font-title text-[#4ade80]">Dragonbane</h1>
-                        <p className="text-[#d1d5db]">Welcome, {user?.displayName || user?.email}</p>
+                    <div className="flex items-center space-x-4">
+                        <img src="/logo.png" alt="Dragonbane" className="h-16 w-auto object-contain" />
+                        <div>
+                            <p className="text-[#d1d5db]">Welcome, {user?.displayName || user?.email}</p>
+                        </div>
                     </div>
                     <button
                         onClick={handleSignOut}

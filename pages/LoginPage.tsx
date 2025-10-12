@@ -44,7 +44,9 @@ const LoginPage: React.FC = () => {
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-[#2a2a2a]/90 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-600">
-                <h1 className="text-4xl font-bold text-center font-title text-[#4ade80] mb-2">Dragonbane</h1>
+                <div className="flex justify-center mb-4">
+                    <img src="/logo.png" alt="Dragonbane" className="h-24 w-auto object-contain" />
+                </div>
                 <h2 className="text-xl text-center text-[#e5e5e5] mb-6">Character Manager</h2>
                 
                 {error && <p className="bg-red-900/50 text-red-300 p-3 rounded-md mb-4 text-sm border border-red-700">{error}</p>}

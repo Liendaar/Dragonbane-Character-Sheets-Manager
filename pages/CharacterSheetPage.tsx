@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
-import type { CharacterSheet, Weapon, WeaponShield, Skill } from '../types';
+import type { CharacterSheet, Weapon, WeaponShield, Skill, Ability } from '../types';
 import { SKILLS_LIST, WEAPON_SKILLS_LIST, ATTRIBUTES_ORDER, CONDITIONS_ORDER, CONDITION_LABELS } from '../types';
 
 // Debounce hook
@@ -76,6 +76,43 @@ const SkillInput: React.FC<{
             className="w-12 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
             min="0"
         />
+    </div>
+);
+
+const AbilityRow: React.FC<{
+    ability: Ability;
+    index: number;
+    onUpdate: (index: number, ability: Ability) => void;
+    onRemove: (index: number) => void;
+}> = ({ ability, index, onUpdate, onRemove }) => (
+    <div className="grid grid-cols-[2fr_3fr_1fr_auto] gap-2 items-center">
+        <input
+            type="text"
+            value={ability.name}
+            onChange={e => onUpdate(index, { ...ability, name: e.target.value })}
+            placeholder="Capacité"
+            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0"
+        />
+        <input
+            type="text"
+            value={ability.description}
+            onChange={e => onUpdate(index, { ...ability, description: e.target.value })}
+            placeholder="Description"
+            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0"
+        />
+        <input
+            type="text"
+            value={ability.pv}
+            onChange={e => onUpdate(index, { ...ability, pv: e.target.value })}
+            placeholder="PV"
+            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 text-center min-w-0"
+        />
+        <button
+            onClick={() => onRemove(index)}
+            className="text-red-500 hover:text-red-700 font-bold text-sm flex-shrink-0"
+        >
+            ✕
+        </button>
     </div>
 );
 
@@ -356,11 +393,24 @@ const CharacterSheetPage: React.FC = () => {
               })
             : [];
 
+        // Migrate abilities from string array to Ability array
+        const migratedAbilities = Array.isArray(charData.abilities)
+            ? charData.abilities.map(ability => {
+                if (typeof ability === 'string') {
+                    return { name: ability, description: '', pv: '' };
+                } else if (ability && typeof ability === 'object' && 'name' in ability) {
+                    return ability as Ability;
+                }
+                return { name: '', description: '', pv: '' };
+              })
+            : [];
+
         return {
             ...charData,
             skills: migratedSkills,
             weaponSkills: migratedWeaponSkills,
             secondarySkills: migratedSecondarySkills,
+            abilities: migratedAbilities,
             weaponsShields: charData.weaponsShields || [],
             grimoire: charData.grimoire || [],
             portrait: charData.portrait || '',
@@ -428,15 +478,7 @@ const CharacterSheetPage: React.FC = () => {
           <div className="max-w-4xl mx-auto space-y-3">
               <header className="flex justify-between items-center mb-4">
                   <Link to="/" className="text-[#4ade80] hover:underline">&larr; Back to Dashboard</Link>
-                  <div className="flex items-center space-x-4">
-                      <Link 
-                          to={`/grimoire/${id}`} 
-                          className="bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-4 py-2 rounded font-bold transition-colors"
-                      >
-                          📖 Grimoire
-                      </Link>
-                      <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
-                  </div>
+                  <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
               </header>
               {/* Top Section */}
               <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-3">
@@ -535,9 +577,36 @@ const CharacterSheetPage: React.FC = () => {
                 {/* Abilities & Money */}
                 <div className="space-y-3">
                     <Section title="CAPACITÉS">
-                        <div className="space-y-1">
-                            {character.abilities.map((ability, i) => <input key={i} type="text" value={ability} onChange={e => {const newAbilities = [...character.abilities]; newAbilities[i] = e.target.value; updateField('abilities', newAbilities); }} className="bg-transparent border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 placeholder-gray-500"/>)}
+                        <div className="space-y-2">
+                            {character.abilities.map((ability, i) => (
+                                <AbilityRow
+                                    key={i}
+                                    ability={ability}
+                                    index={i}
+                                    onUpdate={(index, updatedAbility) => {
+                                        const newAbilities = [...character.abilities];
+                                        newAbilities[index] = updatedAbility;
+                                        updateField('abilities', newAbilities);
+                                    }}
+                                    onRemove={(index) => {
+                                        const newAbilities = character.abilities.filter((_, i) => i !== index);
+                                        updateField('abilities', newAbilities);
+                                    }}
+                                />
+                            ))}
+                            <button 
+                                onClick={() => updateField('abilities', [...character.abilities, { name: '', description: '', pv: '' }])}
+                                className="text-[#4ade80] hover:text-[#3d9a8a] text-sm font-bold w-full text-left"
+                            >
+                                + Ajouter une capacité
+                            </button>
                         </div>
+                        <Link 
+                            to={`/grimoire/${id}`} 
+                            className="block mt-4 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-4 py-2 rounded font-bold transition-colors text-center"
+                        >
+                            📖 Grimoire
+                        </Link>
                     </Section>
                     <Section title="TRÉSOR">
                         <div className="space-y-1">

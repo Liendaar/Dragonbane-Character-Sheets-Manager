@@ -71,7 +71,7 @@ export interface CharacterSheet {
   };
   movement: string;
   encumbranceLimit: string;
-  abilities: string[];
+  abilities: Ability[];
   skills: Record<string, SkillData>;
   weaponSkills: Record<string, SkillData>;
   secondarySkills: Skill[];
@@ -128,6 +128,12 @@ export interface WeaponShield {
   traits: string;
 }
 
+export interface Ability {
+  name: string;
+  description: string;
+  pv: string;
+}
+
 export const SKILLS_LIST = {
     'Acrobatie': 'agi', 'Artisanat': 'for', 'Bluff': 'cha', 'Chasse et pêche': 'agi', 'Con. des bêtes': 'int',
     'Dextérité': 'agi', 'Discrétion': 'agi', 'Équitation': 'agi', 'Esquive': 'agi', 'Intuition': 'int',
@@ -169,7 +175,7 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         damageBonus: { for: '', agi: '' },
         movement: '',
         encumbranceLimit: '',
-        abilities: ['', '', '', '', ''],
+        abilities: [],
         skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         secondarySkills: [],
