@@ -327,53 +327,98 @@ const ArmorSection: React.FC<{
                             <div className="w-2 h-2"></div>
                         </div>
                         <span className="text-xs text-gray-300">{bane}</span>
-                    </div>
-                ))}
+        </div>
+            ))}
             </div>
         </div>
     </div>
 );
 
-const PointTracker: React.FC<{ label: string; current: number; max: number; onCurrentChange: (val: number) => void; onMaxChange: (val: number) => void; color: string; }> = ({ label, current, max, onCurrentChange, onMaxChange, color }) => (
-    <div className={`p-2 border-4 rounded-md shadow-inner bg-[#2a2a2a]/50`} style={{ borderColor: color }}>
-        <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
-        <div className="flex items-center justify-center my-2 gap-1">
-            <button
-                onClick={() => onCurrentChange(Math.max(0, current - 1))}
-                className="w-8 h-8 text-xl font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
-                title="Diminuer"
-            >
-                −
-            </button>
-            <input 
-                type="number" 
-                value={current} 
-                onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} 
-                className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-            />
-            <button
-                onClick={() => onCurrentChange(Math.min(max, current + 1))}
-                className="w-8 h-8 text-xl font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
-                title="Augmenter"
-            >
-                +
-            </button>
-            <span className="mx-1 text-xl text-gray-300">/</span>
-            <input 
-                type="number" 
-                value={max} 
-                onChange={e => onMaxChange(parseInt(e.target.value) || 0)} 
-                className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-            />
+const PointTracker: React.FC<{ 
+    label: string; 
+    current: number; 
+    max: number; 
+    onCurrentChange: (val: number) => void; 
+    onMaxChange: (val: number) => void; 
+    color: string;
+    deathRolls?: { successes: number; failures: number; };
+    onDeathRollsChange?: (rolls: { successes: number; failures: number; }) => void;
+}> = ({ label, current, max, onCurrentChange, onMaxChange, color, deathRolls, onDeathRollsChange }) => {
+    const showDeathRolls = current === 0 && deathRolls !== undefined && onDeathRollsChange !== undefined;
+    
+    return (
+        <div className={`p-2 border-4 rounded-md shadow-inner bg-[#2a2a2a]/50`} style={{ borderColor: color }}>
+            <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
+            <div className="flex items-center justify-center my-2 gap-1">
+                <button
+                    onClick={() => onCurrentChange(Math.max(0, current - 1))}
+                    className="w-8 h-8 text-xl font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                    title="Diminuer"
+                >
+                    −
+                </button>
+                <input 
+                    type="number" 
+                    value={current} 
+                    onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} 
+                    className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                />
+                <button
+                    onClick={() => onCurrentChange(Math.min(max, current + 1))}
+                    className="w-8 h-8 text-xl font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                    title="Augmenter"
+                >
+                    +
+                </button>
+                <span className="mx-1 text-xl text-gray-300">/</span>
+                <input 
+                    type="number" 
+                    value={max} 
+                    onChange={e => onMaxChange(parseInt(e.target.value) || 0)} 
+                    className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                />
+            </div>
+            
+            {showDeathRolls ? (
+                <div className="mt-2 space-y-2">
+                    <div className="text-center text-xs font-bold text-gray-400 mb-1">JETS CONTRE LA MORT</div>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-center gap-1">
+                            <span className="text-xs font-bold text-red-400 w-16 text-right">ÉCHECS</span>
+                            <div className="flex gap-1">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <div 
+                                        key={`fail-${i}`} 
+                                        onClick={() => onDeathRollsChange({ ...deathRolls, failures: deathRolls.failures === i + 1 ? i : i + 1 })}
+                                        className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${i < deathRolls.failures ? 'bg-red-600' : 'bg-[#1a1a1a]'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-center gap-1">
+                            <span className="text-xs font-bold text-green-400 w-16 text-right">RÉUSSITES</span>
+                            <div className="flex gap-1">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <div 
+                                        key={`success-${i}`} 
+                                        onClick={() => onDeathRollsChange({ ...deathRolls, successes: deathRolls.successes === i + 1 ? i : i + 1 })}
+                                        className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${i < deathRolls.successes ? 'bg-green-600' : 'bg-[#1a1a1a]'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-10 gap-1 mt-2">
+                    {Array.from({ length: Math.max(0, max) }).map((_, i) => (
+                        <div key={i} onClick={() => onCurrentChange(i + 1)} className={`w-3 h-3 rounded-full border border-gray-600 cursor-pointer ${i < current ? 'bg-current' : 'bg-[#1a1a1a]'}`} style={{ color }}></div>
+                    ))}
+                </div>
+            )}
         </div>
-        <div className="grid grid-cols-10 gap-1 mt-2">
-            {/* FIX: Using `[...new Array(max)]` can cause a "Spread types may only be created from object types" error. `Array.from()` is a safer way to create an array to iterate over and guards against negative lengths. */}
-            {Array.from({ length: Math.max(0, max) }).map((_, i) => (
-                <div key={i} onClick={() => onCurrentChange(i + 1)} className={`w-3 h-3 rounded-full border border-gray-600 cursor-pointer ${i < current ? 'bg-current' : 'bg-[#1a1a1a]'}`} style={{ color }}></div>
-            ))}
-        </div>
-    </div>
-);
+    );
+};
 
 
 const CharacterSheetPage: React.FC = () => {
@@ -631,7 +676,9 @@ const CharacterSheetPage: React.FC = () => {
                     current: charData.vitals.health.current,
                     max: charData.attributes.con 
                 }
-            }
+            },
+            rest: charData.rest || { round: false, period: false },
+            deathRolls: charData.deathRolls || { successes: 0, failures: 0 }
         };
     };
 
@@ -726,7 +773,39 @@ const CharacterSheetPage: React.FC = () => {
                   {/* Vitals - Center */}
                   <div className="flex flex-col justify-center space-y-3">
                       <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
-                      <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
+                      
+                      {/* Rest Checkboxes */}
+                      <div className="bg-[#2a2a2a]/50 border-2 border-[#404040] rounded-md p-2 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                              <div 
+                                  onClick={() => updateNestedField('rest', 'round', !character.rest.round)}
+                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.round ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
+                              />
+                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'round', !character.rest.round)}>
+                                  ROUND DE REPOS
+                              </label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                              <div 
+                                  onClick={() => updateNestedField('rest', 'period', !character.rest.period)}
+                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.period ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
+                              />
+                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'period', !character.rest.period)}>
+                                  PÉRIODE DE REPOS
+                              </label>
+                          </div>
+                      </div>
+                      
+                      <PointTracker 
+                          label="POINTS DE SANTÉ (PS)" 
+                          current={character.vitals.health.current} 
+                          max={character.vitals.health.max} 
+                          onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} 
+                          onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} 
+                          color="#C53030"
+                          deathRolls={character.deathRolls}
+                          onDeathRollsChange={rolls => updateField('deathRolls', rolls)}
+                      />
                   </div>
                   
                   {/* Character Info - Right */}
