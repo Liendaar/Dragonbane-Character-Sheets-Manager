@@ -83,21 +83,21 @@ const SecondarySkillRow: React.FC<{
         <div className="flex items-center space-x-2 text-sm mb-2">
             <div 
                 onClick={() => onUpdate(index, { ...skill, checked: !skill.checked })} 
-                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
+                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center flex-shrink-0 ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
             >
-                {skill.checked && <span className="text-white text-xs">✓</span>}
+                <div className="w-2 h-2"></div>
             </div>
             <input 
                 type="text" 
                 value={skill.name} 
                 onChange={e => onUpdate(index, { ...skill, name: e.target.value })}
                 placeholder="Nom de la compétence"
-                className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="flex-1 min-w-0 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
             />
             <select 
                 value={skill.attribute} 
                 onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
-                className="bg-transparent border border-gray-400 rounded text-sm focus:outline-none focus:border-[#2D7A73]"
+                className="w-16 flex-shrink-0 bg-transparent border border-gray-400 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
             >
                 {ATTRIBUTES_ORDER.map(attr => (
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
@@ -107,12 +107,12 @@ const SecondarySkillRow: React.FC<{
                 type="number" 
                 value={skill.value} 
                 onChange={e => onUpdate(index, { ...skill, value: parseInt(e.target.value) || 0 })}
-                className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+                className="w-12 flex-shrink-0 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
                 min="0"
             />
             <button 
                 onClick={() => onRemove(index)}
-                className="text-red-600 hover:text-red-800 text-sm font-bold"
+                className="text-red-600 hover:text-red-800 text-lg font-bold flex-shrink-0 w-6"
             >
                 ×
             </button>
@@ -127,57 +127,55 @@ const WeaponShieldRow: React.FC<{
     onRemove: (index: number) => void; 
 }> = ({ weapon, index, onUpdate, onRemove }) => {
     return (
-        <div className="grid grid-cols-6 gap-2 text-sm mb-2 items-center">
+        <div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr_auto] gap-2 text-sm mb-2 items-center">
             <input 
                 type="text" 
                 value={weapon.name} 
                 onChange={e => onUpdate(index, { ...weapon, name: e.target.value })}
                 placeholder="Arme/Bouclier"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
             />
             <input 
                 type="text" 
                 value={weapon.grip} 
                 onChange={e => onUpdate(index, { ...weapon, grip: e.target.value })}
                 placeholder="Prise"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
             />
             <input 
                 type="text" 
                 value={weapon.range} 
                 onChange={e => onUpdate(index, { ...weapon, range: e.target.value })}
                 placeholder="Portée"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
             />
             <input 
                 type="text" 
                 value={weapon.damage} 
                 onChange={e => onUpdate(index, { ...weapon, damage: e.target.value })}
                 placeholder="Dégâts"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
             />
             <input 
                 type="text" 
                 value={weapon.durability} 
                 onChange={e => onUpdate(index, { ...weapon, durability: e.target.value })}
                 placeholder="Solidité"
-                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
             />
-            <div className="flex items-center space-x-1">
-                <input 
-                    type="text" 
-                    value={weapon.traits} 
-                    onChange={e => onUpdate(index, { ...weapon, traits: e.target.value })}
-                    placeholder="Traits"
-                    className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
-                />
-                <button 
-                    onClick={() => onRemove(index)}
-                    className="text-red-600 hover:text-red-800 text-sm font-bold ml-1"
-                >
-                    ×
-                </button>
-            </div>
+            <input 
+                type="text" 
+                value={weapon.traits} 
+                onChange={e => onUpdate(index, { ...weapon, traits: e.target.value })}
+                placeholder="Traits"
+                className="bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-xs min-w-0"
+            />
+            <button 
+                onClick={() => onRemove(index)}
+                className="text-red-600 hover:text-red-800 text-lg font-bold flex-shrink-0"
+            >
+                ×
+            </button>
         </div>
     );
 };
@@ -218,9 +216,9 @@ const ArmorSection: React.FC<{
                     <div key={bane} className="flex items-center space-x-2">
                         <div 
                             onClick={() => onBaneToggle(bane)}
-                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
+                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center flex-shrink-0 ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
                         >
-                            {defaultBanes.includes(bane) && <span className="text-white text-xs">✓</span>}
+                            <div className="w-2 h-2"></div>
                         </div>
                         <span className="text-xs">{bane}</span>
                     </div>
@@ -234,9 +232,19 @@ const PointTracker: React.FC<{ label: string; current: number; max: number; onCu
     <div className={`p-2 border-4 rounded-md shadow-inner bg-white/30`} style={{ borderColor: color }}>
         <h3 className="text-center font-bold font-title text-sm" style={{ color }}>{label}</h3>
         <div className="flex items-center justify-center my-2">
-            <input type="number" value={current} onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} className="w-10 h-10 text-xl text-center font-bold border-2 rounded bg-white" />
+            <input 
+                type="number" 
+                value={current} 
+                onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} 
+                className="w-12 h-10 text-xl text-center font-bold border-2 rounded bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+            />
             <span className="mx-2 text-xl">/</span>
-            <input type="number" value={max} onChange={e => onMaxChange(parseInt(e.target.value) || 0)} className="w-10 h-10 text-xl text-center font-bold border-2 rounded bg-white" />
+            <input 
+                type="number" 
+                value={max} 
+                onChange={e => onMaxChange(parseInt(e.target.value) || 0)} 
+                className="w-12 h-10 text-xl text-center font-bold border-2 rounded bg-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+            />
         </div>
         <div className="grid grid-cols-10 gap-1 mt-2">
             {/* FIX: Using `[...new Array(max)]` can cause a "Spread types may only be created from object types" error. `Array.from()` is a safer way to create an array to iterate over and guards against negative lengths. */}
@@ -553,13 +561,14 @@ const CharacterSheetPage: React.FC = () => {
               {/* Weapons & Shields Section */}
               <Section title="ARMES & BOUCLIERS">
                 <div className="space-y-2">
-                  <div className="grid grid-cols-6 gap-2 text-xs font-bold text-gray-600 mb-2">
+                  <div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr_auto] gap-2 text-xs font-bold text-gray-600 mb-2">
                     <div>ARME/BOUCLIER</div>
                     <div>PRISE</div>
                     <div>PORTÉE</div>
                     <div>DÉGÂTS</div>
                     <div>SOLIDITÉ</div>
                     <div>TRAITS</div>
+                    <div></div>
                   </div>
                   {character.weaponsShields.map((weapon, i) => (
                       <WeaponShieldRow 
