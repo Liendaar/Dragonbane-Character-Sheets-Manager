@@ -42,47 +42,47 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#FBF3E5] p-4">
-            <div className="max-w-md w-full bg-white/50 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-300">
-                <h1 className="text-4xl font-bold text-center font-title text-[#8B4513] mb-2">Dragonbane</h1>
-                <h2 className="text-xl text-center text-[#2D3748] mb-6">Character Manager</h2>
+        <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a] p-4">
+            <div className="max-w-md w-full bg-[#2a2a2a]/90 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-600">
+                <h1 className="text-4xl font-bold text-center font-title text-[#4ade80] mb-2">Dragonbane</h1>
+                <h2 className="text-xl text-center text-[#e5e5e5] mb-6">Character Manager</h2>
                 
-                {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
+                {error && <p className="bg-red-900/50 text-red-300 p-3 rounded-md mb-4 text-sm border border-red-700">{error}</p>}
 
                 <form onSubmit={handleEmailPassword}>
                     <div className="mb-4">
-                        <label className="block text-[#4A5568] text-sm font-bold mb-2" htmlFor="email">Email Address</label>
+                        <label className="block text-[#d1d5db] text-sm font-bold mb-2" htmlFor="email">Email Address</label>
                         <input
                             id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="shadow-inner appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
+                            className="shadow-inner appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-[#1a1a1a] text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-[#2D7A73]"
                             required
                         />
                     </div>
                     <div className="mb-6">
-                        <label className="block text-[#4A5568] text-sm font-bold mb-2" htmlFor="password">Password</label>
+                        <label className="block text-[#d1d5db] text-sm font-bold mb-2" htmlFor="password">Password</label>
                         <input
                             id="password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="shadow-inner appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
+                            className="shadow-inner appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-[#1a1a1a] text-gray-200 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#2D7A73]"
                             required
                         />
                     </div>
                     <div className="flex items-center justify-between">
                         <button
                             type="submit"
-                            className="bg-[#2D7A73] hover:bg-[#2C5282] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
+                            className="bg-[#2D7A73] hover:bg-[#3d9a8a] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
                         >
                             {isLogin ? 'Sign In' : 'Sign Up'}
                         </button>
                         <button
                             type="button"
                             onClick={() => setIsLogin(!isLogin)}
-                            className="inline-block align-baseline font-bold text-sm text-[#2D7A73] hover:text-[#2C5282]"
+                            className="inline-block align-baseline font-bold text-sm text-[#4ade80] hover:text-[#5eea90]"
                         >
                             {isLogin ? 'Need an account?' : 'Have an account?'}
                         </button>
@@ -90,14 +90,14 @@ const LoginPage: React.FC = () => {
                 </form>
 
                 <div className="my-6 flex items-center">
-                    <div className="flex-grow border-t border-gray-300"></div>
-                    <span className="flex-shrink mx-4 text-gray-500">OR</span>
-                    <div className="flex-grow border-t border-gray-300"></div>
+                    <div className="flex-grow border-t border-gray-600"></div>
+                    <span className="flex-shrink mx-4 text-gray-400">OR</span>
+                    <div className="flex-grow border-t border-gray-600"></div>
                 </div>
 
                 <button
                     onClick={handleGoogleSignIn}
-                    className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-300 rounded shadow-md w-full flex items-center justify-center transition-colors duration-200"
+                    className="bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-200 font-semibold py-2 px-4 border border-gray-600 rounded shadow-md w-full flex items-center justify-center transition-colors duration-200"
                 >
                     <GoogleIcon />
                     Sign in with Google

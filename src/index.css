@@ -29,6 +29,8 @@ body {
   font-family: 'Merriweather', serif;
   position: relative;
   overflow-x: hidden;
+  background-color: #1a1a1a;
+  color: #e5e5e5;
 }
 
 body::before {
@@ -38,9 +40,9 @@ body::before {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 20% 50%, rgba(45, 122, 115, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(197, 48, 48, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 40% 20%, rgba(45, 122, 115, 0.12) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(45, 122, 115, 0.25) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(197, 48, 48, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(45, 122, 115, 0.2) 0%, transparent 50%);
   animation: pulse-slow 8s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
@@ -53,7 +55,7 @@ body::after {
   right: -10%;
   width: 40%;
   height: 40%;
-  background: radial-gradient(circle, rgba(45, 122, 115, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(45, 122, 115, 0.15) 0%, transparent 70%);
   animation: float 15s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
