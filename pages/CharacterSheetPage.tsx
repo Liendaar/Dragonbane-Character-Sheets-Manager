@@ -83,9 +83,9 @@ const SecondarySkillRow: React.FC<{
         <div className="flex items-center space-x-2 text-sm mb-2">
             <div 
                 onClick={() => onUpdate(index, { ...skill, checked: !skill.checked })} 
-                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
+                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
             >
-                <div className="w-2 h-2"></div>
+                {skill.checked && <span className="text-white text-xs">✓</span>}
             </div>
             <input 
                 type="text" 
@@ -218,9 +218,9 @@ const ArmorSection: React.FC<{
                     <div key={bane} className="flex items-center space-x-2">
                         <div 
                             onClick={() => onBaneToggle(bane)}
-                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
+                            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 flex items-center justify-center ${defaultBanes.includes(bane) ? 'bg-gray-700' : 'bg-transparent'}`}
                         >
-                            <div className="w-2 h-2"></div>
+                            {defaultBanes.includes(bane) && <span className="text-white text-xs">✓</span>}
                         </div>
                         <span className="text-xs">{bane}</span>
                     </div>

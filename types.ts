@@ -175,8 +175,8 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         souvenir: '',
         tinyItems: '',
         money: { or: 0, argent: 0, cuivre: 0 },
-        armor: { name: '', armorRating: 0, bane: ['ACROBATIE', 'DISCRÉTION', 'ESQUIVE'] },
-        helmet: { name: '', armorRating: 0, bane: ['ATTAQUES À DISTANCE', 'INTUITION'] },
+        armor: { name: '', armorRating: 0, bane: [] },
+        helmet: { name: '', armorRating: 0, bane: [] },
         weapons: [
           { name: '', grip: '', range: '', damage: '', durability: '', traits: '' },
           { name: '', grip: '', range: '', damage: '', durability: '', traits: '' },
