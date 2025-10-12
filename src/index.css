@@ -2,10 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  66% {
+    transform: translateY(10px) translateX(-10px);
+  }
+}
+
 body {
   font-family: 'Merriweather', serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 50%, rgba(45, 122, 115, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(197, 48, 48, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(45, 122, 115, 0.12) 0%, transparent 50%);
+  animation: pulse-slow 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -10%;
+  right: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(45, 122, 115, 0.08) 0%, transparent 70%);
+  animation: float 15s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .font-title {
   font-family: 'Cinzel', serif;
+}
+
+/* Ensure content is above the background effects */
+#root {
+  position: relative;
+  z-index: 1;
 }
