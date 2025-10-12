@@ -619,37 +619,63 @@ const CharacterSheetPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Abilities & Money */}
                 <div className="space-y-3">
-                    <Section title="CAPACITÉS">
-                        <div className="space-y-2">
-                            {character.abilities.map((ability, i) => (
-                                <AbilityRow
-                                    key={i}
-                                    ability={ability}
-                                    index={i}
-                                    onUpdate={(index, updatedAbility) => {
-                                        const newAbilities = [...character.abilities];
-                                        newAbilities[index] = updatedAbility;
-                                        updateField('abilities', newAbilities);
-                                    }}
-                                    onRemove={(index) => {
-                                        const newAbilities = character.abilities.filter((_, i) => i !== index);
-                                        updateField('abilities', newAbilities);
-                                    }}
-                                />
-                            ))}
-                            <button 
-                                onClick={() => updateField('abilities', [...character.abilities, { name: '', description: '', pv: '' }])}
-                                className="text-[#4ade80] hover:text-[#3d9a8a] text-sm font-bold w-full text-left"
-                            >
-                                + Ajouter une capacité
-                            </button>
+                    <Section title="CAPACITÉS & SORTS">
+                        {/* Capacités */}
+                        <div className="mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="text-sm font-bold text-gray-300">Capacités</h3>
+                                <Link 
+                                    to={`/abilities/${id}`} 
+                                    className="text-xs bg-[#404040] hover:bg-[#505050] text-white px-2 py-1 rounded transition-colors"
+                                >
+                                    ⚔️ Gérer
+                                </Link>
+                            </div>
+                            <div className="space-y-1">
+                                {character.abilities.length === 0 ? (
+                                    <p className="text-xs text-gray-500 italic">Aucune capacité</p>
+                                ) : (
+                                    character.abilities.map((ability, i) => (
+                                        <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
+                                            <span className="text-gray-300">{ability.name || 'Sans nom'}</span>
+                                            <span className="text-[#2D7A73] font-bold">{ability.pv ? `${ability.pv} PV` : '-'}</span>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
                         </div>
-                        <Link 
-                            to={`/grimoire/${id}`} 
-                            className="block mt-4 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-4 py-2 rounded font-bold transition-colors text-center"
-                        >
-                            📖 Grimoire
-                        </Link>
+
+                        {/* Grimoire */}
+                        <div>
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="text-sm font-bold text-gray-300">Grimoire</h3>
+                                <Link 
+                                    to={`/grimoire/${id}`} 
+                                    className="text-xs bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-2 py-1 rounded transition-colors"
+                                >
+                                    📖 Gérer
+                                </Link>
+                            </div>
+                        <div className="space-y-1">
+                                {character.grimoire.length === 0 ? (
+                                    <p className="text-xs text-gray-500 italic">Aucun sort</p>
+                                ) : (
+                                    character.grimoire.slice(0, 10).map((spell, i) => (
+                                        <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
+                                            <span className="text-gray-300">{spell.nom}</span>
+                                            <span className="text-[#2D7A73] font-bold">
+                                                {spell.rang === 0 || spell.rang === '0' ? 'Tour' : `Rang ${spell.rang}`}
+                                            </span>
+                                        </div>
+                                    ))
+                                )}
+                                {character.grimoire.length > 10 && (
+                                    <p className="text-xs text-gray-500 italic text-center pt-1">
+                                        +{character.grimoire.length - 10} autre(s)...
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                     </Section>
                 </div>
 
