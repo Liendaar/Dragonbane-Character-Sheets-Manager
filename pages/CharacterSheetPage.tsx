@@ -559,9 +559,10 @@ const CharacterSheetPage: React.FC = () => {
                       </div>
                   </div>
                   
-                  {/* Logo - Center */}
-                  <div className="flex items-center justify-center px-4">
-                      <img src="/Dragonbane-Character-Sheets-Manager/logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
+                  {/* Vitals - Center */}
+                  <div className="flex flex-col justify-center space-y-3 px-4">
+                      <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
+                      <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
                   </div>
                   
                   {/* Character Info - Right */}
@@ -846,11 +847,6 @@ const CharacterSheetPage: React.FC = () => {
                         <textarea value={character.tinyItems} onChange={e => updateField('tinyItems', e.target.value)} placeholder="OBJETS MINUSCULES" rows={3} className="bg-transparent border border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm mt-2 p-1 rounded-sm text-gray-200 placeholder-gray-500"></textarea>
                     </div>
                 </Section>
-                 {/* Vitals */}
-                <div className="space-y-3">
-                    <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
-                    <PointTracker label="POINTS DE SANTÉ (PS)" current={character.vitals.health.current} max={character.vitals.health.max} onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} color="#C53030" />
-                </div>
             </div>
 
           </div>
