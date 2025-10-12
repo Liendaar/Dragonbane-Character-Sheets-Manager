@@ -561,7 +561,7 @@ const CharacterSheetPage: React.FC = () => {
                   
                   {/* Logo - Center */}
                   <div className="flex items-center justify-center px-4">
-                      <img src="./logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
+                      <img src="/Dragonbane-Character-Sheets-Manager/logo.png" alt="Dragonbane" className="h-32 w-auto object-contain" />
                   </div>
                   
                   {/* Character Info - Right */}

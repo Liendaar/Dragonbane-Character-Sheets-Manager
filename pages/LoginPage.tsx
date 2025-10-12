@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-[#2a2a2a]/90 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-gray-600">
                 <div className="flex justify-center mb-4">
-                    <img src="./logo.png" alt="Dragonbane" className="h-24 w-auto object-contain" />
+                    <img src="/Dragonbane-Character-Sheets-Manager/logo.png" alt="Dragonbane" className="h-24 w-auto object-contain" />
                 </div>
                 <h2 className="text-xl text-center text-[#e5e5e5] mb-6">Character Manager</h2>
                 
