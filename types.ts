@@ -5,6 +5,12 @@ export interface User {
   displayName: string | null;
 }
 
+export interface Skill {
+  name: string;
+  value: number;
+  attribute: string;
+}
+
 export interface CharacterSheet {
   id: string;
   userId: string;
@@ -38,9 +44,9 @@ export interface CharacterSheet {
   movement: string;
   encumbranceLimit: string;
   abilities: string[];
-  skills: Record<string, boolean>;
-  weaponSkills: Record<string, boolean>;
-  secondarySkills: string[];
+  skills: Record<string, number>;
+  weaponSkills: Record<string, number>;
+  secondarySkills: Skill[];
   inventory: string[];
   souvenir: string;
   tinyItems: string;
@@ -108,9 +114,9 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
     movement: '',
     encumbranceLimit: '',
     abilities: ['', '', '', '', ''],
-    skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: false }), {}),
-    weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: false }), {}),
-    secondarySkills: ['', ''],
+    skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: 0 }), {}),
+    weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: 0 }), {}),
+    secondarySkills: [],
     inventory: Array(10).fill(''),
     souvenir: '',
     tinyItems: '',

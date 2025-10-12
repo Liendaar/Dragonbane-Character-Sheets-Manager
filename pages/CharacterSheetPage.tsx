@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
-import type { CharacterSheet, Weapon } from '../types';
+import type { CharacterSheet, Weapon, Skill } from '../types';
 import { SKILLS_LIST, WEAPON_SKILLS_LIST } from '../types';
 
 // Debounce hook
@@ -45,15 +45,62 @@ const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: Re
     </div>
 );
 
-const SkillCheckbox: React.FC<{ label: string; stat: string; checked: boolean; onChange: () => void; }> = ({ label, stat, checked, onChange }) => (
+const SkillInput: React.FC<{ label: string; stat: string; value: number; onChange: (value: number) => void; }> = ({ label, stat, value, onChange }) => (
     <div className="flex items-center space-x-2 text-sm">
-        <div onClick={onChange} className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${checked ? 'bg-gray-700' : 'bg-transparent'}`}>
-            <div className="w-2 h-2"></div>
-        </div>
         <span className="flex-grow">{label}</span>
         <span className="text-xs text-gray-500">({stat.toUpperCase()})</span>
+        <input 
+            type="number" 
+            value={value} 
+            onChange={e => onChange(parseInt(e.target.value) || 0)} 
+            className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+            min="0"
+        />
     </div>
 );
+
+const SecondarySkillRow: React.FC<{ 
+    skill: Skill; 
+    index: number; 
+    onUpdate: (index: number, skill: Skill) => void; 
+    onRemove: (index: number) => void; 
+}> = ({ skill, index, onUpdate, onRemove }) => {
+    const attributes = ['for', 'con', 'agi', 'int', 'vol', 'cha'];
+    
+    return (
+        <div className="flex items-center space-x-2 text-sm mb-2">
+            <input 
+                type="text" 
+                value={skill.name} 
+                onChange={e => onUpdate(index, { ...skill, name: e.target.value })}
+                placeholder="Nom de la compétence"
+                className="flex-1 bg-transparent border-b border-gray-400 focus:outline-none focus:border-[#2D7A73] text-sm"
+            />
+            <select 
+                value={skill.attribute} 
+                onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
+                className="bg-transparent border border-gray-400 rounded text-sm focus:outline-none focus:border-[#2D7A73]"
+            >
+                {attributes.map(attr => (
+                    <option key={attr} value={attr}>{attr.toUpperCase()}</option>
+                ))}
+            </select>
+            <input 
+                type="number" 
+                value={skill.value} 
+                onChange={e => onUpdate(index, { ...skill, value: parseInt(e.target.value) || 0 })}
+                className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
+                min="0"
+            />
+            <button 
+                onClick={() => onRemove(index)}
+                className="text-red-600 hover:text-red-800 text-sm font-bold"
+            >
+                ×
+            </button>
+        </div>
+    );
+};
 
 const PointTracker: React.FC<{ label: string; current: number; max: number; onCurrentChange: (val: number) => void; onMaxChange: (val: number) => void; color: string; }> = ({ label, current, max, onCurrentChange, onMaxChange, color }) => (
     <div className={`p-2 border-4 rounded-md shadow-inner bg-white/30`} style={{ borderColor: color }}>
@@ -92,12 +139,58 @@ const CharacterSheetPage: React.FC = () => {
       setCharacter(prev => prev ? { ...prev, [key1]: { ...(prev[key1] as object), [key2]: value } } : null)
     }
 
+    // Migration function for existing characters
+    const migrateCharacterData = (charData: CharacterSheet): CharacterSheet => {
+        // Migrate skills from boolean to number
+        const migratedSkills = Object.keys(SKILLS_LIST).reduce((acc, skill) => {
+            const currentValue = charData.skills[skill];
+            if (typeof currentValue === 'boolean') {
+                acc[skill] = currentValue ? 1 : 0;
+            } else {
+                acc[skill] = currentValue || 0;
+            }
+            return acc;
+        }, {} as Record<string, number>);
+
+        // Migrate weapon skills from boolean to number
+        const migratedWeaponSkills = Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => {
+            const currentValue = charData.weaponSkills[skill];
+            if (typeof currentValue === 'boolean') {
+                acc[skill] = currentValue ? 1 : 0;
+            } else {
+                acc[skill] = currentValue || 0;
+            }
+            return acc;
+        }, {} as Record<string, number>);
+
+        // Migrate secondary skills from string array to Skill array
+        const migratedSecondarySkills = Array.isArray(charData.secondarySkills) 
+            ? charData.secondarySkills.map(skill => 
+                typeof skill === 'string' 
+                    ? { name: skill, value: 0, attribute: 'agi' }
+                    : skill
+              )
+            : [];
+
+        return {
+            ...charData,
+            skills: migratedSkills,
+            weaponSkills: migratedWeaponSkills,
+            secondarySkills: migratedSecondarySkills
+        };
+    };
+
     useEffect(() => {
         const fetchCharacter = async () => {
             if (id) {
                 setLoading(true);
                 const charData = await getCharacter(id);
-                setCharacter(charData || { ...createNewCharacter(''), id });
+                if (charData) {
+                    const migratedChar = migrateCharacterData(charData);
+                    setCharacter(migratedChar);
+                } else {
+                    setCharacter({ ...createNewCharacter(''), id });
+                }
                 setLoading(false);
             }
         };
@@ -198,16 +291,42 @@ const CharacterSheetPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
                         <div>
                           {Object.entries(SKILLS_LIST).map(([skill, stat]) => (
-                              <SkillCheckbox key={skill} label={skill} stat={stat} checked={!!character.skills[skill]} onChange={() => updateNestedField('skills', skill, !character.skills[skill])}/>
+                              <SkillInput key={skill} label={skill} stat={stat} value={character.skills[skill] || 0} onChange={(value) => updateNestedField('skills', skill, value)}/>
                           ))}
                         </div>
                         <div>
                           <h3 className="font-bold text-sm mb-1">COMPÉTENCES D'ARME</h3>
                           {Object.entries(WEAPON_SKILLS_LIST).map(([skill, stat]) => (
-                              <SkillCheckbox key={skill} label={skill} stat={stat} checked={!!character.weaponSkills[skill]} onChange={() => updateNestedField('weaponSkills', skill, !character.weaponSkills[skill])}/>
+                              <SkillInput key={skill} label={skill} stat={stat} value={character.weaponSkills[skill] || 0} onChange={(value) => updateNestedField('weaponSkills', skill, value)}/>
                           ))}
                           <h3 className="font-bold text-sm mt-4 mb-1">COMPÉTENCES SECONDAIRES</h3>
-                          {character.secondarySkills.map((skill, i) => <input key={i} type="text" value={skill} onChange={e => {const newSkills = [...character.secondarySkills]; newSkills[i] = e.target.value; updateField('secondarySkills', newSkills); }} className="bg-transparent border-b border-gray-400 w-full focus:outline-none focus:border-[#2D7A73] text-sm mb-1"/>)}
+                          <div className="space-y-1">
+                            {character.secondarySkills.map((skill, i) => (
+                                <SecondarySkillRow 
+                                    key={i}
+                                    skill={skill} 
+                                    index={i} 
+                                    onUpdate={(index, updatedSkill) => {
+                                        const newSkills = [...character.secondarySkills];
+                                        newSkills[index] = updatedSkill;
+                                        updateField('secondarySkills', newSkills);
+                                    }}
+                                    onRemove={(index) => {
+                                        const newSkills = character.secondarySkills.filter((_, i) => i !== index);
+                                        updateField('secondarySkills', newSkills);
+                                    }}
+                                />
+                            ))}
+                            <button 
+                                onClick={() => {
+                                    const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi' }];
+                                    updateField('secondarySkills', newSkills);
+                                }}
+                                className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                            >
+                                + Ajouter une compétence
+                            </button>
+                          </div>
                         </div>
                     </div>
                 </Section>
