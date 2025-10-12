@@ -9,6 +9,7 @@ export interface Skill {
   name: string;
   value: number;
   attribute: string;
+  checked: boolean;
 }
 
 export interface SkillData {

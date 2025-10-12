@@ -81,6 +81,12 @@ const SecondarySkillRow: React.FC<{
     
     return (
         <div className="flex items-center space-x-2 text-sm mb-2">
+            <div 
+                onClick={() => onUpdate(index, { ...skill, checked: !skill.checked })} 
+                className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${skill.checked ? 'bg-gray-700' : 'bg-transparent'}`}
+            >
+                <div className="w-2 h-2"></div>
+            </div>
             <input 
                 type="text" 
                 value={skill.name} 
@@ -277,11 +283,14 @@ const CharacterSheetPage: React.FC = () => {
 
         // Migrate secondary skills from string array to Skill array
         const migratedSecondarySkills = Array.isArray(charData.secondarySkills) 
-            ? charData.secondarySkills.map(skill => 
-                typeof skill === 'string' 
-                    ? { name: skill, value: 0, attribute: 'agi' }
-                    : skill
-              )
+            ? charData.secondarySkills.map(skill => {
+                if (typeof skill === 'string') {
+                    return { name: skill, value: 0, attribute: 'agi', checked: false };
+                } else if (skill && typeof skill === 'object') {
+                    return { ...skill, checked: skill.checked ?? false };
+                }
+                return { name: '', value: 0, attribute: 'agi', checked: false };
+              })
             : [];
 
         return {
@@ -472,7 +481,7 @@ const CharacterSheetPage: React.FC = () => {
                             ))}
                             <button 
                                 onClick={() => {
-                                    const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi' }];
+                                    const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi', checked: false }];
                                     updateField('secondarySkills', newSkills);
                                 }}
                                 className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"

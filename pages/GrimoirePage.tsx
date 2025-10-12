@@ -224,23 +224,95 @@ const GrimoirePage: React.FC = () => {
 
                 {/* Grimoire - Liste des sorts connus */}
                 <div>
-                    <h2 className="font-title text-2xl font-bold text-[#2D7A73] mb-4">Sorts connus ({character.grimoire.length})</h2>
-                    
                     {character.grimoire.length === 0 ? (
                         <div className="text-center text-gray-500 py-10">
+                            <h2 className="font-title text-2xl font-bold text-[#2D7A73] mb-4">Sorts connus (0)</h2>
                             Aucun sort dans le grimoire. Cliquez sur "Ajouter un sort" pour commencer.
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {character.grimoire.map((spell, i) => (
-                                <SpellCard 
-                                    key={i}
-                                    spell={spell}
-                                    onToggleMemorized={() => toggleMemorized(i)}
-                                    onRemove={() => removeSpell(i)}
-                                />
-                            ))}
-                        </div>
+                        <>
+                            {/* Tours de magie */}
+                            {(() => {
+                                const cantrips = character.grimoire.filter(spell => 
+                                    spell.rang === 'Tour de magie' || spell.rang === 0
+                                );
+                                
+                                if (cantrips.length === 0) return null;
+                                
+                                return (
+                                    <div className="mb-8">
+                                        <h2 className="font-title text-2xl font-bold text-[#2D7A73] mb-4 border-b-2 border-[#2D7A73] pb-2">
+                                            Tours de magie ({cantrips.length})
+                                        </h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {cantrips.map((spell) => {
+                                                const index = character.grimoire.indexOf(spell);
+                                                return (
+                                                    <SpellCard 
+                                                        key={index}
+                                                        spell={spell}
+                                                        onToggleMemorized={() => toggleMemorized(index)}
+                                                        onRemove={() => removeSpell(index)}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+
+                            {/* Sorts par école */}
+                            {(() => {
+                                const regularSpells = character.grimoire.filter(spell => 
+                                    spell.rang !== 'Tour de magie' && spell.rang !== 0
+                                );
+                                
+                                if (regularSpells.length === 0) return null;
+                                
+                                // Grouper par école
+                                const spellsBySchool: Record<string, KnownSpell[]> = {};
+                                regularSpells.forEach(spell => {
+                                    if (!spellsBySchool[spell.ecole]) {
+                                        spellsBySchool[spell.ecole] = [];
+                                    }
+                                    spellsBySchool[spell.ecole].push(spell);
+                                });
+                                
+                                // Trier les sorts dans chaque école par rang
+                                Object.keys(spellsBySchool).forEach(school => {
+                                    spellsBySchool[school].sort((a, b) => {
+                                        const rankA = typeof a.rang === 'number' ? a.rang : parseInt(a.rang) || 0;
+                                        const rankB = typeof b.rang === 'number' ? b.rang : parseInt(b.rang) || 0;
+                                        return rankA - rankB;
+                                    });
+                                });
+                                
+                                return (
+                                    <div className="space-y-8">
+                                        {Object.entries(spellsBySchool).sort(([a], [b]) => a.localeCompare(b)).map(([school, spells]) => (
+                                            <div key={school} className="border-2 border-[#2D7A73] rounded-lg p-4 bg-white/50">
+                                                <h2 className="font-title text-2xl font-bold text-[#2D7A73] mb-4">
+                                                    {school} ({spells.length})
+                                                </h2>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                    {spells.map((spell) => {
+                                                        const index = character.grimoire.indexOf(spell);
+                                                        return (
+                                                            <SpellCard 
+                                                                key={index}
+                                                                spell={spell}
+                                                                onToggleMemorized={() => toggleMemorized(index)}
+                                                                onRemove={() => removeSpell(index)}
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                );
+                            })()}
+                        </>
                     )}
                 </div>
             </div>
