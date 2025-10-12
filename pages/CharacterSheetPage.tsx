@@ -45,14 +45,27 @@ const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: Re
     </div>
 );
 
-const SkillInput: React.FC<{ label: string; stat: string; value: number; onChange: (value: number) => void; }> = ({ label, stat, value, onChange }) => (
+const SkillInput: React.FC<{ 
+    label: string; 
+    stat: string; 
+    checked: boolean; 
+    value: number; 
+    onCheckChange: (checked: boolean) => void;
+    onValueChange: (value: number) => void; 
+}> = ({ label, stat, checked, value, onCheckChange, onValueChange }) => (
     <div className="flex items-center space-x-2 text-sm">
+        <div 
+            onClick={() => onCheckChange(!checked)} 
+            className={`cursor-pointer w-4 h-4 border-2 border-gray-500 transform rotate-45 flex items-center justify-center ${checked ? 'bg-gray-700' : 'bg-transparent'}`}
+        >
+            <div className="w-2 h-2"></div>
+        </div>
         <span className="flex-grow">{label}</span>
         <span className="text-xs text-gray-500">({stat.toUpperCase()})</span>
         <input 
             type="number" 
             value={value} 
-            onChange={e => onChange(parseInt(e.target.value) || 0)} 
+            onChange={e => onValueChange(parseInt(e.target.value) || 0)} 
             className="w-12 text-center text-sm border border-gray-400 rounded focus:outline-none focus:border-[#2D7A73]"
             min="0"
         />
@@ -232,27 +245,35 @@ const CharacterSheetPage: React.FC = () => {
 
     // Migration function for existing characters
     const migrateCharacterData = (charData: CharacterSheet): CharacterSheet => {
-        // Migrate skills from boolean to number
+        // Migrate skills from boolean/number to SkillData
         const migratedSkills = Object.keys(SKILLS_LIST).reduce((acc, skill) => {
             const currentValue = charData.skills[skill];
             if (typeof currentValue === 'boolean') {
-                acc[skill] = currentValue ? 1 : 0;
+                acc[skill] = { checked: currentValue, value: currentValue ? 1 : 0 };
+            } else if (typeof currentValue === 'number') {
+                acc[skill] = { checked: currentValue > 0, value: currentValue };
+            } else if (currentValue && typeof currentValue === 'object' && 'checked' in currentValue) {
+                acc[skill] = currentValue;
             } else {
-                acc[skill] = currentValue || 0;
+                acc[skill] = { checked: false, value: 0 };
             }
             return acc;
-        }, {} as Record<string, number>);
+        }, {} as Record<string, any>);
 
-        // Migrate weapon skills from boolean to number
+        // Migrate weapon skills from boolean/number to SkillData
         const migratedWeaponSkills = Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => {
             const currentValue = charData.weaponSkills[skill];
             if (typeof currentValue === 'boolean') {
-                acc[skill] = currentValue ? 1 : 0;
+                acc[skill] = { checked: currentValue, value: currentValue ? 1 : 0 };
+            } else if (typeof currentValue === 'number') {
+                acc[skill] = { checked: currentValue > 0, value: currentValue };
+            } else if (currentValue && typeof currentValue === 'object' && 'checked' in currentValue) {
+                acc[skill] = currentValue;
             } else {
-                acc[skill] = currentValue || 0;
+                acc[skill] = { checked: false, value: 0 };
             }
             return acc;
-        }, {} as Record<string, number>);
+        }, {} as Record<string, any>);
 
         // Migrate secondary skills from string array to Skill array
         const migratedSecondarySkills = Array.isArray(charData.secondarySkills) 
@@ -391,15 +412,37 @@ const CharacterSheetPage: React.FC = () => {
                 <Section title="COMPÉTENCES" className="md:col-span-2">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
                         <div>
-                          {Object.entries(SKILLS_LIST).map(([skill, stat]) => (
-                              <SkillInput key={skill} label={skill} stat={stat} value={character.skills[skill] || 0} onChange={(value) => updateNestedField('skills', skill, value)}/>
-                          ))}
+                          {Object.entries(SKILLS_LIST).map(([skill, stat]) => {
+                              const skillData = character.skills[skill] || { checked: false, value: 0 };
+                              return (
+                                  <SkillInput 
+                                      key={skill} 
+                                      label={skill} 
+                                      stat={stat} 
+                                      checked={skillData.checked}
+                                      value={skillData.value} 
+                                      onCheckChange={(checked) => updateNestedField('skills', skill, { ...skillData, checked })}
+                                      onValueChange={(value) => updateNestedField('skills', skill, { ...skillData, value })}
+                                  />
+                              );
+                          })}
                         </div>
                         <div>
                           <h3 className="font-bold text-sm mb-1">COMPÉTENCES D'ARME</h3>
-                          {Object.entries(WEAPON_SKILLS_LIST).map(([skill, stat]) => (
-                              <SkillInput key={skill} label={skill} stat={stat} value={character.weaponSkills[skill] || 0} onChange={(value) => updateNestedField('weaponSkills', skill, value)}/>
-                          ))}
+                          {Object.entries(WEAPON_SKILLS_LIST).map(([skill, stat]) => {
+                              const skillData = character.weaponSkills[skill] || { checked: false, value: 0 };
+                              return (
+                                  <SkillInput 
+                                      key={skill} 
+                                      label={skill} 
+                                      stat={stat} 
+                                      checked={skillData.checked}
+                                      value={skillData.value} 
+                                      onCheckChange={(checked) => updateNestedField('weaponSkills', skill, { ...skillData, checked })}
+                                      onValueChange={(value) => updateNestedField('weaponSkills', skill, { ...skillData, value })}
+                                  />
+                              );
+                          })}
                           <h3 className="font-bold text-sm mt-4 mb-1">COMPÉTENCES SECONDAIRES</h3>
                           <div className="space-y-1">
                             {character.secondarySkills.map((skill, i) => (
