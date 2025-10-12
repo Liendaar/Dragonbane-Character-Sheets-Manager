@@ -7,32 +7,85 @@ import type { CharacterSheet, Ability } from '../types';
 const AbilityCard: React.FC<{
     ability: Ability;
     onRemove: () => void;
-}> = ({ ability, onRemove }) => (
-    <div className="bg-[#2a2a2a] border border-[#404040] rounded-lg p-4 shadow-md">
-        <div className="flex justify-between items-start mb-2">
-            <h3 className="text-lg font-bold text-[#4ade80]">{ability.name}</h3>
-            <button
-                onClick={onRemove}
-                className="text-red-500 hover:text-red-700 font-bold"
-            >
-                ✕
-            </button>
-        </div>
-        <div className="space-y-2 text-sm text-gray-300">
-            {ability.pv && (
-                <div>
-                    <span className="font-bold text-gray-400">Coût PV : </span>
-                    <span className="text-[#2D7A73]">{ability.pv}</span>
+    onUpdate: (updated: Ability) => void;
+    isCustom: boolean;
+}> = ({ ability, onRemove, onUpdate, isCustom }) => {
+    const [isEditing, setIsEditing] = useState(isCustom && !ability.name);
+
+    return (
+        <div className="bg-[#2a2a2a] border border-[#404040] rounded-lg p-4 shadow-md">
+            <div className="flex justify-between items-start mb-2">
+                {isEditing ? (
+                    <input
+                        type="text"
+                        value={ability.name}
+                        onChange={(e) => onUpdate({ ...ability, name: e.target.value })}
+                        placeholder="Nom de la capacité"
+                        className="flex-1 bg-[#1a1a1a] border border-[#404040] rounded px-2 py-1 text-[#4ade80] font-bold focus:outline-none focus:border-[#2D7A73]"
+                    />
+                ) : (
+                    <h3 className="text-lg font-bold text-[#4ade80]">{ability.name}</h3>
+                )}
+                <div className="flex gap-2 ml-2">
+                    {isCustom && (
+                        <button
+                            onClick={() => setIsEditing(!isEditing)}
+                            className="text-blue-400 hover:text-blue-600 font-bold"
+                            title={isEditing ? "Terminer l'édition" : "Éditer"}
+                        >
+                            {isEditing ? '✓' : '✎'}
+                        </button>
+                    )}
+                    <button
+                        onClick={onRemove}
+                        className="text-red-500 hover:text-red-700 font-bold"
+                    >
+                        ✕
+                    </button>
                 </div>
-            )}
-            {ability.description && (
-                <div>
-                    <p className="text-gray-300 leading-relaxed">{ability.description}</p>
-                </div>
-            )}
+            </div>
+            <div className="space-y-2 text-sm text-gray-300">
+                {isEditing ? (
+                    <div>
+                        <label className="font-bold text-gray-400 block mb-1">Coût PV :</label>
+                        <input
+                            type="text"
+                            value={ability.pv}
+                            onChange={(e) => onUpdate({ ...ability, pv: e.target.value })}
+                            placeholder="Ex: 3"
+                            className="w-full bg-[#1a1a1a] border border-[#404040] rounded px-2 py-1 text-[#2D7A73] focus:outline-none focus:border-[#2D7A73]"
+                        />
+                    </div>
+                ) : (
+                    ability.pv && (
+                        <div>
+                            <span className="font-bold text-gray-400">Coût PV : </span>
+                            <span className="text-[#2D7A73]">{ability.pv}</span>
+                        </div>
+                    )
+                )}
+                {isEditing ? (
+                    <div>
+                        <label className="font-bold text-gray-400 block mb-1">Description :</label>
+                        <textarea
+                            value={ability.description}
+                            onChange={(e) => onUpdate({ ...ability, description: e.target.value })}
+                            placeholder="Description de la capacité..."
+                            rows={4}
+                            className="w-full bg-[#1a1a1a] border border-[#404040] rounded px-2 py-1 text-gray-300 focus:outline-none focus:border-[#2D7A73] resize-none"
+                        />
+                    </div>
+                ) : (
+                    ability.description && (
+                        <div>
+                            <p className="text-gray-300 leading-relaxed">{ability.description}</p>
+                        </div>
+                    )
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const AbilitiesPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -112,6 +165,17 @@ const AbilitiesPage: React.FC = () => {
         await updateCharacter(id!, { abilities: updatedAbilities });
     };
 
+    const updateAbility = async (index: number, updatedAbility: Ability) => {
+        if (!character) return;
+
+        const updatedAbilities = [...character.abilities];
+        updatedAbilities[index] = updatedAbility;
+        const updatedCharacter = { ...character, abilities: updatedAbilities };
+        
+        setCharacter(updatedCharacter);
+        await updateCharacter(id!, { abilities: updatedAbilities });
+    };
+
     if (loading || !character) {
         return <div className="text-center p-10 text-gray-200">Chargement...</div>;
     }
@@ -150,13 +214,20 @@ const AbilitiesPage: React.FC = () => {
                                     Ajoutez-en une depuis la liste ci-contre !
                                 </div>
                             ) : (
-                                character.abilities.map((ability, index) => (
-                                    <AbilityCard
-                                        key={index}
-                                        ability={ability}
-                                        onRemove={() => removeAbility(index)}
-                                    />
-                                ))
+                                character.abilities.map((ability, index) => {
+                                    // Une capacité est personnalisée si elle n'existe pas dans la liste commune
+                                    const isCustom = !allAbilities.some(a => a.capacite === ability.name);
+                                    
+                                    return (
+                                        <AbilityCard
+                                            key={index}
+                                            ability={ability}
+                                            onRemove={() => removeAbility(index)}
+                                            onUpdate={(updated) => updateAbility(index, updated)}
+                                            isCustom={isCustom}
+                                        />
+                                    );
+                                })
                             )}
                         </div>
                     </div>
