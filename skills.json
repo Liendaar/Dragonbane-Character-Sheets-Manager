@@ -1,0 +1,268 @@
+{
+  "capacites_heroiques": [
+    {
+      "capacite": "ASSASSIN",
+      "prerequis": "Couteaux 12",
+      "pv": 3,
+      "description": "Votre attaque surprise inflige 1D8 points de dégâts supplémentaires. Vous déclenchez cette capacité héroïque après avoir effectué votre jet pour toucher, mais avant votre jet de dégâts. Elle peut se combiner avec l'Attaque sournoise."
+    },
+    {
+      "capacite": "ATTAQUE SOURNOISE",
+      "prerequis": "Couteaux 12",
+      "pv": 3,
+      "description": "Vous pouvez déclencher cette capacité au cours d'une attaque de corps à corps contre un ennemi situé également à moins de deux mètres d'un autre personnage joueur. Elle compte alors comme une attaque surprise, ce qui signifie qu'il est impossible de l'esquiver ou de la parer. De plus, vous bénéficiez d'une faveur sur le jet de dés, et d'un dé de dégâts supplémentaire (par exemple, 2D8 au lieu de 1D8). L'Attaque sournoise ne peut servir qu'avec une arme discrète, et son déclenchement ne constitue pas une action."
+    },
+    {
+      "capacite": "BERSERKER",
+      "prerequis": "une compétence d'arme de mêlée 12",
+      "pv": 3,
+      "description": "Vous gagnez l'état Furieux et vous attaquez sur-le-champ au corps à corps l'ennemi le plus proche de vous. Si vous subissiez déjà cet état, vous en gagnez un autre de votre choix. Vous devez ensuite continuer à vous battre jusqu'à ce que tous les adversaires en vue soient vaincus ou que vous tombiez à 0 PS. Vous bénéficiez d'une faveur sur vos attaques en mêlée, mais vous ne pouvez ni parer ni esquiver. Vous serez Épuisé après le combat."
+    },
+    {
+      "capacite": "BLOCAGE",
+      "prerequis": "une compétence d'arme de mêlée basée sur la FOR 12",
+      "pv": 2,
+      "description": "Vous pouvez déclencher cette capacité et bénéficier d'une faveur sur votre jet de dés quand vous parez avec un bouclier. Elle s'applique également aux attaques physiques des monstres (mais pas aux effets de zone) que vous ne pourriez pas parer en temps normal. Le Blocage peut s'utiliser en conjonction avec Défense."
+    },
+    {
+      "capacite": "CHASSEUR DE MONSTRES",
+      "prerequis": "Connaissance des bêtes 12",
+      "pv": 3,
+      "description": "Vous pouvez déclencher cette capacité à un carrefour afin de connaître la direction dans laquelle se trouvent vos ennemis les plus dangereux."
+    },
+    {
+      "capacite": "CHASSEUR DE TRÉSOR",
+      "prerequis": "Marchandage 12",
+      "pv": 3,
+      "description": "Vous pouvez activer cette capacité à un carrefour pour connaître la direction dans laquelle se trouvent les plus grands trésors."
+    },
+    {
+      "capacite": "COMBAT À DEUX ARMES",
+      "prerequis": "une compétence d'arme de mêlée 12",
+      "pv": 3,
+      "description": "Vous ne pouvez utiliser cette capacité héroïque que si vous tenez une arme à une main dans chaque main. Le prérequis de FOR pour celle qui se trouve dans votre main non directrice (droite ou gauche, comme vous l'entendez) augmente de 3. A votre tour de combat, vous activez le Combat à deux armes. Ensuite, avec votre autre main, vous pouvez effectuer une attaque supplémentaire qui subira un fléau. Vous choisissez l'ordre dans lequel vous allez procéder. Terminez la première attaque, y compris les dégâts, avant de faire un jet pour la seconde. Cette capacité peut se combiner avec Coup double."
+    },
+    {
+      "capacite": "COMPAGNON",
+      "prerequis": "Chasse et pêche 12",
+      "pv": 3,
+      "description": "Vous pouvez déclencher cette capacité pour faire d'un animal (pas un monstre) votre compagnon. Cependant, cela prend du temps et vous ne pouvez en avoir qu'un seul à la fois. Le MJ décide quels animaux se trouvent à proximité. Votre compagnon vous suivra tant que vous resterez dans son environnement naturel, et il peut jouer les éclaireurs sans que vous dépensiez de PV supplémentaire. Pour 3 PV de plus, vous pouvez lui ordonner d'attaquer un adversaire (action gratuite pour vous)."
+    },
+    {
+      "capacite": "CONCENTRATION",
+      "prerequis": "-",
+      "pv": "N/A",
+      "description": "Votre nombre maximum de points de Volonté augmente de 2 de manière permanente. Vous pouvez choisir cette capacité héroïque autant de fois que vous le souhaitez."
+    },
+    {
+      "capacite": "CONTORSIONNISTE",
+      "prerequis": "Esquive 12",
+      "pv": 1,
+      "description": "Vous vous libérez de vos liens ou vous vous glissez dans un espace restreint sans avoir à effectuer de jet de compétence."
+    },
+    {
+      "capacite": "COUP DOUBLE",
+      "prerequis": "Épées ou Haches 12",
+      "pv": 3,
+      "description": "Lorsque vous maniez une arme tranchante, vous pouvez frapper deux adversaires situés à moins de deux mètres l'un de l'autre avec un seul coup. Vous ne faites qu'un jet d'attaque et en cas de succès, vous touchez les deux cibles qui peuvent parer ou esquiver individuellement. On détermine séparément les dégâts. Cette capacité peut s'utiliser en conjonction avec Combat à deux armes."
+    },
+    {
+      "capacite": "COUP MAGISTRAL",
+      "prerequis": "une compétence d'arme de mêlée basée sur la FOR 12",
+      "pv": 3,
+      "description": "Un coup porté avec une arme de mêlée à deux mains inflige 1D8 points de dégâts supplémentaires. En revanche, vous ne pouvez pas vous déplacer dans le même round. Vous pouvez déclencher cette capacité après avoir réussi votre jet de toucher, mais pas si vous vous êtes déplacé."
+    },
+    {
+      "capacite": "CRI DE GUERRE",
+      "prerequis": "-",
+      "pv": 3,
+      "description": "En action de combat, vous pouvez pousser un cri de guerre pour inspirer vos amis. Tous les autres personnages joueurs à portée de voix récupèrent immédiatement d'un état de leur choix. Cette capacité héroïque ne peut s'utiliser qu'en combat."
+    },
+    {
+      "capacite": "DÉFENSE",
+      "prerequis": "une compétence d'arme de mêlée 12",
+      "pv": 3,
+      "description": "Vous pouvez tenter de parer une attaque sans lui consacrer votre action du round. Cette parade supplémentaire peut servir à n'importe quel moment du round. Vous ne pouvez parer qu'une seule fois la même attaque. Vous pouvez utiliser cette capacité plusieurs fois par round, tant que vous avez suffisamment de PV."
+    },
+    {
+      "capacite": "DÉGUISEMENT",
+      "prerequis": "Bluff 12",
+      "pv": 2,
+      "description": "Vous êtes un maître du déguisement et pouvez facilement prendre l'apparence des autres. Après avoir passé une période à vous exercer, vous pouvez adopter la physionomie, la voix et les manières d'un individu de la même famille que vous. Quelqu'un qui connaîtrait la personne que vous imitez et qui se trouve à moins de dix mètres de vous peut faire un jet d'INTUITION. S'il le réussit, il percera à jour la mascarade."
+    },
+    {
+      "capacite": "DÉROBADE",
+      "prerequis": "Esquive 12",
+      "pv": 3,
+      "description": "Si l'on vous attaque et qu'un autre personnage joueur se trouve à moins de deux mètres de vous, vous pouvez activer cette capacité pour que l'attaque touche ce personnage à votre place. Elle ne fonctionne pas contre les attaques de zone."
+    },
+    {
+      "capacite": "DOUBLE TIR",
+      "prerequis": "Arcs 12",
+      "pv": 3,
+      "description": "Lorsque vous attaquez avec un arc (et non une arbalète) et que vous activez cette capacité, vous tirez deux flèches au lieu d'une. Vous ne lancez qu'un seul jet pour toucher, sur lequel vous subissez un fléau. Les dégâts se déterminent séparément. Les flèches peuvent viser la même cible ou deux cibles différentes."
+    },
+    {
+      "capacite": "ÉCLAIREUR",
+      "prerequis": "Survie 12",
+      "pv": 1,
+      "description": "Vous bénéficiez d'une faveur sur votre jet de SURVIE lorsque vous essayez de trouver votre chemin en pleine nature."
+    },
+    {
+      "capacite": "FÉLIN",
+      "prerequis": "Acrobatie 12",
+      "pv": "variable",
+      "description": "Les dégâts subis au cours d'une chute diminuent de 1D6 par PV dépensé. Vous pouvez d'abord faire un jet d'ACROBATIE puis activer cette capacité héroïque."
+    },
+    {
+      "capacite": "GUÉRISON RAPIDE",
+      "prerequis": "-",
+      "pv": 2,
+      "description": "Vous guérissez ID6 PS supplémentaires pendant une période de repos. Cette capacité héroïque n'affecte ni les PV ni les états."
+    },
+    {
+      "capacite": "INSTINCT",
+      "prerequis": "Mythes et légendes 12",
+      "pv": 3,
+      "description": "Lorsque vous vous trouvez confronté à une décision difficile, vous pouvez déclencher cette capacité pour poser une question directement au MJ et recevoir une réponse utile. Celle-ci représente votre grande culture générale et elle ne sert qu'à vous aider à trancher, et non à tout vous révéler."
+    },
+    {
+      "capacite": "INTERCEPTION",
+      "prerequis": "une compétence d'arme de mêlée 12",
+      "pv": 1,
+      "description": "Vous pouvez parer une attaque à distance avec une arme de mêlée au lieu d'utiliser un bouclier."
+    },
+    {
+      "capacite": "INTRÉPIDE",
+      "prerequis": "N/A",
+      "pv": 2,
+      "description": "Vous résistez automatiquement à la terreur sans faire de jet de VOL."
+    },
+    {
+      "capacite": "JEU DE JAMBES",
+      "prerequis": "Esquive 12",
+      "pv": 3,
+      "description": "Vous pouvez essayer d'esquiver une attaque sans lui consacrer votre action du round. Cette manœuvre supplémentaire peut se dérouler à n'importe quel moment du round. Vous ne pouvez tenter d'esquiver la même attaque qu'une seule fois. Cette capacité peut s'utiliser plusieurs fois par round tant que vous avez suffisamment de PV."
+    },
+    {
+      "capacite": "LANCER UNE ARME",
+      "prerequis": "une compétence d'arme de mêlée 12",
+      "pv": 2,
+      "description": "Vous pouvez projeter une arme de mêlée à une main avec une force considérable sur un adversaire situé à une portée égale à votre FOR en mètres. Vous effectuez votre attaque normalement et l'ennemi peut parer ou esquiver comme à l'accoutumée. L'arme atterrira à ses pieds."
+    },
+    {
+      "capacite": "LOUP SOLITAIRE",
+      "prerequis": "Survie 12",
+      "pv": "-",
+      "description": "Vous pouvez passer un intervalle de repos en pleine nature sans devoir d'abord faire un jet de SURVIE pour établir un campement. Leffet ne s'applique qu'à vous, même si vous avez une tente."
+    },
+    {
+      "capacite": "MAÎTRE CHARPENTIER",
+      "prerequis": "Artisanat 12",
+      "pv": "variable",
+      "description": "Cette capacité nécessite des outils de menuiserie. En action, vous pouvez infliger 1D12 points de dégâts par PV dépensé sur une porte, un mur ou un autre objet inanimé, et vous ignorez l'indice d'armure de l'objet. En un intervalle, vous pouvez fabriquer un objet en bois de votre choix, comme une massue, un bâton ou un bouclier. Vous avez besoin de bois (poids 1, ou décidé par le MJ), et le coût en PV est égal au prix de l'objet en or (arrondi au supérieur). Si vous n'avez pas assez de PV, vous pouvez répartir le travail sur plusieurs intervalles."
+    },
+    {
+      "capacite": "MAÎTRE ENSORCELEUR",
+      "prerequis": "une école de magie 12",
+      "pv": 3,
+      "description": "Si vous déclenchez cette capacité à votre tour de combat, vous pouvez lancer deux sorts obligatoirement différents en une seule action. Vous pouvez faire un jet pour le premier sort, puis déclencher cette capacité héroïque."
+    },
+    {
+      "capacite": "MAÎTRE FORGERON",
+      "prerequis": "Artisanat 12",
+      "pv": "variable",
+      "description": "Cette capacité nécessite des outils de forgeron. Vous pouvez consacrer une période à aiguiser une arme blanche ou pointue et il vous en coûtera 3 PV. L'indice d'armure d'un objet diminue de 1 contre une arme aiguisée. Cet effet disparaît après un combat au cours duquel on s'est servi de l'arme pour attaquer ou parer. Vous créez une arme ou une armure métallique de votre choix en un intervalle. Vous avez besoin d'une forge, d'une enclume et de fer (poids 1). Le coût en PV est égal au prix de l'objet en or (arrondi au supérieur). Si vous n'en avez pas assez, vous pouvez répartir le travail sur plusieurs intervalles."
+    },
+    {
+      "capacite": "MAÎTRE-QUEUX",
+      "prerequis": "-",
+      "pv": 1,
+      "description": "Vous réussissez automatiquement à cuisiner de la nourriture sans effectuer un jet de SURVIE."
+    },
+    {
+      "capacite": "MAÎTRE TANNEUR",
+      "prerequis": "Artisanat 12",
+      "pv": "variable",
+      "description": "Cette compétence nécessite des outils de tanneur. Vous pouvez créer une armure de cuir à partir de la peau d'un animal ou d'un monstre. Celle-ci possède la moitié de l'indice d'armure de l'animal (arrondi au supérieur), mais toujours avec un minimum de 1. La tâche vous occupera durant un intervalle, et le coût en PV est égal à l'indice d'armure de l'objet. Si vous n'en avez pas assez, vous pouvez répartir le travail sur plusieurs intervalles."
+    },
+    {
+      "capacite": "MUSICIEN",
+      "prerequis": "Représentation 12",
+      "pv": 3,
+      "description": "Votre belle voix inspire le courage à vos amis et la peur à vos ennemis. Lorsque vous déclenchez cette capacité (qui compte comme une action en combat), tous vos alliés situés dans un rayon de dix mètres autour de vous bénéficient d'une faveur sur tous leurs jets OU tous les adversaires qui se tiennent dans ce rayon subissent un fléau sur tous leurs jets (au choix du joueur). Leffet dure jusqu'à votre prochain tour. Vous pouvez utiliser des instruments avec cette capacité, ce qui peut augmenter sa portée ou réduire son coût en PV."
+    },
+    {
+      "capacite": "ŒIL DE LYNX",
+      "prerequis": "Intuition 12",
+      "pv": 2,
+      "description": "Pendant une période, vous pouvez voir une personne ou un objet jusqu'à 200 mètres de distance dans les moindres détails, comme si vous vous teniez juste à côté. En combat, vous pouvez également tirer sur une cible située au-delà de la portée effective de l'arme sans subir de fléau sur votre jet de dé. Vous devez activer cette capacité héroïque pour chaque nouvelle cible."
+    },
+    {
+      "capacite": "PERSPICACITÉ",
+      "prerequis": "Persuasion 12",
+      "pv": 2,
+      "description": "Si vous parlez à quelqu'un pendant un certain temps, vous pouvez faire un jet d'INTUITION et déterminer si cette personne dit la vérité, mais pas savoir exactement ce sur quoi elle ment."
+    },
+    {
+      "capacite": "PIED MARIN",
+      "prerequis": "Natation 12",
+      "pv": 1,
+      "description": "Vous pouvez déclencher cette capacité gratuitement lorsque vous effectuez une action dans l'eau, et ce même si elle ne vous arrive qu'à la taille. Pendant un round, vous êtes immunisé contre tous les effets négatifs de l'eau, y compris le risque de noyade."
+    },
+    {
+      "capacite": "POIGNE DE FER",
+      "prerequis": "Bagarre 12",
+      "pv": 1,
+      "description": "Vous bénéficiez d'une faveur sur votre jet de BAGARRE lorsque vous tentez d'agripper un adversaire ou de l'empêcher de se libérer."
+    },
+    {
+      "capacite": "POING D'ACIER",
+      "prerequis": "Bagarre 12",
+      "pv": 1,
+      "description": "Les dégâts d'une attaque à mains nues passent à 2D6. Vous pouvez déclencher cette capacité héroïque en tant qu'action gratuite après avoir fait votre jet d'attaque."
+    },
+    {
+      "capacite": "PROTECTEUR",
+      "prerequis": "Épées, Haches ou Marteaux 12",
+      "pv": 2,
+      "description": "Vous n'hésiterez pas à prendre des coups pour protéger vos amis. Si vous et un autre personnage vous trouvez à moins de deux mètres du même adversaire et que ce dernier tente d'attaquer votre compagnon, vous pouvez déclencher cette capacité à n'importe quel moment et forcer l'ennemi à vous cibler à sa place. Cela ne compte pas comme une action."
+    },
+    {
+      "capacite": "QUARTIER-MAÎTRE",
+      "prerequis": "Survie 12",
+      "pv": 1,
+      "description": "Vous êtes doué pour trouver des lieux de campement convenables. Vous réussissez automatiquement à établir un camp lorsque vous voyagez."
+    },
+    {
+      "capacite": "RAPIDE COMME L'ÉCLAIR",
+      "prerequis": "Esquive 12",
+      "pv": 2,
+      "description": "Lorsque vous tirez votre carte Initiative au début d'un round de combat, vous pouvez piocher deux cartes au lieu d'une et choisir celle que vous voulez. Vous ne pouvez activer cette capacité héroïque qu'une seule fois par round."
+    },
+    {
+      "capacite": "ROBUSTESSE",
+      "prerequis": "-",
+      "pv": "-",
+      "description": "Votre nombre maximum de PS augmente de 2. Vous pouvez choisir cette capacité héroïque autant de fois que vous le souhaitez."
+    },
+    {
+      "capacite": "TALENT MAGIQUE",
+      "prerequis": "-",
+      "pv": "-",
+      "description": "Vous possédez une aptitude pour la magie et vous pouvez obtenir une autre école de magie (que vous en connaissiez déjà une ou non). Vous devez apprendre les sorts séparément. Vous pouvez sélectionner cette capacité héroïque plusieurs fois, pour chaque nouvelle école que vous souhaitez acquérir."
+    },
+    {
+      "capacite": "TUEUR DE DRAGONS",
+      "prerequis": "une compétence d'arme 12",
+      "pv": 3,
+      "description": "Une attaque ciblant un monstre (pas un PNJ normal) lui inflige 1D8 points de dégâts supplémentaires. Vous activez cette capacité après avoir effectué votre jet de toucher, mais avant de faire votre jet de dégâts."
+    },
+    {
+      "capacite": "VÉTÉRAN",
+      "prerequis": "une compétence d'arme 12",
+      "pv": 1,
+      "description": "Déclencher cette capacité au début d'un round de combat vous permet de conserver votre carte d'initiative du round précédent, au lieu d'en tirer une nouvelle. Cela ne compte pas comme une action."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Characters - only owner can read/write
+    match /characters/{characterId} {
+      allow read, write: if request.auth != null && 
+                         request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null;
+    }
+    
+    // Spells - all authenticated users can read
+    // Only the admin (UZi9aEfsVJdOoDTfM1Xu55ifrFM2) can write
+    match /spells/{spellId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == "UZi9aEfsVJdOoDTfM1Xu55ifrFM2";
+    }
+    
+    // Abilities - all authenticated users can read
+    // Only the admin (UZi9aEfsVJdOoDTfM1Xu55ifrFM2) can write
+    match /abilities/{abilityId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == "UZi9aEfsVJdOoDTfM1Xu55ifrFM2";
+    }
+  }
+}
+
