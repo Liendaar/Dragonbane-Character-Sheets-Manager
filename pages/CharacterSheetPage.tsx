@@ -541,6 +541,19 @@ const CharacterSheetPage: React.FC = () => {
       });
     }
 
+    // Handle health change with death rolls reset
+    const handleHealthChange = (newValue: number) => {
+        const wasAtZero = character?.vitals.health.current === 0;
+        const isNowAboveZero = newValue > 0;
+        
+        // Reset death rolls when recovering from 0 HP
+        if (wasAtZero && isNowAboveZero) {
+            updateField('deathRolls', { successes: 0, failures: 0 });
+        }
+        
+        updateNestedField('vitals', 'health', { ...character!.vitals.health, current: newValue });
+    };
+
     // Migration function for existing characters
     const migrateCharacterData = (charData: CharacterSheet): CharacterSheet => {
         // Migrate skills from boolean/number to SkillData
@@ -774,33 +787,11 @@ const CharacterSheetPage: React.FC = () => {
                   <div className="flex flex-col justify-center space-y-3">
                       <PointTracker label="POINTS DE VOLONTÉ (PV)" current={character.vitals.willpower.current} max={character.vitals.willpower.max} onCurrentChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, current: val})} onMaxChange={val => updateNestedField('vitals', 'willpower', {...character.vitals.willpower, max: val})} color="#2D7A73" />
                       
-                      {/* Rest Checkboxes */}
-                      <div className="bg-[#2a2a2a]/50 border-2 border-[#404040] rounded-md p-2 space-y-1.5">
-                          <div className="flex items-center gap-2">
-                              <div 
-                                  onClick={() => updateNestedField('rest', 'round', !character.rest.round)}
-                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.round ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
-                              />
-                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'round', !character.rest.round)}>
-                                  ROUND DE REPOS
-                              </label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                              <div 
-                                  onClick={() => updateNestedField('rest', 'period', !character.rest.period)}
-                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.period ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
-                              />
-                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'period', !character.rest.period)}>
-                                  PÉRIODE DE REPOS
-                              </label>
-                          </div>
-                      </div>
-                      
                       <PointTracker 
                           label="POINTS DE SANTÉ (PS)" 
                           current={character.vitals.health.current} 
                           max={character.vitals.health.max} 
-                          onCurrentChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, current: val})} 
+                          onCurrentChange={handleHealthChange} 
                           onMaxChange={val => updateNestedField('vitals', 'health', {...character.vitals.health, max: val})} 
                           color="#C53030"
                           deathRolls={character.deathRolls}
@@ -827,6 +818,28 @@ const CharacterSheetPage: React.FC = () => {
                       <LabeledInput label="PROFESSION" value={character.profession} onChange={e => updateField('profession', e.target.value)} />
                       <LabeledInput label="FAIBLESSE" value={character.weakness} onChange={e => updateField('weakness', e.target.value)} />
                       <textarea value={character.appearance} onChange={e => updateField('appearance', e.target.value)} placeholder="APPARENCE" rows={2} className="bg-transparent border-t border-b border-gray-600 w-full focus:outline-none focus:border-[#2D7A73] text-sm p-1 text-gray-200 placeholder-gray-500"></textarea>
+                      
+                      {/* Rest Checkboxes */}
+                      <div className="bg-[#2a2a2a]/50 border-2 border-[#404040] rounded-md p-2 space-y-1.5 mt-1">
+                          <div className="flex items-center gap-2">
+                              <div 
+                                  onClick={() => updateNestedField('rest', 'round', !character.rest.round)}
+                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.round ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
+                              />
+                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'round', !character.rest.round)}>
+                                  ROUND DE REPOS
+                              </label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                              <div 
+                                  onClick={() => updateNestedField('rest', 'period', !character.rest.period)}
+                                  className={`w-4 h-4 rotate-45 border-2 border-gray-600 cursor-pointer transition-colors ${character.rest.period ? 'bg-[#2D7A73]' : 'bg-[#1a1a1a]'}`}
+                              />
+                              <label className="text-xs font-bold text-gray-400 cursor-pointer select-none" onClick={() => updateNestedField('rest', 'period', !character.rest.period)}>
+                                  PÉRIODE DE REPOS
+                              </label>
+                          </div>
+                      </div>
                   </div>
               </div>
 
