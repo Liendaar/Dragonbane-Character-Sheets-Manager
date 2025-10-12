@@ -84,37 +84,58 @@ const AbilityRow: React.FC<{
     index: number;
     onUpdate: (index: number, ability: Ability) => void;
     onRemove: (index: number) => void;
-}> = ({ ability, index, onUpdate, onRemove }) => (
-    <div className="grid grid-cols-[2fr_3fr_1fr_auto] gap-2 items-center">
-        <input
-            type="text"
-            value={ability.name}
-            onChange={e => onUpdate(index, { ...ability, name: e.target.value })}
-            placeholder="Capacité"
-            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0"
-        />
-        <input
-            type="text"
-            value={ability.description}
-            onChange={e => onUpdate(index, { ...ability, description: e.target.value })}
-            placeholder="Description"
-            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0"
-        />
-        <input
-            type="text"
-            value={ability.pv}
-            onChange={e => onUpdate(index, { ...ability, pv: e.target.value })}
-            placeholder="PV"
-            className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 text-center min-w-0"
-        />
-        <button
-            onClick={() => onRemove(index)}
-            className="text-red-500 hover:text-red-700 font-bold text-sm flex-shrink-0"
-        >
-            ✕
-        </button>
-    </div>
-);
+}> = ({ ability, index, onUpdate, onRemove }) => {
+    const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+    React.useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 96) + 'px';
+        }
+    }, [ability.description]);
+
+    return (
+        <div className="grid grid-cols-[2fr_3fr_1fr_auto] gap-2 items-start">
+            <input
+                type="text"
+                value={ability.name}
+                onChange={e => onUpdate(index, { ...ability, name: e.target.value })}
+                placeholder="Capacité"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0 mt-1"
+            />
+            <textarea
+                ref={textareaRef}
+                value={ability.description}
+                onChange={e => onUpdate(index, { ...ability, description: e.target.value })}
+                placeholder="Description"
+                rows={1}
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 min-w-0 resize-none overflow-hidden"
+                style={{ 
+                    minHeight: '1.5rem',
+                    maxHeight: '6rem'
+                }}
+                onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 96) + 'px';
+                }}
+            />
+            <input
+                type="text"
+                value={ability.pv}
+                onChange={e => onUpdate(index, { ...ability, pv: e.target.value })}
+                placeholder="PV"
+                className="bg-transparent border-b border-gray-600 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 placeholder-gray-500 text-center min-w-0 mt-1"
+            />
+            <button
+                onClick={() => onRemove(index)}
+                className="text-red-500 hover:text-red-700 font-bold text-sm flex-shrink-0 mt-1"
+            >
+                ✕
+            </button>
+        </div>
+    );
+};
 
 const SecondarySkillRow: React.FC<{ 
     skill: Skill; 
@@ -572,9 +593,9 @@ const CharacterSheetPage: React.FC = () => {
                           const attrKey = attr as keyof typeof character.attributes;
                           const condKey = CONDITIONS_ORDER[index] as keyof typeof character.conditions;
                           return (
-                              <AttributeCircle 
-                                  key={attr} 
-                                  label={attr.toUpperCase()}
+                          <AttributeCircle 
+                              key={attr} 
+                              label={attr.toUpperCase()}
                                   value={character.attributes[attrKey]}
                                   // @ts-ignore - Type assertion is safe due to ATTRIBUTES_ORDER constant
                                   onChange={e => updateNestedField('attributes', attrKey, parseInt(e.target.value) || 0)}
