@@ -1027,7 +1027,7 @@ const CharacterSheetPage: React.FC = () => {
                                     const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi', checked: false }];
                                     updateField('secondarySkills', newSkills);
                                 }}
-                                className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                                className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                             >
                                 + Ajouter une compétence
                             </button>
@@ -1070,7 +1070,7 @@ const CharacterSheetPage: React.FC = () => {
                           const newWeapons = [...character.weaponsShields, { name: '', grip: '', range: '', damage: '', durability: '', traits: '' }];
                           updateField('weaponsShields', newWeapons);
                       }}
-                      className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                      className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                   >
                       + Ajouter une arme/bouclier
                   </button>
@@ -1264,7 +1264,7 @@ const CharacterSheetPage: React.FC = () => {
                                 const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
                                 updateField('inventoryItems', newItems);
                             }}
-                            className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                            className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                         >
                             + Ajouter un objet
                         </button>
