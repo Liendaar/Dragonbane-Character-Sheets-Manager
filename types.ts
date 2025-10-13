@@ -78,9 +78,7 @@ export interface CharacterSheet {
   skills: Record<string, SkillData>;
   weaponSkills: Record<string, SkillData>;
   secondarySkills: Skill[];
-  inventory: string[];
-  souvenir: string;
-  tinyItems: string;
+  inventoryItems: InventoryItem[];
   money: {
     or: number;
     argent: number;
@@ -137,6 +135,11 @@ export interface Ability {
   pv: string;
 }
 
+export interface InventoryItem {
+  name: string;
+  type: 'normal' | 'tiny' | 'memento';
+}
+
 export const SKILLS_LIST = {
     'Acrobatie': 'agi', 'Artisanat': 'for', 'Bluff': 'cha', 'Chasse et pêche': 'agi', 'Con. des bêtes': 'int',
     'Dextérité': 'agi', 'Discrétion': 'agi', 'Équitation': 'agi', 'Esquive': 'agi', 'Intuition': 'int',
@@ -182,9 +185,7 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         skills: Object.keys(SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         weaponSkills: Object.keys(WEAPON_SKILLS_LIST).reduce((acc, skill) => ({ ...acc, [skill]: { checked: false, value: 0 } }), {}),
         secondarySkills: [],
-        inventory: Array(10).fill(''),
-        souvenir: '',
-        tinyItems: '',
+        inventoryItems: [],
         money: { or: 0, argent: 0, cuivre: 0 },
         armor: { name: '', armorRating: 0, bane: [] },
         helmet: { name: '', armorRating: 0, bane: [] },
