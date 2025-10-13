@@ -905,7 +905,7 @@ const CharacterSheetPage: React.FC = () => {
                         {/* Capacités */}
                         <div className="mb-4">
                             <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-bold text-gray-300">Capacités</h3>
+                                <h3 className="text-sm font-bold text-gray-300">Capacités ({character.abilities.length})</h3>
                                 <Link 
                                     to={`/abilities/${id}`} 
                                     className="text-xs bg-[#404040] hover:bg-[#505050] text-white px-2 py-1 rounded transition-colors"
@@ -913,7 +913,7 @@ const CharacterSheetPage: React.FC = () => {
                                     ⚔️ Gérer
                                 </Link>
                             </div>
-                            <div className="space-y-1">
+                            <div className="max-h-[150px] overflow-y-auto pr-1 space-y-1 scrollbar-thin">
                                 {character.abilities.length === 0 ? (
                                     <p className="text-xs text-gray-500 italic">Aucune capacité</p>
                                 ) : (
@@ -930,7 +930,7 @@ const CharacterSheetPage: React.FC = () => {
                         {/* Grimoire */}
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-bold text-gray-300">Grimoire</h3>
+                                <h3 className="text-sm font-bold text-gray-300">Grimoire ({character.grimoire.length})</h3>
                                 <Link 
                                     to={`/grimoire/${id}`} 
                                     className="text-xs bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-2 py-1 rounded transition-colors"
@@ -938,7 +938,7 @@ const CharacterSheetPage: React.FC = () => {
                                     📖 Gérer
                                 </Link>
                             </div>
-                        <div className="space-y-1">
+                            <div className="max-h-[200px] overflow-y-auto pr-1 space-y-1 scrollbar-thin">
                                 {character.grimoire.length === 0 ? (
                                     <p className="text-xs text-gray-500 italic">Aucun sort</p>
                                 ) : (
@@ -955,7 +955,6 @@ const CharacterSheetPage: React.FC = () => {
                                             const rankB = getRankValue(b.rang);
                                             return rankA - rankB;
                                         })
-                                        .slice(0, 10)
                                         .map((spell, i) => (
                                             <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
                                                 <span className="text-gray-300">{spell.nom}</span>
@@ -964,11 +963,6 @@ const CharacterSheetPage: React.FC = () => {
                                                 </span>
                                             </div>
                                         ))
-                                )}
-                                {character.grimoire.length > 10 && (
-                                    <p className="text-xs text-gray-500 italic text-center pt-1">
-                                        +{character.grimoire.length - 10} autre(s)...
-                                    </p>
                                 )}
                             </div>
                         </div>
