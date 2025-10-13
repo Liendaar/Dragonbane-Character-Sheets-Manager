@@ -162,7 +162,7 @@ const SecondarySkillRow: React.FC<{
             <select 
                 value={skill.attribute} 
                 onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
-                className="w-16 flex-shrink-0 bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
+                className="w-12 flex-shrink-0 bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
             >
                 {ATTRIBUTES_ORDER.map(attr => (
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
@@ -1070,7 +1070,7 @@ const CharacterSheetPage: React.FC = () => {
                           const newWeapons = [...character.weaponsShields, { name: '', grip: '', range: '', damage: '', durability: '', traits: '' }];
                           updateField('weaponsShields', newWeapons);
                       }}
-                      className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                      className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                   >
                       + Ajouter une arme/bouclier
                   </button>
@@ -1264,7 +1264,7 @@ const CharacterSheetPage: React.FC = () => {
                                 const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
                                 updateField('inventoryItems', newItems);
                             }}
-                            className="w-full mt-2 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white text-xs px-3 py-2 rounded font-bold transition-colors"
+                            className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                         >
                             + Ajouter un objet
                         </button>
