@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import CharacterSheetPage from './pages/CharacterSheetPage';
 import GrimoirePage from './pages/GrimoirePage';
 import AbilitiesPage from './pages/AbilitiesPage';
+import NotesPage from './pages/NotesPage';
 import ProfilePage from './pages/ProfilePage';
 
 const App: React.FC = () => {
@@ -38,6 +39,7 @@ const Router: React.FC = () => {
         <Route path="/character/:id" element={user ? <CharacterSheetPage /> : <LoginPage />} />
         <Route path="/grimoire/:id" element={user ? <GrimoirePage /> : <LoginPage />} />
         <Route path="/abilities/:id" element={user ? <AbilitiesPage /> : <LoginPage />} />
+        <Route path="/notes/:id" element={user ? <NotesPage /> : <LoginPage />} />
         <Route path="/" element={user ? <DashboardPage /> : <LoginPage />} />
         {/* Fallback for any other route */}
         <Route path="*" element={user ? <DashboardPage /> : <LoginPage />} />

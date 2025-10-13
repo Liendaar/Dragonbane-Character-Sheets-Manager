@@ -109,6 +109,7 @@ export interface CharacterSheet {
     round: boolean;
     period: boolean;
   };
+  noteSections?: NoteSection[];
 }
 
 export interface Weapon {
@@ -138,6 +139,22 @@ export interface Ability {
 export interface InventoryItem {
   name: string;
   type: 'normal' | 'tiny' | 'memento';
+}
+
+export interface Note {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number;
+  updatedAt: number;
+  customOrder: number;
+}
+
+export interface NoteSection {
+  id: string;
+  name: string;
+  notes: Note[];
+  customOrder: number;
 }
 
 export const SKILLS_LIST = {
@@ -201,5 +218,13 @@ export const createNewCharacter = (userId: string): Omit<CharacterSheet, 'id'> =
         },
         deathRolls: { successes: 0, failures: 0 },
         rest: { round: false, period: false },
+        noteSections: [
+            {
+                id: 'general',
+                name: 'Général',
+                notes: [],
+                customOrder: 0
+            }
+        ],
     };
 };
