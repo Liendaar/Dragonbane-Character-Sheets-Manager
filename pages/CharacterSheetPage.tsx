@@ -162,7 +162,7 @@ const SecondarySkillRow: React.FC<{
             <select 
                 value={skill.attribute} 
                 onChange={e => onUpdate(index, { ...skill, attribute: e.target.value })}
-                className="w-16 flex-shrink-0 bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
+                className="w-12 flex-shrink-0 bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded text-xs focus:outline-none focus:border-[#2D7A73]"
             >
                 {ATTRIBUTES_ORDER.map(attr => (
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
@@ -738,7 +738,15 @@ const CharacterSheetPage: React.FC = () => {
           <div className="max-w-4xl mx-auto space-y-3">
               <header className="flex justify-between items-center mb-4">
                   <Link to="/" className="text-[#4ade80] hover:underline">&larr; Back to Dashboard</Link>
-                  <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
+                  <div className="flex items-center gap-4">
+                      <Link 
+                          to={`/notes/${id}`} 
+                          className="text-sm bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-3 py-1 rounded transition-colors font-bold"
+                      >
+                          📝 Notes
+                      </Link>
+                      <div className="text-sm text-gray-400">{saving ? 'Saving...' : 'Saved'}</div>
+                  </div>
               </header>
               {/* Top Section */}
               <div className="grid grid-cols-1 md:grid-cols-[auto_auto_1fr] gap-6 items-start">
@@ -897,7 +905,7 @@ const CharacterSheetPage: React.FC = () => {
                         {/* Capacités */}
                         <div className="mb-4">
                             <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-bold text-gray-300">Capacités</h3>
+                                <h3 className="text-sm font-bold text-gray-300">Capacités ({character.abilities.length})</h3>
                                 <Link 
                                     to={`/abilities/${id}`} 
                                     className="text-xs bg-[#404040] hover:bg-[#505050] text-white px-2 py-1 rounded transition-colors"
@@ -905,7 +913,7 @@ const CharacterSheetPage: React.FC = () => {
                                     ⚔️ Gérer
                                 </Link>
                             </div>
-                            <div className="space-y-1">
+                            <div className="max-h-[150px] overflow-y-auto pr-1 space-y-1 scrollbar-thin">
                                 {character.abilities.length === 0 ? (
                                     <p className="text-xs text-gray-500 italic">Aucune capacité</p>
                                 ) : (
@@ -922,7 +930,7 @@ const CharacterSheetPage: React.FC = () => {
                         {/* Grimoire */}
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-bold text-gray-300">Grimoire</h3>
+                                <h3 className="text-sm font-bold text-gray-300">Grimoire ({character.grimoire.length})</h3>
                                 <Link 
                                     to={`/grimoire/${id}`} 
                                     className="text-xs bg-[#2D7A73] hover:bg-[#3d9a8a] text-white px-2 py-1 rounded transition-colors"
@@ -930,17 +938,23 @@ const CharacterSheetPage: React.FC = () => {
                                     📖 Gérer
                                 </Link>
                             </div>
-                        <div className="space-y-1">
+                            <div className="max-h-[200px] overflow-y-auto pr-1 space-y-1 scrollbar-thin">
                                 {character.grimoire.length === 0 ? (
                                     <p className="text-xs text-gray-500 italic">Aucun sort</p>
                                 ) : (
                                     [...character.grimoire]
                                         .sort((a, b) => {
-                                            const rankA = typeof a.rang === 'string' ? parseInt(a.rang) : a.rang;
-                                            const rankB = typeof b.rang === 'string' ? parseInt(b.rang) : b.rang;
+                                            // Convertir les rangs en nombres, en gérant tous les cas
+                                            const getRankValue = (rang: string | number) => {
+                                                if (rang === 'Tour de magie' || rang === 'tour de magie') return 0;
+                                                const num = typeof rang === 'string' ? parseInt(rang) : rang;
+                                                return isNaN(num) ? 999 : num; // Mettre les valeurs invalides à la fin
+                                            };
+                                            
+                                            const rankA = getRankValue(a.rang);
+                                            const rankB = getRankValue(b.rang);
                                             return rankA - rankB;
                                         })
-                                        .slice(0, 10)
                                         .map((spell, i) => (
                                             <div key={i} className="flex justify-between items-center text-xs border-b border-gray-700 pb-1">
                                                 <span className="text-gray-300">{spell.nom}</span>
@@ -949,11 +963,6 @@ const CharacterSheetPage: React.FC = () => {
                                                 </span>
                                             </div>
                                         ))
-                                )}
-                                {character.grimoire.length > 10 && (
-                                    <p className="text-xs text-gray-500 italic text-center pt-1">
-                                        +{character.grimoire.length - 10} autre(s)...
-                                    </p>
                                 )}
                             </div>
                         </div>
@@ -1018,7 +1027,7 @@ const CharacterSheetPage: React.FC = () => {
                                     const newSkills = [...character.secondarySkills, { name: '', value: 0, attribute: 'agi', checked: false }];
                                     updateField('secondarySkills', newSkills);
                                 }}
-                                className="text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                                className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                             >
                                 + Ajouter une compétence
                             </button>
@@ -1061,7 +1070,7 @@ const CharacterSheetPage: React.FC = () => {
                           const newWeapons = [...character.weaponsShields, { name: '', grip: '', range: '', damage: '', durability: '', traits: '' }];
                           updateField('weaponsShields', newWeapons);
                       }}
-                      className="text-[#2D7A73] hover:text-[#25635d] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
+                      className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                   >
                       + Ajouter une arme/bouclier
                   </button>
@@ -1108,120 +1117,124 @@ const CharacterSheetPage: React.FC = () => {
 
                 {/* Inventory */}
                 <Section title="INVENTAIRE">
-                    <div className="flex items-center justify-between mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
-                        <span className="text-sm font-bold text-gray-300">ENCOMBREMENT</span>
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => updateNestedField('encumbrance', 'current', Math.max(0, character.encumbrance.current - 1))}
-                                className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                title="Diminuer l'encombrement"
-                            >
-                                −
-                            </button>
-                            <input 
-                                type="number" 
-                                value={character.encumbrance.current} 
-                                onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
-                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <button
-                                onClick={() => updateNestedField('encumbrance', 'current', character.encumbrance.current + 1)}
-                                className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                title="Augmenter l'encombrement"
-                            >
-                                +
-                            </button>
-                            <span className="text-gray-400 font-bold">/</span>
-                            <input 
-                                type="number" 
-                                value={character.encumbrance.max} 
-                                onChange={e => updateNestedField('encumbrance', 'max', parseInt(e.target.value) || 0)}
-                                className="w-16 text-center text-lg font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
+                    {/* Encombrement & Trésor - Side by Side */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        {/* Encombrement */}
+                        <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2">
+                            <span className="text-xs font-bold text-gray-300 block mb-1">ENCOMBREMENT</span>
+                            <div className="flex items-center justify-center gap-1">
+                                <button
+                                    onClick={() => updateNestedField('encumbrance', 'current', Math.max(0, character.encumbrance.current - 1))}
+                                    className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
+                                    title="Diminuer"
+                                >
+                                    −
+                                </button>
+                                <input 
+                                    type="number" 
+                                    value={character.encumbrance.current} 
+                                    onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
+                                    className="w-12 text-center text-sm font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <span className="text-gray-400 font-bold text-sm">/</span>
+                                <input 
+                                    type="number" 
+                                    value={character.encumbrance.max} 
+                                    onChange={e => updateNestedField('encumbrance', 'max', parseInt(e.target.value) || 0)}
+                                    className="w-12 text-center text-sm font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <button
+                                    onClick={() => updateNestedField('encumbrance', 'current', character.encumbrance.current + 1)}
+                                    className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
+                                    title="Augmenter"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Trésor */}
+                        <div className="bg-[#2a2a2a] border border-[#404040] rounded p-2">
+                            <span className="text-xs font-bold text-gray-300 block mb-1">TRÉSOR</span>
+                            <div className="flex items-center justify-center gap-1">
+                                <div className="flex flex-col items-center gap-0.5">
+                                    <label className="text-[10px] font-bold text-yellow-400">OR</label>
+                                    <div className="flex items-center gap-0.5">
+                                        <button
+                                            onClick={() => adjustMoney('or', -1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="−"
+                                        >
+                                            −
+                                        </button>
+                                        <input 
+                                            type="number" 
+                                            value={character.money.or} 
+                                            onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} 
+                                            className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                        />
+                                        <button
+                                            onClick={() => adjustMoney('or', 1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="+"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center gap-0.5">
+                                    <label className="text-[10px] font-bold text-gray-300">AR</label>
+                                    <div className="flex items-center gap-0.5">
+                                        <button
+                                            onClick={() => adjustMoney('argent', -1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="−"
+                                        >
+                                            −
+                                        </button>
+                                        <input 
+                                            type="number" 
+                                            value={character.money.argent} 
+                                            onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} 
+                                            className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                        />
+                                        <button
+                                            onClick={() => adjustMoney('argent', 1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="+"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center gap-0.5">
+                                    <label className="text-[10px] font-bold text-orange-400">CU</label>
+                                    <div className="flex items-center gap-0.5">
+                                        <button
+                                            onClick={() => adjustMoney('cuivre', -1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="−"
+                                        >
+                                            −
+                                        </button>
+                                        <input 
+                                            type="number" 
+                                            value={character.money.cuivre} 
+                                            onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} 
+                                            className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                                        />
+                                        <button
+                                            onClick={() => adjustMoney('cuivre', 1)}
+                                            className="w-5 h-5 text-xs font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center"
+                                            title="+"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    {/* Money Section */}
-                    <div className="mb-4 bg-[#2a2a2a] border border-[#404040] rounded p-3">
-                        <h3 className="text-sm font-bold text-gray-300 mb-2">TRÉSOR</h3>
-                        <div className="grid grid-cols-3 gap-2">
-                            <div className="flex flex-col items-center">
-                                <label className="text-xs font-bold text-yellow-400 mb-1">OR</label>
-                                <div className="flex items-center gap-1 w-full">
-                                    <button
-                                        onClick={() => adjustMoney('or', -1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Diminuer"
-                                    >
-                                        −
-                                    </button>
-                                    <input 
-                                        type="number" 
-                                        value={character.money.or} 
-                                        onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} 
-                                        className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                                    />
-                                    <button
-                                        onClick={() => adjustMoney('or', 1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Augmenter"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <label className="text-xs font-bold text-gray-300 mb-1">ARGENT</label>
-                                <div className="flex items-center gap-1 w-full">
-                                    <button
-                                        onClick={() => adjustMoney('argent', -1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Diminuer"
-                                    >
-                                        −
-                                    </button>
-                                    <input 
-                                        type="number" 
-                                        value={character.money.argent} 
-                                        onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} 
-                                        className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                                    />
-                                    <button
-                                        onClick={() => adjustMoney('argent', 1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Augmenter"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <label className="text-xs font-bold text-orange-400 mb-1">CUIVRE</label>
-                                <div className="flex items-center gap-1 w-full">
-                                    <button
-                                        onClick={() => adjustMoney('cuivre', -1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Diminuer"
-                                    >
-                                        −
-                                    </button>
-                                    <input 
-                                        type="number" 
-                                        value={character.money.cuivre} 
-                                        onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} 
-                                        className="flex-1 text-center bg-[#1a1a1a] border border-gray-600 rounded px-2 py-1 focus:outline-none focus:border-[#2D7A73] text-sm text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                                    />
-                                    <button
-                                        onClick={() => adjustMoney('cuivre', 1)}
-                                        className="w-6 h-6 text-sm font-bold rounded bg-[#404040] hover:bg-[#505050] text-white transition-colors flex items-center justify-center flex-shrink-0"
-                                        title="Augmenter"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                </div>
-            </div>
 
                     <div className="mt-4 space-y-1">
                         {character.inventoryItems
@@ -1251,7 +1264,7 @@ const CharacterSheetPage: React.FC = () => {
                                 const newItems = [...character.inventoryItems, { name: '', type: 'normal' as const }];
                                 updateField('inventoryItems', newItems);
                             }}
-                            className="w-full mt-2 bg-[#2D7A73] hover:bg-[#3d9a8a] text-white text-xs px-3 py-2 rounded font-bold transition-colors"
+                            className="w-full text-[#4ade80] hover:text-[#5eea90] text-sm font-bold border border-[#2D7A73] rounded px-2 py-1 hover:bg-[#2D7A73] hover:text-white transition-colors"
                         >
                             + Ajouter un objet
                         </button>
