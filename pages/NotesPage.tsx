@@ -285,7 +285,7 @@ const NotesPage: React.FC = () => {
                                                 : 'bg-[#1a1a1a] text-gray-400 hover:bg-[#2a2a2a]'
                                         }`}
                                     >
-                                        {section.name} ({section.notes.length})
+                                        {section.name}
                                     </button>
                                 )}
                                 {activeSection === section.id && (
