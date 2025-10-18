@@ -265,7 +265,7 @@ const NotesPage: React.FC = () => {
                     {/* Section Tabs */}
                     <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
                         {sections.map((section, index) => (
-                            <div key={section.id} className="flex items-center gap-1 flex-shrink-0">
+                            <div key={section.id} className="flex items-center gap-1 flex-shrink-0 transition-all duration-300 ease-in-out">
                                 {editingSectionId === section.id ? (
                                     <input
                                         type="text"
@@ -279,7 +279,7 @@ const NotesPage: React.FC = () => {
                                 ) : (
                                     <button
                                         onClick={() => setActiveSection(section.id)}
-                                        className={`px-4 py-2 rounded-t text-sm font-bold transition-colors ${
+                                        className={`px-4 py-2 rounded-t text-sm font-bold transition-all duration-300 ${
                                             activeSection === section.id
                                                 ? 'bg-[#2D7A73] text-white'
                                                 : 'bg-[#1a1a1a] text-gray-400 hover:bg-[#2a2a2a]'
@@ -379,7 +379,7 @@ const NotesPage: React.FC = () => {
                             {getSortedNotes(currentSection.notes).map((note, index) => (
                                 <div
                                     key={note.id}
-                                    className="bg-[#1a1a1a] border border-[#404040] rounded-lg p-4 hover:border-[#2D7A73] transition-colors"
+                                    className="bg-[#1a1a1a] border border-[#404040] rounded-lg p-4 hover:border-[#2D7A73] transition-all duration-300 ease-in-out"
                                 >
                                     <div className="flex items-start justify-between mb-2">
                                         <input
