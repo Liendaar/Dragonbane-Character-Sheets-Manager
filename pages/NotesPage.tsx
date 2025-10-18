@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import type { CharacterSheet, Note, NoteSection } from '../types';
 
@@ -265,7 +266,15 @@ const NotesPage: React.FC = () => {
                     {/* Section Tabs */}
                     <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
                         {sections.map((section, index) => (
-                            <div key={section.id} className="flex items-center gap-1 flex-shrink-0">
+                            <motion.div 
+                                key={section.id} 
+                                layout
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className="flex items-center gap-1 flex-shrink-0"
+                            >
                                 {editingSectionId === section.id ? (
                                     <input
                                         type="text"
@@ -279,13 +288,13 @@ const NotesPage: React.FC = () => {
                                 ) : (
                                     <button
                                         onClick={() => setActiveSection(section.id)}
-                                        className={`px-4 py-2 rounded-t text-sm font-bold transition-colors ${
+                                        className={`px-4 py-2 rounded-t text-sm font-bold transition-all duration-300 ${
                                             activeSection === section.id
                                                 ? 'bg-[#2D7A73] text-white'
                                                 : 'bg-[#1a1a1a] text-gray-400 hover:bg-[#2a2a2a]'
                                         }`}
                                     >
-                                        {section.name} ({section.notes.length})
+                                        {section.name}
                                     </button>
                                 )}
                                 {activeSection === section.id && (
@@ -326,7 +335,7 @@ const NotesPage: React.FC = () => {
                                         )}
                                     </div>
                                 )}
-                            </div>
+                            </motion.div>
                         ))}
                         <button
                             onClick={addSection}
@@ -377,8 +386,13 @@ const NotesPage: React.FC = () => {
                     {currentSection && (
                         <div className="space-y-4">
                             {getSortedNotes(currentSection.notes).map((note, index) => (
-                                <div
+                                <motion.div
                                     key={note.id}
+                                    layout
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.3 }}
                                     className="bg-[#1a1a1a] border border-[#404040] rounded-lg p-4 hover:border-[#2D7A73] transition-colors"
                                 >
                                     <div className="flex items-start justify-between mb-2">
@@ -427,7 +441,7 @@ const NotesPage: React.FC = () => {
                                         <span>Créé : {formatDate(note.createdAt)}</span>
                                         <span>Modifié : {formatDate(note.updatedAt)}</span>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
 
                             <button
