@@ -1,3 +1,9 @@
+/**
+ * @file DashboardPage.tsx
+ * @description This component serves as the main user dashboard. It displays a list of the user's characters,
+ * provides options to create new characters, and allows navigation to character sheets, profile, or to sign out.
+ */
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase';
@@ -9,9 +15,16 @@ import { createCharacter, getUserCharacters, deleteCharacter } from '../services
 const DashboardPage: React.FC = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    
+    // State to hold the list of characters for the current user.
     const [characters, setCharacters] = useState<CharacterSheet[]>([]);
+    // State to manage the loading status while fetching characters.
     const [loading, setLoading] = useState(true);
 
+    /**
+     * Fetches the characters for the currently logged-in user from the character service
+     * and updates the component's state.
+     */
     const fetchCharacters = useCallback(async () => {
         if (user) {
             setLoading(true);
@@ -21,17 +34,25 @@ const DashboardPage: React.FC = () => {
         }
     }, [user]);
 
+    // The effect hook to fetch characters when the component mounts or the user changes.
     useEffect(() => {
         fetchCharacters();
     }, [fetchCharacters]);
 
+    /**
+     * Handles the user sign-out process using Firebase auth.
+     * The page will automatically redirect to the login page because the AuthContext
+     * will update, causing a re-render of the main App component.
+     */
     const handleSignOut = async () => {
         await auth.signOut();
-        // The navigate call is removed because the AuthContext will trigger a re-render
-        // of the App component, which will automatically show the LoginPage.
-        // This avoids the programmatic navigation error in sandboxed environments.
     };
 
+    /**
+     * Handles the creation of a new character.
+     * It generates a new character sheet, saves it via the service, and then navigates
+     * the user to the new character's detail page.
+     */
     const handleCreateCharacter = async () => {
         if (user) {
             const newCharData = createNewCharacter(user.uid);
@@ -40,10 +61,16 @@ const DashboardPage: React.FC = () => {
         }
     };
 
+    /**
+     * Handles the deletion of a character.
+     * It prompts the user for confirmation before proceeding with the deletion
+     * and then refreshes the character list.
+     * @param {string} id - The ID of the character to be deleted.
+     */
     const handleDeleteCharacter = async (id: string) => {
         if(window.confirm('Are you sure you want to delete this character?')) {
             await deleteCharacter(id);
-            fetchCharacters();
+            fetchCharacters(); // Re-fetch characters to update the UI.
         }
     }
 
@@ -84,9 +111,11 @@ const DashboardPage: React.FC = () => {
                         </button>
                     </div>
 
+                    {/* Conditional rendering based on the loading state and number of characters */}
                     {loading ? (
                         <p className="text-center text-gray-400">Loading characters...</p>
                     ) : characters.length > 0 ? (
+                        // Grid display for the list of characters
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {characters.map((char) => (
                                 <div key={char.id} className="bg-[#2a2a2a]/80 backdrop-blur-sm p-6 rounded-lg shadow-md border border-gray-700 flex flex-col justify-between hover:shadow-xl hover:border-[#2D7A73] transition-all duration-200">
@@ -106,6 +135,7 @@ const DashboardPage: React.FC = () => {
                             ))}
                         </div>
                     ) : (
+                        // Message displayed when the user has no characters
                         <div className="text-center py-10 px-6 bg-[#2a2a2a]/50 rounded-lg border-2 border-dashed border-gray-700">
                             <p className="text-gray-400">You haven't created any characters yet.</p>
                             <p className="text-gray-400 mt-2">Click "Create New" to get started!</p>
