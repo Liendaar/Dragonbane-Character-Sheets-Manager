@@ -15,6 +15,19 @@ const NotesPage: React.FC = () => {
     const [sortMode, setSortMode] = useState<SortMode>('custom');
     const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
     const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+    const [collapsedNoteIds, setCollapsedNoteIds] = useState<Set<string>>(new Set());
+
+    const toggleNoteCollapse = (noteId: string) => {
+        setCollapsedNoteIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(noteId)) {
+                newSet.delete(noteId);
+            } else {
+                newSet.add(noteId);
+            }
+            return newSet;
+        });
+    };
 
     useEffect(() => {
         const fetchCharacter = async () => {
@@ -431,12 +444,55 @@ const NotesPage: React.FC = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <textarea
-                                        value={note.content}
-                                        onChange={e => updateNote(currentSection.id, note.id, { content: e.target.value })}
-                                        className="w-full bg-[#2a2a2a] border border-gray-600 rounded p-3 text-sm text-gray-200 focus:outline-none focus:border-[#2D7A73] min-h-[100px] resize-y"
-                                        placeholder="Contenu de la note..."
-                                    />
+                                    {(() => {
+                                        const isLong = note.content.length > 200 || note.content.split('\n').length > 5;
+                                        const isCollapsed = collapsedNoteIds.has(note.id);
+
+                                        const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+                                            const target = e.currentTarget;
+                                            if (!isCollapsed) {
+                                                target.style.height = 'auto';
+                                                target.style.height = `${target.scrollHeight}px`;
+                                            }
+                                        };
+
+                                        return (
+                                            <>
+                                                <textarea
+                                                    value={note.content}
+                                                    onChange={e => updateNote(currentSection.id, note.id, { content: e.target.value })}
+                                                    onInput={handleInput}
+                                                    className="w-full bg-[#2a2a2a] border border-gray-600 rounded p-3 text-sm text-gray-200 focus:outline-none focus:border-[#2D7A73] resize-none overflow-y-hidden"
+                                                    placeholder="Contenu de la note..."
+                                                    rows={1}
+                                                    style={isCollapsed ? { height: '100px', overflowY: 'auto' } : {}}
+                                                    ref={textarea => {
+                                                        if (textarea) {
+                                                            if (isCollapsed) {
+                                                                textarea.style.height = '100px';
+                                                                textarea.style.overflowY = 'auto';
+                                                            } else {
+                                                                // Defer the height calculation to ensure DOM is updated
+                                                                setTimeout(() => {
+                                                                    textarea.style.height = 'auto';
+                                                                    textarea.style.height = `${textarea.scrollHeight}px`;
+                                                                    textarea.style.overflowY = 'hidden';
+                                                                }, 0);
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                                {isLong && (
+                                                    <button
+                                                        onClick={() => toggleNoteCollapse(note.id)}
+                                                        className="text-sm text-[#4ade80] hover:underline mt-1"
+                                                    >
+                                                        {isCollapsed ? 'Développer la note' : 'Réduire la note'}
+                                                    </button>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
                                     <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                                         <span>Créé : {formatDate(note.createdAt)}</span>
                                         <span>Modifié : {formatDate(note.updatedAt)}</span>
