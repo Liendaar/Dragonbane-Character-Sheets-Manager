@@ -120,7 +120,7 @@ const SkillInput: React.FC<{
         <NumberInput 
             value={value} 
             onChange={onValueChange} 
-            className="w-12 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
+            className="w-12 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             min="0"
         />
     </div>
@@ -218,7 +218,7 @@ const SecondarySkillRow: React.FC<{
             <NumberInput 
                 value={skill.value} 
                 onChange={value => onUpdate(index, { ...skill, value })}
-                className="w-12 flex-shrink-0 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
+                className="w-12 flex-shrink-0 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 min="0"
             />
             <button 
@@ -356,7 +356,7 @@ const ArmorSection: React.FC<{
             <NumberInput 
                 value={armorRating} 
                 onChange={onRatingChange}
-                className="w-full text-center text-xl font-bold border-2 border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] bg-[#1a1a1a] text-gray-200"
+                className="w-full text-center text-xl font-bold border-2 border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 min="0"
             />
         </div>
