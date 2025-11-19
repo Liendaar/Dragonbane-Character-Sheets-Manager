@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { createNewCharacter } from '../types';
@@ -17,6 +17,54 @@ const useDebounce = <T,>(value: T, delay: number): T => {
         };
     }, [value, delay]);
     return debouncedValue;
+};
+
+const NumberInput: React.FC<{
+    value: number;
+    onChange: (value: number) => void;
+    className?: string;
+    [x:string]: any;
+}> = ({ value, onChange, className, ...props }) => {
+    const [displayValue, setDisplayValue] = useState<string | number>(value);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (document.activeElement !== inputRef.current || (inputRef.current && inputRef.current.value !== '')) {
+            setDisplayValue(value);
+        }
+    }, [value]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        if (val === '') {
+            setDisplayValue('');
+        } else {
+            const num = parseInt(val);
+            if (!isNaN(num)) {
+                setDisplayValue(num);
+                onChange(num);
+            }
+        }
+    };
+
+    const handleBlur = () => {
+        if (displayValue === '') {
+            setDisplayValue(0);
+            onChange(0);
+        }
+    };
+
+    return (
+        <input
+            ref={inputRef}
+            type="number"
+            value={displayValue}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={className}
+            {...props}
+        />
+    );
 };
 
 const Section: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className = '' }) => (
@@ -40,11 +88,11 @@ const BoxedInput: React.FC<{ label: string; value: string | number; onChange: (e
     </div>
 );
 
-const AttributeCircle: React.FC<{ label: string; value: number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; condition: boolean; onConditionChange: () => void; conditionLabel: string }> = ({ label, value, onChange, condition, onConditionChange, conditionLabel }) => (
+const AttributeCircle: React.FC<{ label: string; value: number; onChange: (value: number) => void; condition: boolean; onConditionChange: () => void; conditionLabel: string }> = ({ label, value, onChange, condition, onConditionChange, conditionLabel }) => (
     <div className="flex flex-col items-center">
         <div className="relative w-16 h-16 border-4 border-[#2D7A73] rounded-full flex items-center justify-center bg-[#1a1a1a] shadow-inner">
             <span className="absolute -top-3 text-xs font-bold font-title text-[#4ade80] bg-[#1a1a1a] px-1">{label}</span>
-            <input type="number" value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-200 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+            <NumberInput value={value} onChange={onChange} className="w-10 text-center text-xl font-bold text-gray-200 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
         </div>
         <div onClick={onConditionChange} className={`cursor-pointer text-xs mt-1 px-2 py-0.5 rounded-full border ${condition ? 'bg-red-600 text-white border-red-700' : 'bg-[#2a2a2a] text-gray-400 border-gray-600'}`}>
             {conditionLabel}
@@ -69,10 +117,9 @@ const SkillInput: React.FC<{
         </div>
         <span className="flex-grow text-gray-300">{label}</span>
         <span className="text-xs text-gray-500">({stat.toUpperCase()})</span>
-        <input 
-            type="number" 
+        <NumberInput 
             value={value} 
-            onChange={e => onValueChange(parseInt(e.target.value) || 0)} 
+            onChange={onValueChange} 
             className="w-12 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
             min="0"
         />
@@ -168,10 +215,9 @@ const SecondarySkillRow: React.FC<{
                     <option key={attr} value={attr}>{attr.toUpperCase()}</option>
                 ))}
             </select>
-            <input 
-                type="number" 
+            <NumberInput 
                 value={skill.value} 
-                onChange={e => onUpdate(index, { ...skill, value: parseInt(e.target.value) || 0 })}
+                onChange={value => onUpdate(index, { ...skill, value })}
                 className="w-12 flex-shrink-0 text-center text-sm bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73]"
                 min="0"
             />
@@ -307,10 +353,9 @@ const ArmorSection: React.FC<{
         />
         <div className="mb-3">
             <label className="block text-xs font-bold text-gray-400 mb-1">INDICE D'ARMURE</label>
-            <input 
-                type="number" 
+            <NumberInput 
                 value={armorRating} 
-                onChange={e => onRatingChange(parseInt(e.target.value) || 0)}
+                onChange={onRatingChange}
                 className="w-full text-center text-xl font-bold border-2 border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] bg-[#1a1a1a] text-gray-200"
                 min="0"
             />
@@ -357,10 +402,9 @@ const PointTracker: React.FC<{
                 >
                     −
                 </button>
-                <input 
-                    type="number" 
+                <NumberInput 
                     value={current} 
-                    onChange={e => onCurrentChange(parseInt(e.target.value) || 0)} 
+                    onChange={onCurrentChange} 
                     className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                 />
                 <button
@@ -371,10 +415,9 @@ const PointTracker: React.FC<{
                     +
                 </button>
                 <span className="mx-1 text-xl text-gray-300">/</span>
-                <input 
-                    type="number" 
+                <NumberInput 
                     value={max} 
-                    onChange={e => onMaxChange(parseInt(e.target.value) || 0)} 
+                    onChange={onMaxChange} 
                     className="w-12 h-10 text-xl text-center font-bold border-2 border-gray-600 rounded bg-[#1a1a1a] text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                 />
             </div>
@@ -863,7 +906,7 @@ const CharacterSheetPage: React.FC = () => {
                               label={attr.toUpperCase()}
                                   value={character.attributes[attrKey]}
                                   // @ts-ignore - Type assertion is safe due to ATTRIBUTES_ORDER constant
-                                  onChange={e => updateNestedField('attributes', attrKey, parseInt(e.target.value) || 0)}
+                                  onChange={value => updateNestedField('attributes', attrKey, value)}
                                   condition={character.conditions[condKey]}
                                   // @ts-ignore - Type assertion is safe due to CONDITIONS_ORDER constant
                                   onConditionChange={() => updateNestedField('conditions', condKey, !character.conditions[condKey])}
@@ -1130,17 +1173,15 @@ const CharacterSheetPage: React.FC = () => {
                                 >
                                     −
                                 </button>
-                                <input 
-                                    type="number" 
+                                <NumberInput 
                                     value={character.encumbrance.current} 
-                                    onChange={e => updateNestedField('encumbrance', 'current', parseInt(e.target.value) || 0)}
+                                    onChange={val => updateNestedField('encumbrance', 'current', val)}
                                     className="w-12 text-center text-sm font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />
                                 <span className="text-gray-400 font-bold text-sm">/</span>
-                                <input 
-                                    type="number" 
+                                <NumberInput 
                                     value={character.encumbrance.max} 
-                                    onChange={e => updateNestedField('encumbrance', 'max', parseInt(e.target.value) || 0)}
+                                    onChange={val => updateNestedField('encumbrance', 'max', val)}
                                     className="w-12 text-center text-sm font-bold bg-[#1a1a1a] text-gray-200 border border-gray-600 rounded focus:outline-none focus:border-[#2D7A73] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />
                                 <button
@@ -1167,10 +1208,9 @@ const CharacterSheetPage: React.FC = () => {
                                         >
                                             −
                                         </button>
-                                        <input 
-                                            type="number" 
+                                        <NumberInput 
                                             value={character.money.or} 
-                                            onChange={e => updateNestedField('money', 'or', parseInt(e.target.value) || 0)} 
+                                            onChange={val => updateNestedField('money', 'or', val)} 
                                             className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                         />
                                         <button
@@ -1192,10 +1232,9 @@ const CharacterSheetPage: React.FC = () => {
                                         >
                                             −
                                         </button>
-                                        <input 
-                                            type="number" 
+                                        <NumberInput 
                                             value={character.money.argent} 
-                                            onChange={e => updateNestedField('money', 'argent', parseInt(e.target.value) || 0)} 
+                                            onChange={val => updateNestedField('money', 'argent', val)} 
                                             className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                         />
                                         <button
@@ -1217,10 +1256,9 @@ const CharacterSheetPage: React.FC = () => {
                                         >
                                             −
                                         </button>
-                                        <input 
-                                            type="number" 
+                                        <NumberInput 
                                             value={character.money.cuivre} 
-                                            onChange={e => updateNestedField('money', 'cuivre', parseInt(e.target.value) || 0)} 
+                                            onChange={val => updateNestedField('money', 'cuivre', val)} 
                                             className="w-10 text-center bg-[#1a1a1a] border border-gray-600 rounded px-1 py-0.5 focus:outline-none focus:border-[#2D7A73] text-xs text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                                         />
                                         <button
